@@ -16,17 +16,17 @@
     :target: https://travis-ci.org/Rockhopper-Technologies/jinxed
     :alt: Travis-CI Build Status
 
-.. |pypi| image:: https://img.shields.io/pypi/v/jinxed.svg?style=plastic
+.. |pypi| image:: https://img.shields.io/pypi/v/jinxed.svg?style=plastic&logo=pypi
     :alt: PyPI Package latest release
-    :target: https://pypi.python.org/pypi/ansicon
+    :target: https://pypi.python.org/pypi/jinxed
 
 .. |supported-versions| image:: https://img.shields.io/pypi/pyversions/jinxed.svg?style=plastic&logo=pypi
     :alt: Supported versions
-    :target: https://pypi.python.org/pypi/ansicon
+    :target: https://pypi.python.org/pypi/jinxed
 
 .. |supported-implementations| image:: https://img.shields.io/pypi/implementation/jinxed.svg?style=plastic&logo=pypi
     :alt: Supported implementations
-    :target: https://pypi.python.org/pypi/ansicon
+    :target: https://pypi.python.org/pypi/jinxed
 
 .. |supported-platforms| image:: https://img.shields.io/badge/platforms-Windows-blue.svg?style=plastic
     :alt: Supported platforms
