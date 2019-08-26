@@ -23,7 +23,7 @@ from jinxed._util import error
 from jinxed.win32 import get_term
 
 
-__version__ = '0.5.4'
+__version__ = '0.5.5'
 
 COLOR_BLACK = 0
 COLOR_RED = 1
