@@ -1,0 +1,29 @@
+language: python
+
+addons:
+    apt_packages:
+        - enchant
+        - aspell
+        - aspell-en
+
+matrix:
+  include:
+      # Lint on Linux because enchant is unavailable for 64-bit Windows
+      python: "3.7"
+      env: TOXENV=lint
+
+      python: "3.7"
+      env: TOXENV=py37
+
+
+#    - name: "3.7"
+#      os: windows
+#      language: shell
+#      before_install: choco install python
+#      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH TOXENV=codecov
+
+install:
+  - pip3 install tox
+
+script:
+  - tox
