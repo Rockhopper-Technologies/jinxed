@@ -20,9 +20,10 @@ from jinxed._keys import *
 from jinxed._tparm import tparm
 from jinxed._terminal import setupterm, tigetflag, tigetnum, tigetstr
 from jinxed._util import error
+from jinxed.win32 import get_term
 
 
-__version__ = '0.5.2'
+__version__ = '0.5.3'
 
 COLOR_BLACK = 0
 COLOR_RED = 1
