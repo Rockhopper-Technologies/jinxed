@@ -9,9 +9,11 @@ addons:
 matrix:
   include:
       # Lint on Linux because enchant is unavailable for 64-bit Windows
+    - name: "Lint"
       python: "3.7"
       env: TOXENV=lint
 
+    - name: "Python 3.7"
       python: "3.7"
       env: TOXENV=py37
 
