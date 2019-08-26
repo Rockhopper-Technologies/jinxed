@@ -69,6 +69,8 @@ del STR_CAPS['smkx']
 del STR_CAPS['smm']
 
 # Modified
+NUM_CAPS['colors'] = 16
+NUM_CAPS['cols'] = 80
 NUM_CAPS['lines'] = 30
 NUM_CAPS['pairs'] = 256
 STR_CAPS['cbt'] = b'\x1b[%p1%dZ'
@@ -148,8 +150,6 @@ STR_CAPS['knp'] = b'\xe0Q'
 STR_CAPS['kpp'] = b'\xe0I'
 STR_CAPS['rs1'] = b'\x1bc\x1b]104ST'
 STR_CAPS['rs2'] = b'\x1b[!p'
-STR_CAPS['setab'] = b'\x1b[4%p1%dm'
-STR_CAPS['setaf'] = b'\x1b[3%p1%dm'
 STR_CAPS['sgr'] = b'\x1b[%p1%d%?%p2%t;%p2%d%;%?%p3%t;%p3%d%;%?%p4%t;%p4%d%;%?%p5%t;%p5%d%;' \
                   b'%?%p6%t;%p6%d%;%?%p7%t;%p7%d%;%?%p8%t;%p8%d%;%?%p9%t;%p9%d%;m'
 

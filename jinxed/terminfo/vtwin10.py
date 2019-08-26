@@ -41,8 +41,10 @@ del STR_CAPS['smir']
 del STR_CAPS['smm']
 
 # Modified
+NUM_CAPS['colors'] = 256
 NUM_CAPS['cols'] = 120
 NUM_CAPS['lines'] = 30
+NUM_CAPS['pairs'] = 65536
 STR_CAPS['cbt'] = b'\x1b[%p1%dZ'
 STR_CAPS['csr'] = b'\x1b[%p1%{1}%+%d;%?%p2%t%p2%{1}%+%dr'
 STR_CAPS['cub1'] = b'\x1b[D'
@@ -56,8 +58,6 @@ STR_CAPS['kc3'] = b'\x1b[6~'   # lower right of keypad
 STR_CAPS['kent'] = b'\r'
 STR_CAPS['rmcup'] = b'\x1b[?1049l'
 STR_CAPS['rs2'] = b'\x1b[!p\x1b>'  # DECSTR
-STR_CAPS['setab'] = b'\x1b[4%p1%dm'
-STR_CAPS['setaf'] = b'\x1b[3%p1%dm'
 STR_CAPS['sgr'] = b'\x1b[%p1%d%?%p2%t;%p2%d%;%?%p3%t;%p3%d%;%?%p4%t;%p4%d%;%?%p5%t;%p5%d%;' \
                   b'%?%p6%t;%p6%d%;%?%p7%t;%p7%d%;%?%p8%t;%p8%d%;%?%p9%t;%p9%d%;m'
 STR_CAPS['smcup'] = b'\x1b[?1049h'
