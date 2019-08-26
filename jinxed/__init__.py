@@ -22,7 +22,7 @@ from jinxed._terminal import setupterm, tigetflag, tigetnum, tigetstr
 from jinxed._util import error
 
 
-__version__ = '0.5.1'
+__version__ = '0.5.2'
 
 COLOR_BLACK = 0
 COLOR_RED = 1

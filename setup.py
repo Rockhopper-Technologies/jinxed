@@ -17,7 +17,7 @@ that need to access terminfo functions such as tigetstr() and tparm().
 import os
 import platform
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from setup_helpers import get_version, readme
 
@@ -42,7 +42,7 @@ setup(
     zip_safe=False,
     install_requires=INSTALL_REQUIRES,
     tests_require=[],
-    packages=['jinxed'],
+    packages=find_packages(exclude=['tests', 'tests.*', 'examples']),
     test_suite='tests',
 
     classifiers=[
