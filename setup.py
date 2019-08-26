@@ -37,7 +37,7 @@ setup(
     author_email='avylove@rockhopper.net',
     maintainer='Avram Lubkin',
     maintainer_email='avylove@rockhopper.net',
-    url='https://github.com/Rockhopper-Technologies/ansicon',
+    url='https://github.com/Rockhopper-Technologies/jinxed',
     license='MPLv2.0',
     zip_safe=False,
     install_requires=INSTALL_REQUIRES,
