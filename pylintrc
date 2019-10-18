@@ -14,6 +14,10 @@ disable=
 [TYPECHECK]
 generated-members=ansicon
 
+[BASIC]
+# Good variable names which should always be accepted, separated by a comma
+good-names=e
+
 [SPELLING]
 
 # Spelling dictionary name. Available dictionaries: en_US (myspell).
