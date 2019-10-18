@@ -15,18 +15,14 @@ that need to access terminfo functions such as tigetstr() and tparm().
 """
 
 import os
-import platform
 
 from setuptools import setup, find_packages
 
 from setup_helpers import get_version, readme
 
-INSTALL_REQUIRES = []
 # Require ansicon for Windows versions older than 10.0.10586
-if platform.system() == 'Windows' and \
-   tuple(int(num) for num in platform.version().split('.')) < (10, 0, 10586):
-    INSTALL_REQUIRES.append('ansicon')
-
+# No way to say that with PEP 508
+INSTALL_REQUIRES = ['ansicon; platform_system == "Windows"']
 
 setup(
     name='jinxed',
