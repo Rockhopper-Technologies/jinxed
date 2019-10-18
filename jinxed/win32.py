@@ -185,22 +185,30 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
 
         # See if the version of Windows supports VTMODE
         elif VTMODE_SUPPORTED:
-            filehandle = msvcrt.get_osfhandle(fd)
-            mode = get_console_mode(filehandle)
-            atexit.register(set_console_mode, filehandle, mode)
-            set_console_mode(filehandle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)
-            term = 'vtwin10'
+            try:
+                filehandle = msvcrt.get_osfhandle(fd)
+                mode = get_console_mode(filehandle)
+            except OSError:
+                term = 'unknown'
+            else:
+                atexit.register(set_console_mode, filehandle, mode)
+                set_console_mode(filehandle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)
+                term = 'vtwin10'
 
         # Currently falling back to Ansicon for older versions of Windows
         elif fallback:
             import ansicon  # pylint: disable=import-error
             ansicon.load()
 
-            filehandle = msvcrt.get_osfhandle(fd)
-            mode = get_console_mode(filehandle)
-            atexit.register(set_console_mode, filehandle, mode)
-            set_console_mode(filehandle, mode ^ ENABLE_WRAP_AT_EOL_OUTPUT)
-            term = 'ansicon'
+            try:
+                filehandle = msvcrt.get_osfhandle(fd)
+                mode = get_console_mode(filehandle)
+            except OSError:
+                term = 'unknown'
+            else:
+                atexit.register(set_console_mode, filehandle, mode)
+                set_console_mode(filehandle, mode ^ ENABLE_WRAP_AT_EOL_OUTPUT)
+                term = 'ansicon'
 
         else:
             term = 'unknown'
