@@ -202,7 +202,7 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
 
         # Currently falling back to Ansicon for older versions of Windows
         elif fallback:
-            import ansicon  # pylint: disable=import-error
+            import ansicon  # pylint: disable=import-error,import-outside-toplevel
             ansicon.load()
 
             try:
