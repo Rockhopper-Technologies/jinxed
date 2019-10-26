@@ -159,17 +159,12 @@ def get_terminal_size(fd):  # pylint:  disable=invalid-name
     Convenience method for getting terminal size
     """
 
-    # Workaround for Blessed until TypeError is added to _height_and_width()
-    try:
-        # In Python 3.3+ we can let the standard library handle this
-        if GTS_SUPPORTED:
-            return os.get_terminal_size(fd)
+    # In Python 3.3+ we can let the standard library handle this
+    if GTS_SUPPORTED:
+        return os.get_terminal_size(fd)
 
-        handle = msvcrt.get_osfhandle(fd)
-        window = get_csbi(handle).srWindow
-    except TypeError as e:
-        raise ValueError(e)
-
+    handle = msvcrt.get_osfhandle(fd)
+    window = get_csbi(handle).srWindow
     return TerminalSize(window.Right - window.Left + 1, window.Bottom - window.Top + 1)
 
 
