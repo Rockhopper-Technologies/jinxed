@@ -1,5 +1,5 @@
 """
-xterm-256colors terminal info
+xterm-256color terminal info
 
 The values are as reported by infocmp on Fedora 30 with ncurses 6.1
 """

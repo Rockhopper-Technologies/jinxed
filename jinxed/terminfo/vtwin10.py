@@ -7,7 +7,7 @@ Information sourced from:
 A best effort has been made, but not all information was available
 """
 
-from .xterm_256colors import BOOL_CAPS, NUM_CAPS, STR_CAPS
+from .xterm_256color import BOOL_CAPS, NUM_CAPS, STR_CAPS
 
 BOOL_CAPS = BOOL_CAPS[:]
 NUM_CAPS = NUM_CAPS.copy()
