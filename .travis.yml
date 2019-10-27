@@ -9,8 +9,7 @@ addons:
 matrix:
   include:
       # Lint on Linux because enchant is unavailable for 64-bit Windows
-    - name: "Lint"
-      python: "3.7"
+    - python: "3.7"
       env: TOXENV=lint
 
     - python: "3.7"
@@ -44,7 +43,7 @@ matrix:
 #      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH TOXENV=codecov
 
 install:
-  - pip3 install tox
+  - pip install tox
 
 script:
   - tox -- --verbose
