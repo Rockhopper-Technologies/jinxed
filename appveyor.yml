@@ -40,7 +40,7 @@ build: off
 
 before_test:
   - "pip install tox"
-  - "if ($env:PYTHON_VERSION = '2.7') {pip install mock}"
+  - ps: "if ($env:PYTHON_VERSION = '2.7') {pip install mock}"
 
 test_script:
   - "tox -e %TOX_ENV%"
