@@ -1,8 +1,8 @@
 .. start-badges
 
-| |supported-platforms|
-| |docs| |appveyor| |travis|
+| |docs| |appveyor| |travis| |codecov|
 | |pypi| |supported-versions| |supported-implementations|
+| |linux| |windows| |mac| |bsd|
 
 .. |docs| image:: https://img.shields.io/readthedocs/jinxed.svg?style=plastic&logo=read-the-docs
     :target: https://jinxed.readthedocs.org
@@ -16,6 +16,10 @@
     :target: https://travis-ci.org/Rockhopper-Technologies/jinxed
     :alt: Travis-CI Build Status
 
+.. |codecov| image:: https://img.shields.io/codecov/c/github/Rockhopper-Technologies/jinxed.svg?style=plastic&logo=codecov
+    :target: https://codecov.io/gh/Rockhopper-Technologies/jinxed
+    :alt: Coverage Status
+
 .. |pypi| image:: https://img.shields.io/pypi/v/jinxed.svg?style=plastic&logo=pypi
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/jinxed
@@ -28,17 +32,34 @@
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/jinxed
 
-.. |supported-platforms| image:: https://img.shields.io/badge/platforms-Windows-blue.svg?style=plastic
-    :alt: Supported platforms
+.. |linux| image:: https://img.shields.io/badge/Linux-yes-success?style=plastic&logo=linux
+    :alt: Linux supported
+    :target: https://pypi.python.org/pypi/jinxed
+
+.. |windows| image:: https://img.shields.io/badge/Windows-yes-success?style=plastic&logo=windows
+    :alt: Windows supported
+    :target: https://pypi.python.org/pypi/jinxed
+
+.. |mac| image:: https://img.shields.io/badge/MacOS-yes-success?style=plastic&logo=apple
+    :alt: MacOS supported
+    :target: https://pypi.python.org/pypi/jinxed
+
+.. |bsd| image:: https://img.shields.io/badge/BSD-yes-success?style=plastic&logo=freebsd
+    :alt: BSD supported
+    :target: https://pypi.python.org/pypi/jinxed
 
 .. end-badges
 
+
 Overview
 ========
-Jinxed is an implementation of a subset of the Python curses library for Windows.
 
-Jinxed is intended primarily for libraries that need to access terminfo functions
-such as tigetstr() and tparm() and was written specifically to support Blessed_ on Windows.
+Jinxed is an implementation of a subset of the Python curses_ library.
+It provides pure Python implementations of terminfo functions such as `tigetstr()`_
+and `tparm()`_ as well as convenience methods for working with Windows terminals.
+
+Jinxed was initially written to support Blessed_ on Windows, but will work on all platforms.
+
 
 Installation
 ============
@@ -47,9 +68,13 @@ Installation
 
     $ pip install jinxed
 
+
 Documentation
 =============
 
 Jinxed documentation can be found on `Read the Docs <https://jinxed.readthedocs.io/en/stable/>`_.
 
 .. _Blessed: https://pypi.org/project/blessed
+.. _curses: https://docs.python.org/library/curses.html
+.. _tigetstr(): https://docs.python.org/library/curses.html#curses.tigetstr
+.. _tparm(): https://docs.python.org/library/curses.html#curses.tparm
