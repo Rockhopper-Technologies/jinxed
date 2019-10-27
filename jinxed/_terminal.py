@@ -18,8 +18,8 @@ import sys
 from jinxed.terminfo import BOOL_CAPS, NUM_CAPS
 from jinxed._util import BASESTRING, error
 
-if platform.system() == 'Windows':
-    from jinxed.win32 import get_term
+if platform.system() == 'Windows':  # pragma: no branch
+    from jinxed.win32 import get_term  # pragma: no cover
 else:
     from jinxed._util import get_term
 

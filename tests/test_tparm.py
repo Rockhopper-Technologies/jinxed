@@ -6,13 +6,12 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
-Test module for tparm
+Test module for jinxed.tparm
 
 There are two main sets of test
 The first checks our tparm() implementation against a known result
 The second only runs if curses can be imported and compares the output of our implementation
 of tparm() with the curses implementation
-
 """
 
 from unittest import skipUnless

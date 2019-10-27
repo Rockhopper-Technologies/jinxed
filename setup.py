@@ -23,6 +23,7 @@ from setup_helpers import get_version, readme
 # Require ansicon for Windows versions older than 10.0.10586
 # No way to say that with PEP 508
 INSTALL_REQUIRES = ['ansicon; platform_system == "Windows"']
+TESTS_REQUIRE = ['mock; python_version < "3.3"']
 
 setup(
     name='jinxed',
@@ -37,7 +38,7 @@ setup(
     license='MPLv2.0',
     zip_safe=False,
     install_requires=INSTALL_REQUIRES,
-    tests_require=[],
+    tests_require=TESTS_REQUIRE,
     packages=find_packages(exclude=['tests', 'tests.*', 'examples']),
     test_suite='tests',
 
