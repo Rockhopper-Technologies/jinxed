@@ -1,46 +1,51 @@
 environment:
 
-  TOX_ENV: "pywin"
-
   matrix:
 
     - PYTHON: "C:\\Python37-x64"
       PYTHON_VERSION: 3.7
       PYTHON_ARCH: 64
+      TOX_ENV: "py37"
 
     - PYTHON: "C:\\Python37"
       PYTHON_VERSION: 3.7
       PYTHON_ARCH: 32
+      TOX_ENV: "py37"
 
     - PYTHON: "C:\\Python36-x64"
       PYTHON_VERSION: 3.6
       PYTHON_ARCH: 64
+      TOX_ENV: "py36"
 
     - PYTHON: "C:\\Python36"
       PYTHON_VERSION: 3.6
       PYTHON_ARCH: 32
+      TOX_ENV: "py36"
 
     - PYTHON: "C:\\Python35-x64"
       PYTHON_VERSION: 3.5
       PYTHON_ARCH: 64
+      TOX_ENV: "py35"
 
     - PYTHON: "C:\\Python35"
       PYTHON_VERSION: 3.5
       PYTHON_ARCH: 32
+      TOX_ENV: "py35"
 
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: 2.7
       PYTHON_ARCH: 64
+      TOX_ENV: "py27"
 
     - PYTHON: "C:\\Python27"
       PYTHON_VERSION: 2.7
       PYTHON_ARCH: 32
+      TOX_ENV: "py27"
 
 build: off
 
 before_test:
   - "pip install tox"
-  - cmd: IF "%PYTHON_VERSION%"=="2.7" (pip install mock)
 
 test_script:
   - "tox -e %TOX_ENV%"
