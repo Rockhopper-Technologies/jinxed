@@ -7,7 +7,6 @@ environment:
     - PYTHON: "C:\\Python37-x64"
       PYTHON_VERSION: 3.7
       PYTHON_ARCH: 64
-      TOX_ENV: "codecov"
 
     - PYTHON: "C:\\Python37"
       PYTHON_VERSION: 3.7
