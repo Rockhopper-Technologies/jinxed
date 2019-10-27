@@ -16,11 +16,17 @@ that need to access terminfo functions such as tigetstr() and tparm().
 
 # flake8: noqa: F401
 
+import platform
+
 from jinxed._keys import *
 from jinxed._tparm import tparm
 from jinxed._terminal import setupterm, tigetflag, tigetnum, tigetstr
 from jinxed._util import error
-from jinxed.win32 import get_term
+
+if platform.system() == 'Windows':
+    from jinxed.win32 import get_term
+else:
+    from jinxed._util import get_term
 
 
 __version__ = '0.5.6'

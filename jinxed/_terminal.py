@@ -12,11 +12,17 @@ a terminal which has been previously setup as well as those functions
 
 import importlib
 import io
+import platform
 import sys
 
 from jinxed.terminfo import BOOL_CAPS, NUM_CAPS
 from jinxed._util import BASESTRING, error
-from jinxed.win32 import get_term
+
+if platform.system() == 'Windows':
+    from jinxed.win32 import get_term
+else:
+    from jinxed._util import get_term
+
 
 TERM = None
 

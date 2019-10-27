@@ -17,16 +17,10 @@ of tparm() with the curses implementation
 
 from unittest import skipUnless
 
+from jinxed._tparm import tparm
+
 from tests import TestCase
 
-# Hack for testing on Linux
-try:
-    from jinxed._tparm import tparm
-except (ImportError, ValueError):
-    import os
-    import sys
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../jinxed'))
-    from _tparm import tparm
 
 try:
     import curses
