@@ -29,7 +29,7 @@ else:
     from jinxed._util import get_term
 
 
-__version__ = '0.5.6'
+__version__ = '1.0.0'
 
 COLOR_BLACK = 0
 COLOR_RED = 1
