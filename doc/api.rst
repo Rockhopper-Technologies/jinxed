@@ -58,7 +58,7 @@ jinxed.win32
 
 .. py:data:: VTMODE_SUPPORTED
 
-  True when the WIndows version is 10.0.10586 or higher
+  True when the Windows version is 10.0.10586 or higher
 
 
 .. py:function:: get_csbi(filehandle=None)
