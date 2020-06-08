@@ -60,4 +60,10 @@ setup(
         'Topic :: Terminals',
     ],
     keywords='terminal console blessed curses',
+    entry_points={
+        'pyinstaller40': [
+            'hook-dirs = jinxed.__pyinstaller:get_hook_dirs',
+            'tests = jinxed.__pyinstaller:get_test_dirs'
+        ]
+    }
 )
