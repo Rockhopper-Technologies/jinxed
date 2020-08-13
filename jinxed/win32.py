@@ -204,6 +204,10 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
         if os.environ.get('ANSICON', None):
             term = 'ansicon'
 
+        # See if Windows Terminal is being used
+        elif os.environ.get('WT_SESSION', None):
+            term = 'vtwin10'
+
         # See if the version of Windows supports VTMODE
         elif VTMODE_SUPPORTED:
             try:
