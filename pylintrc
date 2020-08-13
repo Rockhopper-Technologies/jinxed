@@ -34,6 +34,6 @@ spelling-ignore-words=
     ncurses, noqa,
     pragma, printf,
     regex, reimplementation,
-    setupterm, stdout,
+    setupterm, stderr, stdout,
     terminfo, TestCase, tigetflag, tigetnum, tigetstr, tparm, tty,
     unary, unittest,

@@ -13,6 +13,7 @@ import atexit
 from collections import namedtuple
 import ctypes
 from ctypes import wintypes
+import io
 import msvcrt  # pylint: disable=import-error
 import os
 import platform
@@ -168,6 +169,26 @@ def get_terminal_size(fd):  # pylint:  disable=invalid-name
     return TerminalSize(window.Right - window.Left + 1, window.Bottom - window.Top + 1)
 
 
+def flush_and_set_console(fd, mode):  # pylint:  disable=invalid-name
+    """
+    Reset console to specified mode
+    If the file descriptor is stdout or stderr, attempt to flush first
+    """
+
+    try:
+        if fd in (sys.__stdout__.fileno(), sys.__stderr__.fileno()):
+            sys.__stdout__.flush()
+            sys.__stderr__.flush()
+    except (AttributeError, TypeError, io.UnsupportedOperation):
+        pass
+
+    try:
+        filehandle = msvcrt.get_osfhandle(fd)
+        set_console_mode(filehandle, mode)
+    except OSError:
+        pass
+
+
 def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
     """
     Attempt to determine and enable terminal
@@ -191,7 +212,7 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
             except OSError:
                 term = 'unknown'
             else:
-                atexit.register(set_console_mode, filehandle, mode)
+                atexit.register(flush_and_set_console, fd, mode)
                 set_console_mode(filehandle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)
                 term = 'vtwin10'
 
@@ -206,7 +227,7 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
             except OSError:
                 term = 'unknown'
             else:
-                atexit.register(set_console_mode, filehandle, mode)
+                atexit.register(flush_and_set_console, fd, mode)
                 set_console_mode(filehandle, mode ^ ENABLE_WRAP_AT_EOL_OUTPUT)
                 term = 'ansicon'
 
