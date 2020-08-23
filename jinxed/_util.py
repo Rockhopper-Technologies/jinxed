@@ -31,3 +31,14 @@ def get_term(*args, **kwargs):  # pylint: disable=unused-argument
     """
 
     return os.environ.get('TERM', 'unknown')
+
+
+def raise_from_none(exc):  # pragma: no cover
+    """
+    Convenience function to raise from None in a Python 2/3 compatible manner
+    """
+    raise exc
+
+
+if sys.version_info[0] >= 3:  # pragma: no branch
+    exec('def raise_from_none(exc):\n    raise exc from None')  # pylint: disable=exec-used

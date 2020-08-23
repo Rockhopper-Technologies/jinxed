@@ -16,7 +16,7 @@ import platform
 import sys
 
 from jinxed.terminfo import BOOL_CAPS, NUM_CAPS
-from jinxed._util import BASESTRING, error
+from jinxed._util import BASESTRING, error, raise_from_none
 
 if platform.system() == 'Windows':  # pragma: no branch
     from jinxed.win32 import get_term  # pragma: no cover
@@ -56,7 +56,7 @@ class Terminal(object):
         try:
             self.terminfo = importlib.import_module('jinxed.terminfo.%s' % term.replace('-', '_'))
         except ImportError:
-            raise error('Could not find terminal %s' % term)
+            raise_from_none(error('Could not find terminal %s' % term))
 
     def tigetstr(self, capname):
         """
