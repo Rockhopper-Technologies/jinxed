@@ -217,6 +217,7 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
                 term = 'unknown'
             else:
                 atexit.register(flush_and_set_console, fd, mode)
+                # pylint: disable=unsupported-binary-operation
                 set_console_mode(filehandle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)
                 term = 'vtwin10'
 

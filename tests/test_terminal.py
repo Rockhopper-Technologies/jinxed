@@ -21,7 +21,7 @@ import jinxed.terminfo.xterm
 from tests import TestCase
 
 if sys.version_info[:2] < (3, 3):
-    import mock
+    import mock  # pylint: disable=import-error
 else:
     from unittest import mock  # noqa: F401  # pylint: disable=no-name-in-module
 
