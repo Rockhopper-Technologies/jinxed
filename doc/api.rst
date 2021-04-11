@@ -15,29 +15,15 @@ jinxed
 
 .. py:module:: jinxed
 
-.. py:function:: setupterm([termstr, fd])
+Jinxed is an implementation of a subset of the Python curses library for Windows
 
-  Reimplementation of :py:func:`curses.setupterm`
+.. autofunction:: setupterm
+.. autofunction:: tigetflag
+.. autofunction:: tigetnum
+.. autofunction:: tigetstr
+.. autofunction:: tparm(str[, ...])
+.. autoexception:: error
 
-.. py:function:: tigetflag(capname)
-
-  Reimplementation of :py:func:`curses.tigetflag`
-
-.. py:function:: tigetnum(capname)
-
-  Reimplementation of :py:func:`curses.tigetnum`
-
-.. py:function:: tigetstr(capname)
-
-  Reimplementation of :py:func:`curses.tigetstr`
-
-.. py:function:: tparm(str[, ...])
-
-  Reimplementation of :py:func:`curses.tparm`
-
-.. py:class:: error
-
-  Generic class for Jinxed errors
 
 jinxed.win32
 ------------

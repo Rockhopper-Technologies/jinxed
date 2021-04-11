@@ -86,7 +86,7 @@ class Terminal(object):
 
 def setupterm(term=None, fd=-1):  # pylint: disable=invalid-name
     """
-    Reimplementation of curses.setupterm()
+    Reimplementation of :py:func:`curses.setupterm`
     """
 
     global TERM  # pylint: disable=global-statement
@@ -95,7 +95,7 @@ def setupterm(term=None, fd=-1):  # pylint: disable=invalid-name
 
 def tigetflag(capname):
     """
-    Reimplementation of curses.tigetflag()
+    Reimplementation of :py:func:`curses.tigetflag`
     """
 
     if TERM is None:
@@ -105,7 +105,7 @@ def tigetflag(capname):
 
 def tigetnum(capname):
     """
-    Reimplementation of curses.tigetnum()
+    Reimplementation of :py:func:`curses.tigetnum`
     """
 
     if TERM is None:
@@ -115,7 +115,7 @@ def tigetnum(capname):
 
 def tigetstr(capname):
     """
-    Reimplementation of curses.tigetstr()
+    Reimplementation of :py:func:`curses.tigetstr`
     """
 
     if TERM is None:

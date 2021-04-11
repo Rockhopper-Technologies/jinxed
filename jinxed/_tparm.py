@@ -288,3 +288,4 @@ class TParm(object):  # pylint: disable=useless-object-inheritance
 
 
 tparm = TParm()  # pylint: disable=invalid-name
+"""Reimplementation of :py:func:`curses.tparm`"""
