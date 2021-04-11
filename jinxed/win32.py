@@ -20,6 +20,12 @@ import os
 import platform
 import sys
 
+from jinxed._util import mock, IS_WINDOWS
+
+# Workaround for auto-doc generation on Linux
+if not IS_WINDOWS:
+    ctypes = mock.Mock()  # noqa: F811
+
 LPDWORD = ctypes.POINTER(wintypes.DWORD)
 COORD = wintypes._COORD  # pylint: disable=protected-access
 
@@ -41,7 +47,7 @@ ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
 DISABLE_NEWLINE_AUTO_RETURN = 0x0008
 ENABLE_LVB_GRID_WORLDWIDE = 0x0010
 
-if tuple(int(num) for num in platform.version().split('.')) >= (10, 0, 10586):
+if IS_WINDOWS and tuple(int(num) for num in platform.version().split('.')) >= (10, 0, 10586):
     VTMODE_SUPPORTED = True
     CBREAK_MODE = ENABLE_PROCESSED_INPUT | ENABLE_VIRTUAL_TERMINAL_INPUT
     RAW_MODE = ENABLE_VIRTUAL_TERMINAL_INPUT
@@ -56,7 +62,7 @@ TerminalSize = namedtuple('TerminalSize', ('columns', 'lines'))
 
 class ConsoleScreenBufferInfo(ctypes.Structure):  # pylint: disable=too-few-public-methods
     """
-    CONSOLE_SCREEN_BUFFER_INFO structure
+    Python representation of CONSOLE_SCREEN_BUFFER_INFO structure
     https://docs.microsoft.com/en-us/windows/console/console-screen-buffer-info-str
     """
 
@@ -98,8 +104,16 @@ KERNEL32.GetConsoleScreenBufferInfo.argtypes = (wintypes.HANDLE, CSBIP)
 
 def get_csbi(filehandle=None):
     """
-    Returns a CONSOLE_SCREEN_BUFFER_INFO structure for the given console or stdout
-    filehandle is a Windows filehandle object returned by msvcrt.get_osfhandle()
+    Args:
+        filehandle(int): Windows filehandle object as returned by :py:func:`msvcrt.get_osfhandle`
+
+    Returns:
+        :py:class:`ConsoleScreenBufferInfo`: CONSOLE_SCREEN_BUFFER_INFO_ structure
+
+    Wrapper for GetConsoleScreenBufferInfo_
+
+    If ``filehandle`` is :py:data:`None`, uses the filehandle of :py:data:`sys.__stdout__`.
+
     """
 
     if filehandle is None:
@@ -112,8 +126,15 @@ def get_csbi(filehandle=None):
 
 def get_console_input_encoding():
     """
+    Returns:
+        int: Current console mode
+
+    Raises:
+        OSError: Error calling Windows API
+
     Query for the console input code page and provide an encoding
-    If the code page can not be resolved to a Python encoding, None is returned.
+
+    If the code page can not be resolved to a Python encoding, :py:data:`None` is returned.
     """
 
     encoding = 'cp%d' % KERNEL32.GetConsoleCP()
@@ -128,8 +149,16 @@ def get_console_input_encoding():
 
 def get_console_mode(filehandle):
     """
-    Convenience function for GetConsoleMode
-    filehandle is a Windows filehandle object returned by msvcrt.get_osfhandle()
+    Args:
+        filehandle(int): Windows filehandle object as returned by :py:func:`msvcrt.get_osfhandle`
+
+    Returns:
+        int: Current console mode
+
+    Raises:
+        OSError: Error calling Windows API
+
+    Wrapper for GetConsoleMode_
     """
 
     mode = wintypes.DWORD()
@@ -139,32 +168,63 @@ def get_console_mode(filehandle):
 
 def set_console_mode(filehandle, mode):
     """
-    Convenience function for SetConsoleMode
-    filehandle is a Windows filehandle object returned by msvcrt.get_osfhandle()
+    Args:
+        filehandle(int): Windows filehandle object as returned by :py:func:`msvcrt.get_osfhandle`
+        mode(int): Desired console mode
+
+    Raises:
+        OSError: Error calling Windows API
+
+    Wrapper for SetConsoleMode_
     """
+
     return bool(KERNEL32.SetConsoleMode(filehandle, mode))
 
 
 def setcbreak(filehandle):
     """
-    Convenience function to mimic tty.cbreak() behavior
-    filehandle is a Windows filehandle object returned by msvcrt.get_osfhandle()
+    Args:
+        filehandle(int): Windows filehandle object as returned by :py:func:`msvcrt.get_osfhandle`
+
+    Raises:
+        OSError: Error calling Windows API
+
+    Convenience function which mimics :py:func:`tty.setcbreak` behavior
+
+    All console input options are disabled except ``ENABLE_PROCESSED_INPUT``
+    and, if supported, ``ENABLE_VIRTUAL_TERMINAL_INPUT``
     """
-    return set_console_mode(filehandle, CBREAK_MODE)
+
+    set_console_mode(filehandle, CBREAK_MODE)
 
 
 def setraw(filehandle):
     """
-    Convenience function for mimic tty.raw() behavior
-    filehandle is a Windows filehandle object returned by msvcrt.get_osfhandle()
+    Args:
+        filehandle(int): Windows filehandle object as returned by :py:func:`msvcrt.get_osfhandle`
+
+    Raises:
+        OSError: Error calling Windows API
+
+    Convenience function which mimics :py:func:`tty.setraw` behavior
+
+    All console input options are disabled except, if supported, ``ENABLE_VIRTUAL_TERMINAL_INPUT``
     """
-    return set_console_mode(filehandle, RAW_MODE)
+
+    set_console_mode(filehandle, RAW_MODE)
 
 
 def enable_vt_mode(filehandle=None):
     """
-    Enables virtual terminal processing mode for the given console or stdout
-    filehandle is a Windows filehandle object returned by msvcrt.get_osfhandle()
+    Args:
+        filehandle(int): Windows filehandle object as returned by :py:func:`msvcrt.get_osfhandle`
+
+    Raises:
+        OSError: Error calling Windows API
+
+    Enables virtual terminal processing mode for the given console
+
+    If ``filehandle`` is :py:data:`None`, uses the filehandle of :py:data:`sys.__stdout__`.
     """
 
     if filehandle is None:
@@ -177,7 +237,16 @@ def enable_vt_mode(filehandle=None):
 
 def get_terminal_size(fd):  # pylint:  disable=invalid-name
     """
-    Convenience method for getting terminal size
+    Args:
+        fd(int): Python file descriptor
+
+    Returns:
+        :py:class:`os.terminal_size`: Named tuple representing terminal size
+
+    Convenience function for getting terminal size
+
+    In Python 3.3 and above, this is a wrapper for :py:func:`os.get_terminal_size`.
+    In older versions of Python, this function calls GetConsoleScreenBufferInfo_.
     """
 
     # In Python 3.3+ we can let the standard library handle this
@@ -191,8 +260,13 @@ def get_terminal_size(fd):  # pylint:  disable=invalid-name
 
 def flush_and_set_console(fd, mode):  # pylint:  disable=invalid-name
     """
-    Reset console to specified mode
-    If the file descriptor is stdout or stderr, attempt to flush first
+    Args:
+        filehandle(int): Windows filehandle object as returned by :py:func:`msvcrt.get_osfhandle`
+        mode(int): Desired console mode
+
+    Attempts to set console to specified mode, but will not raise on failure
+
+    If the file descriptor is STDOUT or STDERR, attempts to flush first
     """
 
     try:
@@ -211,8 +285,24 @@ def flush_and_set_console(fd, mode):  # pylint:  disable=invalid-name
 
 def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
     """
-    Attempt to determine and enable terminal
-    If fallback is True, the fallback will be enabled when no other terminal can be determined
+    Args:
+        fd(int): Python file descriptor
+        fallback(bool): Use fallback terminal type if type can not be determined
+    Returns:
+        str: Terminal type
+
+    Attempts to determine and enable the current terminal type
+
+    The current logic is:
+
+        - If TERM is defined in the environment, the value is returned
+        - Else, if ANSICON is defined in the environment, ``'ansicon'`` is returned
+        - Else, if virtual terminal mode is natively supported,
+          it is enabled and ``'vtwin10'`` is returned
+        - Else, if ``fallback`` is ``True``, Ansicon is loaded, and ``'ansicon'`` is returned
+        - If no other conditions are satisfied, ``'unknown'`` is returned
+
+    This logic may change in the future as additional terminal types are added.
     """
 
     # First try TERM

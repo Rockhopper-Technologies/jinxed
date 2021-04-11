@@ -25,15 +25,16 @@ spelling-dict=en_US
 
 # List of comma separated words that should not be checked.
 spelling-ignore-words=
-    acsc, ansicon, API, Avram,
+    acsc, ansicon, API, args, Avram,
+    bool,
     cbreak,
     fd, filehandle,
     Lubkin,
     MPL,
     infocmp,
-    ncurses, noqa,
+    natively, ncurses, noqa,
     pragma, printf,
     regex, reimplementation,
-    setupterm, stderr, stdout,
-    terminfo, TestCase, tigetflag, tigetnum, tigetstr, tparm, tty,
+    setupterm, stderr, stdout, str,
+    terminfo, TestCase, tigetflag, tigetnum, tigetstr, tparm, tty, tuple,
     unary, unittest,

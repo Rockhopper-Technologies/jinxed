@@ -4,6 +4,8 @@ filehandle
 natively
 programmatically
 reimplementation
+stderr
+stdout
 terminfo
 tigetstr
 tparm
