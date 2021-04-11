@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 Avram Lubkin, All Rights Reserved
+# Copyright 2019 - 2021 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,6 +10,7 @@ Support functions and wrappers for calls to the Windows API
 """
 
 import atexit
+import codecs
 from collections import namedtuple
 import ctypes
 from ctypes import wintypes
@@ -82,6 +83,9 @@ def _check_bool(result, func, args):  # pylint: disable=unused-argument
 
 KERNEL32 = ctypes.WinDLL('kernel32', use_last_error=True)
 
+KERNEL32.GetConsoleCP.errcheck = _check_bool
+KERNEL32.GetConsoleCP.argtypes = tuple()
+
 KERNEL32.GetConsoleMode.errcheck = _check_bool
 KERNEL32.GetConsoleMode.argtypes = (wintypes.HANDLE, LPDWORD)
 
@@ -104,6 +108,22 @@ def get_csbi(filehandle=None):
     csbi = ConsoleScreenBufferInfo()
     KERNEL32.GetConsoleScreenBufferInfo(filehandle, ctypes.byref(csbi))
     return csbi
+
+
+def get_console_input_encoding():
+    """
+    Query for the console input code page and provide an encoding
+    If the code page can not be resolved to a Python encoding, None is returned.
+    """
+
+    encoding = 'cp%d' % KERNEL32.GetConsoleCP()
+
+    try:
+        codecs.lookup(encoding)
+    except LookupError:
+        return None
+
+    return encoding
 
 
 def get_console_mode(filehandle):
