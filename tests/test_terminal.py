@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 Avram Lubkin, All Rights Reserved
+# Copyright 2019 - 2021 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -17,13 +17,9 @@ import jinxed
 import jinxed.has_key
 import jinxed._terminal
 import jinxed.terminfo.xterm
+from jinxed._util import mock
 
 from tests import TestCase
-
-if sys.version_info[:2] < (3, 3):
-    import mock  # pylint: disable=import-error
-else:
-    from unittest import mock  # noqa: F401  # pylint: disable=no-name-in-module
 
 # pylint: disable=protected-access
 
