@@ -47,7 +47,7 @@ jinxed.win32
 
     True when the Windows version is 10.0.10586 or higher
 
-  .. autoclass:: ConsoleScreenBufferInfo
+  .. py:class:: ConsoleScreenBufferInfo
 
     Python representation of a CONSOLE_SCREEN_BUFFER_INFO_ object
 
