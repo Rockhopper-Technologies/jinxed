@@ -12,8 +12,8 @@
     :target: https://ci.appveyor.com/project/Rockhopper-Technologies/jinxed
     :alt: Appveyor Build Status
 
-.. |travis| image:: https://img.shields.io/travis/Rockhopper-Technologies/jinxed.svg?style=plastic&logo=travis
-    :target: https://travis-ci.org/Rockhopper-Technologies/jinxed
+.. |travis| image:: https://img.shields.io/travis/com/Rockhopper-Technologies/jinxed.svg?style=plastic&logo=travis
+    :target: https://travis-ci.com/Rockhopper-Technologies/jinxed
     :alt: Travis-CI Build Status
 
 .. |codecov| image:: https://img.shields.io/codecov/c/github/Rockhopper-Technologies/jinxed.svg?style=plastic&logo=codecov
