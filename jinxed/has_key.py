@@ -2,7 +2,7 @@
 key mapping numeric to cap
 """
 
-import jinxed._keys as _keys
+from jinxed import _keys
 
 
 _capability_names = {  # pylint: disable=invalid-name
