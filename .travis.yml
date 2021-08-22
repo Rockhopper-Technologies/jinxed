@@ -36,8 +36,8 @@ matrix:
     - python: 2.7
       env: TOXENV=py27
 
-    - python: pypy
-      env: TOXENV=pypy
+    - python: pypy2
+      env: TOXENV=pypy2
 
     - python: pypy3
       env: TOXENV=pypy3
