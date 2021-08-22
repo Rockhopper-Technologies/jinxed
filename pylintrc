@@ -9,7 +9,8 @@ max-line-length=100
 disable=
     # Currently can't disable per file https://github.com/PyCQA/pylint/issues/214
     duplicate-code,
-    useless-object-inheritance,
+    useless-object-inheritance,  # Python 2
+    redundant-u-string-prefix,  # Python 2
 
 [TYPECHECK]
 generated-members=ansicon
