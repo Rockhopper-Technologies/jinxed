@@ -8,6 +8,7 @@ max-line-length=100
 [MESSAGES CONTROL]
 disable=
     # Currently can't disable per file https://github.com/PyCQA/pylint/issues/214
+    consider-using-f-string,  # Python 2
     duplicate-code,
     useless-object-inheritance,  # Python 2
     redundant-u-string-prefix,  # Python 2
