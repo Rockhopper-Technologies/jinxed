@@ -32,7 +32,7 @@ class Terminal(object):
     Persistent terminal object for functions that require a previously configured state
     """
 
-    def __init__(self, term=None, fd=-1):
+    def __init__(self, term=None, fd=-1):  # pylint: disable=invalid-name
 
         # Type check for term
         if term is not None and not isinstance(term, BASESTRING):
