@@ -129,9 +129,6 @@ def get_console_input_encoding():
     Returns:
         int: Current console mode
 
-    Raises:
-        OSError: Error calling Windows API
-
     Query for the console input code page and provide an encoding
 
     If the code page can not be resolved to a Python encoding, :py:data:`None` is returned.
