@@ -137,7 +137,10 @@ def get_console_input_encoding():
     If the code page can not be resolved to a Python encoding, :py:data:`None` is returned.
     """
 
-    encoding = 'cp%d' % KERNEL32.GetConsoleCP()
+    try:
+        encoding = 'cp%d' % KERNEL32.GetConsoleCP()
+    except OSError:
+        return None
 
     try:
         codecs.lookup(encoding)
