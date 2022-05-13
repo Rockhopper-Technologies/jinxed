@@ -14,6 +14,7 @@ The second only runs if curses can be imported and compares the output of our im
 of tparm() with the curses implementation
 """
 
+import os
 from unittest import skipUnless
 
 from jinxed._tparm import tparm
@@ -24,9 +25,17 @@ from tests import TestCase
 try:
     import curses
     CURSES = True
-    curses.setupterm()
 except ImportError:
     CURSES = False
+
+if CURSES:
+    TERM = os.environ.get('TERM', 'xterm')
+    if TERM == 'dumb':
+        TERM = 'xterm'
+    try:
+        curses.setupterm(TERM)
+    except curses.error:
+        CURSES = False
 
 
 TESTS = (('literal_percent', (b'%%',), b'%'),
