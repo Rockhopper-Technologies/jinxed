@@ -79,9 +79,7 @@ class Terminal(object):
 
         if capname in self.terminfo.BOOL_CAPS:
             return 1
-        if capname in BOOL_CAPS:
-            return 0
-        return -1
+        return 0 if capname in BOOL_CAPS else -1
 
 
 def setupterm(term=None, fd=-1):  # pylint: disable=invalid-name

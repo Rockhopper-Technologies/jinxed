@@ -76,9 +76,9 @@ class TParm(object):  # pylint: disable=useless-object-inheritance
                                 type(param).__name__)
         self.params = list(params)
 
-        static = kwargs.get('static', None)
+        static = kwargs.get('static')
         self.static = {} if static is None else static
-        dynamic = kwargs.get('static', None)
+        dynamic = kwargs.get('static')
         self.dynamic = {} if dynamic is None else dynamic
 
     def __call__(self, string, *params):

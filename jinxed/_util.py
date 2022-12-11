@@ -9,6 +9,7 @@
 Utility objects
 """
 
+
 import os
 import platform
 import sys
@@ -18,11 +19,8 @@ if sys.version_info[:2] < (3, 3):  # pragma: no branch
 else:
     from unittest import mock  # noqa: F401  # pylint: disable=unused-import
 
-if sys.version_info[0] < 3:  # pragma: no branch
-    BASESTRING = basestring  # pragma: no cover  # noqa: F821 # pylint: disable=undefined-variable
-else:
-    BASESTRING = str
-
+# pylint: disable-next=undefined-variable
+BASESTRING = basestring if sys.version_info[0] < 3 else str  # noqa: F821
 IS_WINDOWS = platform.system() == 'Windows'
 
 
