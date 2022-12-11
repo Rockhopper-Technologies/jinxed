@@ -177,9 +177,7 @@ class TestTParmCurses(TestCase):
         """
         Ensure dynamic variables persist between calls and compare to curses.tparm()
         """
-        tparm(b'%p1%Px', 4)
-        curses.tparm(b'%p1%Px', 4)
-        self.assertEqual(tparm(b'%gx%d'), curses.tparm(b'%gx%d'))
+        self.assertEqual(tparm(b'%p1%Px%gx%d'), curses.tparm(b'%p1%Px%gx%d'))
 
     def test_static_persistance(self):
         """
