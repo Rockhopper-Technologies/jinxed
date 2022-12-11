@@ -22,10 +22,18 @@ jobs:
 
       matrix:
         os: ['ubuntu-latest']
-        python-version: ['3.10']
+        python-version: ['3.11']
         toxenv: [lint, docs, codecov]
 
         include:
+
+          - python-version: '3.11'
+            toxenv: py311
+            os: windows-latest
+
+          - python-version: '3.10'
+            toxenv: py310
+            os: ubuntu-latest
 
           - python-version: '3.10'
             toxenv: py310
@@ -57,7 +65,7 @@ jobs:
 
           - python-version: 3.6
             toxenv: py36
-            os: ubuntu-latest
+            os: ubuntu-20.04
 
           - python-version: 3.6
             toxenv: py36
@@ -65,7 +73,7 @@ jobs:
 
           - python-version: 3.5
             toxenv: py35
-            os: ubuntu-latest
+            os: ubuntu-20.04
 
           - python-version: 3.5
             toxenv: py35
@@ -87,21 +95,20 @@ jobs:
             toxenv: pypy2
             os: windows-latest
 
-          - python-version: pypy3
+          - python-version: pypy-3.9
             toxenv: pypy3
             os: ubuntu-latest
 
-          # Disabling this because the oldest gets used instead of the latest
-          # - python-version: pypy3
-          #   toxenv: pypy3
-          #   os: windows-latest
+          - python-version: pypy-3.9
+            toxenv: pypy3
+            os: windows-latest
 
-          - python-version: '3.11-dev'
+          - python-version: '3.12-dev'
             optional: true
             toxenv: py311
             os: ubuntu-latest
 
-          - python-version: '3.11-dev'
+          - python-version: '3.12-dev'
             optional: true
             toxenv: py311
             os: windows-latest
@@ -110,16 +117,16 @@ jobs:
       TOXENV: ${{ matrix.toxenv }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install enchant
         run: |
           sudo apt-get update
-          sudo apt-get install -y enchant aspell aspell-en
+          sudo apt-get install -y enchant-2 aspell aspell-en
         if: ${{ matrix.toxenv == 'lint' }}
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
