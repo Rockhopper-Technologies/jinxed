@@ -78,10 +78,10 @@ class TParm(object):  # pylint: disable=useless-object-inheritance
 
         static = kwargs.get('static')
         self.static = {} if static is None else static
-        dynamic = kwargs.get('static')
-        self.dynamic = {} if dynamic is None else dynamic
+        self.dynamic = {}
 
     def __call__(self, string, *params):
+        self.dynamic = {}  # As of ncurses 6.3, dynamic variables do not persist between calls
         return self.child(*params).parse(string)
 
     def _literal_percent(self, group):  # pylint: disable=unused-argument

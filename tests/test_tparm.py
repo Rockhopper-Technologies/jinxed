@@ -136,17 +136,20 @@ class TestTParmExamples(TestCase):
 
     def test_dynamic_persistance(self):
         """
-        Ensure dynamic variables persist between calls
+        Ensure dynamic variables do not persist between calls
         """
+
+        self.assertEqual(tparm(b'%gx%d'), b'0')
         tparm(b'%p1%Px', 4)
-        self.assertEqual(tparm(b'%gx%d'), b'4')
+        self.assertEqual(tparm(b'%gx%d'), b'0')
 
     def test_static_persistance(self):
         """
         Ensure static variables persist between calls
         """
-        tparm(b'%p1%PX', 4)
-        self.assertEqual(tparm(b'%gX%d'), b'4')
+        self.assertEqual(tparm(b'%gY%d'), b'0')
+        tparm(b'%p1%PY', 4)
+        self.assertEqual(tparm(b'%gY%d'), b'4')
 
     @ classmethod
     def set_func(cls, desc, args, result):
@@ -175,14 +178,19 @@ class TestTParmCurses(TestCase):
 
     def test_dynamic_persistance(self):
         """
-        Ensure dynamic variables persist between calls and compare to curses.tparm()
+        Ensure dynamic variables do not persist between calls and compare to curses.tparm()
         """
-        self.assertEqual(tparm(b'%p1%Px%gx%d'), curses.tparm(b'%p1%Px%gx%d'))
+        tparm(b'%p1%Px', 4)
+        curses.tparm(b'%p1%Px', 4)
+        self.assertEqual(tparm(b'%gx%d'), b'0')
+        if hasattr(curses, 'ncurses_version') and curses.ncurses_version[:2] < (6, 3):
+            self.assertEqual(tparm(b'%gx%d'), curses.tparm(b'%gx%d'))
 
     def test_static_persistance(self):
         """
         Ensure static variables persist between calls and compare to curses.tparm()
         """
+        self.assertEqual(tparm(b'%gX%d'), curses.tparm(b'%gX%d'))
         tparm(b'%p1%PX', 4)
         curses.tparm(b'%p1%PX', 4)
         self.assertEqual(tparm(b'%gX%d'), curses.tparm(b'%gX%d'))
