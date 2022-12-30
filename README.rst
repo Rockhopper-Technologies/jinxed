@@ -1,6 +1,6 @@
 .. start-badges
 
-| |docs| |appveyor| |gh_actions| |codecov|
+| |docs| |gh_actions| |codecov|
 | |pypi| |supported-versions| |supported-implementations|
 | |linux| |windows| |mac| |bsd|
 
@@ -12,7 +12,7 @@
     :target: https://ci.appveyor.com/project/Rockhopper-Technologies/jinxed
     :alt: Appveyor Build Status
 
-.. |gh_actions| image:: https://img.shields.io/github/workflow/status/Rockhopper-Technologies/jinxed/Tests?event=push&logo=github-actions&style=plastic
+.. |gh_actions| image:: https://img.shields.io/github/actions/workflow/status/Rockhopper-Technologies/jinxed/tests.yml?event=push&logo=github-actions&style=plastic
     :target: https://github.com/Rockhopper-Technologies/jinxed/actions/workflows/tests.yml
     :alt: GitHub Actions Status
 
