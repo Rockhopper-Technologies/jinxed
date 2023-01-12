@@ -105,12 +105,12 @@ jobs:
 
           - python-version: '3.12-dev'
             optional: true
-            toxenv: py311
+            toxenv: py312
             os: ubuntu-latest
 
           - python-version: '3.12-dev'
             optional: true
-            toxenv: py311
+            toxenv: py312
             os: windows-latest
 
     env:
