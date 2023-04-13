@@ -23,7 +23,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest']
         python-version: ['3.11']
-        toxenv: [lint, docs, codecov]
+        toxenv: [lint, docs, coverage]
 
         include:
 
@@ -134,4 +134,8 @@ jobs:
         run: pip install tox
 
       - name: Run tox
-        run: tox
+        run: tox -- --verbose
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        if: ${{ matrix.toxenv == 'coverage' }}
