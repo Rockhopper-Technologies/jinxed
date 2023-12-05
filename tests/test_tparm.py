@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 Avram Lubkin, All Rights Reserved
+# Copyright 2019 - 2023 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -112,6 +112,7 @@ TESTS = (('literal_percent', (b'%%',), b'%'),
 
 KNOWN_FAILURES = ('printf_d2',  # Seems to be a bug in curses printf implementation
                   # Most tparm implementations only accept integers
+                  'printf_s1',
                   'printf_s2',
                   'printf_s3',
                   'push_len',
