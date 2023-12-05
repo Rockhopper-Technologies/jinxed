@@ -7,128 +7,67 @@ on:
   schedule:
     # Every Thursday at 1 AM
     - cron: '0 1 * * 4'
+  workflow_dispatch:
 
 jobs:
 
   Tests:
     runs-on: ${{ matrix.os || 'ubuntu-latest' }}
-    name: >
-      ${{ startsWith(matrix.toxenv, 'py') && matrix.python-version || format('{0} ({1})', matrix.toxenv, matrix.python-version) }}
-      ${{ startsWith(matrix.os, 'windows') && '(Windows)' || startsWith(matrix.os, 'ubuntu') && '(Ubuntu)' || ''  }}
-      ${{ matrix.optional && '[OPTIONAL]' }}
+    container: ${{ matrix.container }}
+    name: ${{ (matrix.toxenv && !startsWith(matrix.toxenv, 'py')) && format('{0} ({1})', matrix.toxenv, matrix.python-version) || matrix.python-version }} ${{ matrix.optional && '[OPTIONAL]' }}
+    continue-on-error: ${{ matrix.optional || false }}
 
     strategy:
       fail-fast: false
 
       matrix:
-        os: ['ubuntu-latest']
-        python-version: ['3.11']
-        toxenv: [lint, docs, coverage]
-
+        python-version:  ['3.7', '3.8', '3.9', '3.10', '3.11']
         include:
 
-          - python-version: '3.11'
-            toxenv: py311
-            os: windows-latest
+          - python-version: '3.12'
+            toxenv: lint
 
-          - python-version: '3.10'
-            toxenv: py310
-            os: ubuntu-latest
+          - python-version: '3.12'
+            toxenv: docs
 
-          - python-version: '3.10'
-            toxenv: py310
-            os: windows-latest
+          - python-version: '3.13-dev'
+            optional: true
+            toxenv: py313
+            toxpython: '3.13'
 
-          - python-version: 3.9
-            toxenv: py39
-            os: ubuntu-latest
+          - python-version: '3.12'
+            toxenv: coverage
 
-          - python-version: 3.9
-            toxenv: py39
-            os: windows-latest
-
-          - python-version: 3.8
-            toxenv: py38
-            os: ubuntu-latest
-
-          - python-version: 3.8
-            toxenv: py38
-            os: windows-latest
-
-          - python-version: 3.7
-            toxenv: py37
-            os: ubuntu-latest
-
-          - python-version: 3.7
-            toxenv: py37
-            os: windows-latest
-
-          - python-version: 3.6
+          - python-version: '3.6'
             toxenv: py36
             os: ubuntu-20.04
 
-          - python-version: 3.6
-            toxenv: py36
-            os: windows-latest
-
-          - python-version: 3.5
+          - python-version: '3.5'
             toxenv: py35
             os: ubuntu-20.04
 
-          - python-version: 3.5
-            toxenv: py35
-            os: windows-latest
-
-          - python-version: 2.7
+          - python-version: '2.7'
+            container: {image: 'python:2.7.18-buster'}
             toxenv: py27
-            os: ubuntu-latest
-
-          - python-version: 2.7
-            toxenv: py27
-            os: windows-latest
 
           - python-version: pypy-2.7
-            toxenv: pypy2
-            os: ubuntu-latest
-
-          - python-version: pypy-2.7
-            toxenv: pypy2
-            os: windows-latest
+            toxenv: pypy27
 
           - python-version: pypy-3.9
-            toxenv: pypy3
-            os: ubuntu-latest
-
-          - python-version: pypy-3.9
-            toxenv: pypy3
-            os: windows-latest
-
-          - python-version: '3.12-dev'
-            optional: true
-            toxenv: py312
-            os: ubuntu-latest
-
-          - python-version: '3.12-dev'
-            optional: true
-            toxenv: py312
-            os: windows-latest
+            toxenv: pypy39
 
     env:
-      TOXENV: ${{ matrix.toxenv }}
+      TOXENV: ${{ matrix.toxenv || format('py{0}', matrix.python-version) }}
+      TOXPYTHON: python${{ matrix.toxpython || matrix.python-version }}
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Install enchant
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y enchant-2 aspell aspell-en
-        if: ${{ matrix.toxenv == 'lint' }}
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+        if: ${{ matrix.python-version != '2.7' }}
 
       - name: Install tox
         run: pip install tox
