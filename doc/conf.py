@@ -53,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Jinxed'
-copyright = '2019, Avram Lubkin'
+copyright = '2019 - 2021, Avram Lubkin'
 author = 'Avram Lubkin'
 
 # The version info for the project you're documenting, acts as replacement for
