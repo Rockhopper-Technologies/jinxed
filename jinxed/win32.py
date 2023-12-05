@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 - 2022 Avram Lubkin, All Rights Reserved
+# Copyright 2019 - 2023 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -90,7 +90,7 @@ def _check_bool(result, func, args):  # pylint: disable=unused-argument
 KERNEL32 = ctypes.WinDLL('kernel32', use_last_error=True)
 
 KERNEL32.GetConsoleCP.errcheck = _check_bool
-KERNEL32.GetConsoleCP.argtypes = tuple()
+KERNEL32.GetConsoleCP.argtypes = ()
 
 KERNEL32.GetConsoleMode.errcheck = _check_bool
 KERNEL32.GetConsoleMode.argtypes = (wintypes.HANDLE, LPDWORD)
