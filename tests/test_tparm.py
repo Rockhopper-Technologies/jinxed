@@ -152,7 +152,7 @@ class TestTParmExamples(TestCase):
         tparm(b'%p1%PY', 4)
         self.assertEqual(tparm(b'%gY%d'), b'4')
 
-    @ classmethod
+    @classmethod
     def set_func(cls, desc, args, result):
         """
         Create a test method comparing the result of tparm() and an expected result

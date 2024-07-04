@@ -25,7 +25,7 @@ class TestTermInfo(TestCase):
     Validate terminfo
     """
 
-    @ classmethod
+    @classmethod
     def set_func(cls, term):
         """
         Create a test method checking for required attributes
