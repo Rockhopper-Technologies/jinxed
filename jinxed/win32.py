@@ -47,6 +47,11 @@ ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
 DISABLE_NEWLINE_AUTO_RETURN = 0x0008
 ENABLE_LVB_GRID_WORLDWIDE = 0x0010
 
+# WaitForSingleObject return values and constants
+WAIT_OBJECT_0 = 0x00000000
+WAIT_TIMEOUT = 0x00000102
+INFINITE = 0xFFFFFFFF
+
 if IS_WINDOWS and tuple(int(num) for num in platform.version().split('.')) >= (10, 0, 10586):
     VTMODE_SUPPORTED = True
     CBREAK_MODE = ENABLE_PROCESSED_INPUT | ENABLE_VIRTUAL_TERMINAL_INPUT
@@ -100,6 +105,9 @@ KERNEL32.SetConsoleMode.argtypes = (wintypes.HANDLE, wintypes.DWORD)
 
 KERNEL32.GetConsoleScreenBufferInfo.errcheck = _check_bool
 KERNEL32.GetConsoleScreenBufferInfo.argtypes = (wintypes.HANDLE, CSBIP)
+
+KERNEL32.WaitForSingleObject.argtypes = (wintypes.HANDLE, wintypes.DWORD)
+KERNEL32.WaitForSingleObject.restype = wintypes.DWORD
 
 
 def get_csbi(filehandle=None):
@@ -359,3 +367,21 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
             term = 'unknown'
 
     return term
+
+
+def wait_for_single_object(handle, timeout_ms):
+    """
+    Args:
+        handle(int): Windows handle object as returned by :py:func:`msvcrt.get_osfhandle`
+        timeout_ms(int): Timeout in milliseconds, or INFINITE for no timeout
+
+    Returns:
+        int: WAIT_OBJECT_0 if signaled, WAIT_TIMEOUT if timed out, or other wait result
+
+    Wrapper for WaitForSingleObject_
+
+    .. _WaitForSingleObject:
+        https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+    """
+
+    return KERNEL32.WaitForSingleObject(handle, timeout_ms)
