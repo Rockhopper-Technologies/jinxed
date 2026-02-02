@@ -369,38 +369,19 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
     return term
 
 
-def wait_for_single_object(handle, timeout_ms):
-    """
-    Args:
-        handle(int): Windows handle object as returned by :py:func:`msvcrt.get_osfhandle`
-        timeout_ms(int): Timeout in milliseconds, or INFINITE for no timeout
-
-    Returns:
-        int: WAIT_OBJECT_0 if signaled, WAIT_TIMEOUT if timed out, or other wait result
-
-    Wrapper for WaitForSingleObject_
-
-    .. _WaitForSingleObject:
-        https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
-    """
-
-    return KERNEL32.WaitForSingleObject(handle, timeout_ms)
-
-
 def kbhit(fd=None, timeout=None):
     """
     Args:
         fd(int): Python file descriptor for keyboard input (e.g., sys.stdin.fileno()).
-            If None, only uses msvcrt.kbhit() without efficient waiting.
+            If None, uses the file descriptor of :py:data:`sys.__stdin__`.
         timeout(float): Timeout in seconds. None for blocking indefinitely,
             0 for non-blocking, positive number for timeout in seconds.
 
     Returns:
         bool: True if a keypress is available to be read, False otherwise.
 
-    Efficient keyboard hit detection using WaitForSingleObject.
+    A more efficient kbhit() using WaitForSingleObject.
 
-    This function provides Windows-compatible select()-like behavior for console input.
     Instead of busy-polling with sleep(), it uses WaitForSingleObject to efficiently
     wait for keyboard input, significantly reducing CPU usage.
 
@@ -425,9 +406,9 @@ def kbhit(fd=None, timeout=None):
     if msvcrt.kbhit():
         return True
 
-    # If no fd provided, can only do polling fallback
+    # If no fd provided, use __stdin__
     if fd is None:
-        return _kbhit_poll(timeout)
+        fd = sys.__stdin__.fileno()
 
     # Get the console input handle for WaitForSingleObject
     handle = msvcrt.get_osfhandle(fd)
@@ -440,30 +421,8 @@ def kbhit(fd=None, timeout=None):
     else:
         wait_ms = int(timeout * 1000)
 
-    # Efficient wait using Windows API (like select() on Unix)
-    result = wait_for_single_object(handle, wait_ms)
+    # Efficient wait using Windows API
+    result = KERNEL32.WaitForSingleObject(handle, wait_ms)
     if result == WAIT_OBJECT_0:
         return msvcrt.kbhit()  # Double-check after wait
-    return False
-
-
-def _kbhit_poll(timeout):
-    """
-    Fallback polling implementation for kbhit when fd is not available.
-
-    Args:
-        timeout(float): Timeout in seconds.
-
-    Returns:
-        bool: True if a keypress is available, False otherwise.
-    """
-    import time
-
-    end = time.time() + (timeout or 0)
-    while True:
-        if msvcrt.kbhit():
-            return True
-        if timeout is not None and end < time.time():
-            break
-        time.sleep(0.001)
     return False
