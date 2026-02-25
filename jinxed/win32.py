@@ -47,11 +47,6 @@ ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
 DISABLE_NEWLINE_AUTO_RETURN = 0x0008
 ENABLE_LVB_GRID_WORLDWIDE = 0x0010
 
-# WaitForSingleObject return values and constants
-WAIT_OBJECT_0 = 0x00000000
-WAIT_TIMEOUT = 0x00000102
-INFINITE = 0xFFFFFFFF
-
 if IS_WINDOWS and tuple(int(num) for num in platform.version().split('.')) >= (10, 0, 10586):
     VTMODE_SUPPORTED = True
     CBREAK_MODE = ENABLE_PROCESSED_INPUT | ENABLE_VIRTUAL_TERMINAL_INPUT
@@ -380,10 +375,16 @@ def kbhit(fd=None, timeout=None):
     Returns:
         bool: True if a keypress is available to be read, False otherwise.
 
-    A more efficient kbhit() using WaitForSingleObject.
+    Raises:
+        ValueError: If timeout is negative
+        OSError: If WaitForSingleObject fails
 
-    Instead of busy-polling with sleep(), it uses WaitForSingleObject to efficiently
+    Efficient keyboard hit detection using WaitForSingleObject_.
+
+    Instead of busy-polling with sleep(), uses WaitForSingleObject to efficiently
     wait for keyboard input, significantly reducing CPU usage.
+
+    Supported on Windows XP / Windows Server 2003 or above.
 
     Example usage::
 
@@ -401,28 +402,26 @@ def kbhit(fd=None, timeout=None):
         # Block indefinitely until input
         if win32.kbhit(sys.stdin.fileno(), timeout=None):
             char = msvcrt.getwch()
-    """
-    # Quick check first - if data is already available, return immediately
-    if msvcrt.kbhit():
-        return True
 
-    # If no fd provided, use __stdin__
+    .. _WaitForSingleObject:
+        https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+    """
+
     if fd is None:
         fd = sys.__stdin__.fileno()
 
-    # Get the console input handle for WaitForSingleObject
-    handle = msvcrt.get_osfhandle(fd)
+    if timeout is not None and timeout < 0:
+        raise ValueError('timeout must be non-negative')
 
-    # Convert timeout to milliseconds for Windows API
-    if timeout is None:
-        wait_ms = INFINITE
-    elif timeout <= 0:
-        return False  # Non-blocking, already checked above
-    else:
-        wait_ms = int(timeout * 1000)
+    if timeout is not None and timeout <= 0:
+        return False
 
-    # Efficient wait using Windows API
-    result = KERNEL32.WaitForSingleObject(handle, wait_ms)
-    if result == WAIT_OBJECT_0:
-        return msvcrt.kbhit()  # Double-check after wait
-    return False
+    result = KERNEL32.WaitForSingleObject(
+        msvcrt.get_osfhandle(fd),
+        0xFFFFFFFF if timeout is None else int(1000 * timeout),
+    )
+
+    if result == 0xFFFFFFFF:  # WAIT_FAILED
+        raise ctypes.WinError(ctypes.get_last_error())
+
+    return result == 0x00000000  # WAIT_OBJECT_0
