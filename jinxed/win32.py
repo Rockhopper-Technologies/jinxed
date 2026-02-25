@@ -5,6 +5,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+# pylint: disable=too-few-public-methods
 """
 Support functions and wrappers for calls to the Windows API
 """
@@ -19,6 +20,7 @@ import msvcrt  # pylint: disable=import-error
 import os
 import platform
 import sys
+import time
 
 from jinxed._util import mock, IS_WINDOWS
 
@@ -59,8 +61,7 @@ else:
 GTS_SUPPORTED = hasattr(os, 'get_terminal_size')
 TerminalSize = namedtuple('TerminalSize', ('columns', 'lines'))
 
-
-class ConsoleScreenBufferInfo(ctypes.Structure):  # pylint: disable=too-few-public-methods
+class ConsoleScreenBufferInfo(ctypes.Structure):
     """
     Python representation of CONSOLE_SCREEN_BUFFER_INFO structure
     https://docs.microsoft.com/en-us/windows/console/console-screen-buffer-info-str
@@ -103,6 +104,49 @@ KERNEL32.GetConsoleScreenBufferInfo.argtypes = (wintypes.HANDLE, CSBIP)
 
 KERNEL32.WaitForSingleObject.argtypes = (wintypes.HANDLE, wintypes.DWORD)
 KERNEL32.WaitForSingleObject.restype = wintypes.DWORD
+
+# Console input record structures for PeekConsoleInputW/ReadConsoleInputW.
+# Only KEY_EVENT_RECORD is needed -- all other event types (mouse, focus,
+# resize, menu) are drained and discarded by kbhit() for now.
+
+
+class _KEY_EVENT_RECORD(ctypes.Structure):
+    """KEY_EVENT_RECORD -- 16 bytes, the largest INPUT_RECORD union member."""
+
+    _fields_ = [
+        ('bKeyDown', wintypes.BOOL),
+        ('wRepeatCount', wintypes.WORD),
+        ('wVirtualKeyCode', wintypes.WORD),
+        ('wVirtualScanCode', wintypes.WORD),
+        ('uChar', wintypes.WCHAR),
+        ('dwControlKeyState', wintypes.DWORD),
+    ]
+
+
+class _EVENT_UNION(ctypes.Union):
+    """INPUT_RECORD Event union (only KeyEvent is accessed)."""
+
+    _fields_ = [('KeyEvent', _KEY_EVENT_RECORD)]
+
+
+class _INPUT_RECORD(ctypes.Structure):
+    """INPUT_RECORD structure."""
+
+    _fields_ = [
+        ('EventType', wintypes.WORD),
+        ('Event', _EVENT_UNION),
+    ]
+
+
+_PINPUT_RECORD = ctypes.POINTER(_INPUT_RECORD)
+
+KERNEL32.PeekConsoleInputW.argtypes = (
+    wintypes.HANDLE, _PINPUT_RECORD, wintypes.DWORD, LPDWORD)
+KERNEL32.PeekConsoleInputW.restype = wintypes.BOOL
+
+KERNEL32.ReadConsoleInputW.argtypes = (
+    wintypes.HANDLE, _PINPUT_RECORD, wintypes.DWORD, LPDWORD)
+KERNEL32.ReadConsoleInputW.restype = wintypes.BOOL
 
 
 def get_csbi(filehandle=None):
@@ -364,13 +408,37 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
     return term
 
 
+def _drain_nonkey_events(handle):
+    """
+    Discard non-key-down events from the console input buffer.
+
+    :arg int handle: Windows console handle.
+    :returns: True if a key-down event is at the front of the buffer.
+    :rtype: bool
+    """
+    record = _INPUT_RECORD()
+    count = wintypes.DWORD()
+    while True:
+        if not KERNEL32.PeekConsoleInputW(
+                handle, ctypes.byref(record), 1, ctypes.byref(count)):
+            return False
+        if count.value == 0:
+            return False
+        if record.EventType == 0x0001 and record.Event.KeyEvent.bKeyDown:
+            return True  # KEY_EVENT with bKeyDown
+        # discard non-key-down event (key-up, focus, mouse, resize, menu)
+        if not KERNEL32.ReadConsoleInputW(
+                handle, ctypes.byref(record), 1, ctypes.byref(count)):
+            return False
+
+
 def kbhit(fd=None, timeout=None):
     """
     Args:
         fd(int): Python file descriptor for keyboard input (e.g., sys.stdin.fileno()).
             If None, uses the file descriptor of :py:data:`sys.__stdin__`.
         timeout(float): Timeout in seconds. None for blocking indefinitely,
-            0 for non-blocking, in seconds, negative timeout is clipped to 0.
+            0 for non-blocking, positive for seconds to wait.
 
     Returns:
         bool: True if a keypress is available to be read, False otherwise.
@@ -380,42 +448,37 @@ def kbhit(fd=None, timeout=None):
 
     Efficient keyboard hit detection using WaitForSingleObject_.
 
-    Instead of busy-polling with sleep(), uses WaitForSingleObject to efficiently
-    wait for keyboard input, significantly reducing CPU usage.
-
-    Supported on Windows XP / Windows Server 2003 or above.
-
-    Example usage::
-
-        import sys
-        from jinxed import win32
-
-        # Non-blocking check
-        if win32.kbhit(sys.stdin.fileno(), timeout=0):
-            char = msvcrt.getwch()
-
-        # Wait up to 5 seconds for input
-        if win32.kbhit(sys.stdin.fileno(), timeout=5.0):
-            char = msvcrt.getwch()
-
-        # Block indefinitely until input
-        if win32.kbhit(sys.stdin.fileno(), timeout=None):
-            char = msvcrt.getwch()
+    After the wait signals, non-keyboard events (key-up releases, focus,
+    resize) are drained from the input buffer so that only actual key-down
+    events cause a True return.
 
     .. _WaitForSingleObject:
         https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
     """
-
     if fd is None:
         fd = sys.__stdin__.fileno()
 
-    result = KERNEL32.WaitForSingleObject(
-        msvcrt.get_osfhandle(fd),
-        0xFFFFFFFF if timeout is None  # INFINITE
-        else int(1000 * max(0, timeout)),
-    )
+    handle = msvcrt.get_osfhandle(fd)
+    deadline = None if timeout is None else time.monotonic() + max(0, timeout)
 
-    if result == 0xFFFFFFFF:  # WAIT_FAILED
-        raise ctypes.WinError(ctypes.get_last_error())
+    while True:
+        # Drain stale non-key events, return immediately if key-down ready.
+        if _drain_nonkey_events(handle):
+            return True
 
-    return result == 0x00000000  # WAIT_OBJECT_0
+        # Calculate remaining wait.
+        if deadline is not None:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return False
+            wait_ms = int(1000 * remaining)
+        else:
+            wait_ms = 0xFFFFFFFF  # INFINITE
+
+        result = KERNEL32.WaitForSingleObject(handle, wait_ms)
+
+        if result == 0xFFFFFFFF:  # WAIT_FAILED
+            raise ctypes.WinError(ctypes.get_last_error())
+
+        if result != 0x00000000:  # WAIT_TIMEOUT
+            return False
