@@ -469,9 +469,7 @@ def kbhit(fd=None, timeout=None):
         # Calculate remaining wait.
         if deadline is not None:
             remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                return False
-            wait_ms = int(1000 * remaining)
+            wait_ms = int(1000 * max(0, remaining))
         else:
             wait_ms = 0xFFFFFFFF  # INFINITE
 
