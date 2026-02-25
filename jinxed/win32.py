@@ -410,15 +410,9 @@ def kbhit(fd=None, timeout=None):
     if fd is None:
         fd = sys.__stdin__.fileno()
 
-    if timeout is not None and timeout < 0:
-        raise ValueError('timeout must be non-negative')
-
-    if timeout is not None and timeout <= 0:
-        return False
-
     result = KERNEL32.WaitForSingleObject(
         msvcrt.get_osfhandle(fd),
-        0xFFFFFFFF if timeout is None else int(1000 * timeout),
+        0xFFFFFFFF if timeout is None else int(1000 * max(0, timeout)),
     )
 
     if result == 0xFFFFFFFF:  # WAIT_FAILED
