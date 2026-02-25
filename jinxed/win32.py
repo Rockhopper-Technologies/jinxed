@@ -370,13 +370,12 @@ def kbhit(fd=None, timeout=None):
         fd(int): Python file descriptor for keyboard input (e.g., sys.stdin.fileno()).
             If None, uses the file descriptor of :py:data:`sys.__stdin__`.
         timeout(float): Timeout in seconds. None for blocking indefinitely,
-            0 for non-blocking, positive number for timeout in seconds.
+            0 for non-blocking, in seconds, negative timeout is clipped to 0.
 
     Returns:
         bool: True if a keypress is available to be read, False otherwise.
 
     Raises:
-        ValueError: If timeout is negative
         OSError: If WaitForSingleObject fails
 
     Efficient keyboard hit detection using WaitForSingleObject_.
