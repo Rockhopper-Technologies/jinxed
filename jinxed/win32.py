@@ -411,7 +411,8 @@ def kbhit(fd=None, timeout=None):
 
     result = KERNEL32.WaitForSingleObject(
         msvcrt.get_osfhandle(fd),
-        0xFFFFFFFF if timeout is None else int(1000 * max(0, timeout)),
+        0xFFFFFFFF if timeout is None  # INFINITE
+        else int(1000 * max(0, timeout)),
     )
 
     if result == 0xFFFFFFFF:  # WAIT_FAILED
