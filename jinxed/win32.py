@@ -106,8 +106,6 @@ KERNEL32.WaitForSingleObject.argtypes = (wintypes.HANDLE, wintypes.DWORD)
 KERNEL32.WaitForSingleObject.restype = wintypes.DWORD
 
 # Console input record structures for PeekConsoleInputW/ReadConsoleInputW.
-# Only KEY_EVENT_RECORD is needed -- all other event types (mouse, focus,
-# resize, menu) are drained and discarded by kbhit() for now.
 
 
 class _KEY_EVENT_RECORD(ctypes.Structure):
@@ -130,7 +128,23 @@ class _EVENT_UNION(ctypes.Union):
 
 
 class _INPUT_RECORD(ctypes.Structure):
-    """INPUT_RECORD structure."""
+    """INPUT_RECORD structure.
+
+    .. py:attribute:: EventType
+
+        Event type constant:
+
+        - ``0x0001`` -- KEY_EVENT
+        - ``0x0002`` -- MOUSE_EVENT
+        - ``0x0004`` -- WINDOW_BUFFER_SIZE_EVENT
+        - ``0x0008`` -- MENU_EVENT
+        - ``0x0010`` -- FOCUS_EVENT
+
+    .. py:attribute:: Event
+
+        Union containing the event data. Access ``Event.KeyEvent``
+        for key events.
+    """
 
     _fields_ = [
         ('EventType', wintypes.WORD),
@@ -139,6 +153,12 @@ class _INPUT_RECORD(ctypes.Structure):
 
 
 _PINPUT_RECORD = ctypes.POINTER(_INPUT_RECORD)
+
+KEY_EVENT = 0x0001
+MOUSE_EVENT = 0x0002
+WINDOW_BUFFER_SIZE_EVENT = 0x0004
+MENU_EVENT = 0x0008
+FOCUS_EVENT = 0x0010
 
 KERNEL32.PeekConsoleInputW.argtypes = (
     wintypes.HANDLE, _PINPUT_RECORD, wintypes.DWORD, LPDWORD)
@@ -408,49 +428,20 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
     return term
 
 
-def _drain_nonkey_events(handle):
+def select(fd=None, timeout=None):
     """
-    Discard non-key-down events from the console input buffer.
+    Wait for console input to become available.
 
-    :arg int handle: Windows console handle.
-    :returns: True if a key-down event is at the front of the buffer.
+    :arg int fd: Python file descriptor (e.g. ``sys.stdin.fileno()``).
+        If ``None``, uses :py:data:`sys.__stdin__`.
+    :arg float timeout: Seconds to wait.  ``None`` blocks indefinitely,
+        ``0`` is non-blocking, positive values specify a deadline.
+    :returns: ``True`` if input is available, ``False`` on timeout.
     :rtype: bool
-    """
-    record = _INPUT_RECORD()
-    count = wintypes.DWORD()
-    while True:
-        if not KERNEL32.PeekConsoleInputW(
-                handle, ctypes.byref(record), 1, ctypes.byref(count)):
-            return False
-        if count.value == 0:
-            return False
-        if record.EventType == 0x0001 and record.Event.KeyEvent.bKeyDown:
-            return True  # KEY_EVENT with bKeyDown
-        # discard non-key-down event (key-up, focus, mouse, resize, menu)
-        if not KERNEL32.ReadConsoleInputW(
-                handle, ctypes.byref(record), 1, ctypes.byref(count)):
-            return False
+    :raises OSError: If WaitForSingleObject_ fails.
 
-
-def kbhit(fd=None, timeout=None):
-    """
-    Args:
-        fd(int): Python file descriptor for keyboard input (e.g., sys.stdin.fileno()).
-            If None, uses the file descriptor of :py:data:`sys.__stdin__`.
-        timeout(float): Timeout in seconds. None for blocking indefinitely,
-            0 for non-blocking, positive for seconds to wait.
-
-    Returns:
-        bool: True if a keypress is available to be read, False otherwise.
-
-    Raises:
-        OSError: If WaitForSingleObject fails
-
-    Efficient keyboard hit detection using WaitForSingleObject_.
-
-    After the wait signals, non-keyboard events (key-up releases, focus,
-    resize) are drained from the input buffer so that only actual key-down
-    events cause a True return.
+    Analog of :py:func:`select.select` for a Windows console handle.
+    The call is non-destructive -- no events are consumed.
 
     .. _WaitForSingleObject:
         https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
@@ -459,24 +450,75 @@ def kbhit(fd=None, timeout=None):
         fd = sys.__stdin__.fileno()
 
     handle = msvcrt.get_osfhandle(fd)
-    deadline = None if timeout is None else time.monotonic() + max(0, timeout)
 
-    while True:
-        # Drain stale non-key events, return immediately if key-down ready.
-        if _drain_nonkey_events(handle):
-            return True
+    if timeout is None:
+        wait_ms = 0xFFFFFFFF  # INFINITE
+    else:
+        wait_ms = int(1000 * max(0, timeout))
 
-        # Calculate remaining wait.
-        if deadline is not None:
-            remaining = deadline - time.monotonic()
-            wait_ms = int(1000 * max(0, remaining))
-        else:
-            wait_ms = 0xFFFFFFFF  # INFINITE
+    result = KERNEL32.WaitForSingleObject(handle, wait_ms)
 
-        result = KERNEL32.WaitForSingleObject(handle, wait_ms)
+    if result == 0xFFFFFFFF:  # WAIT_FAILED
+        raise ctypes.WinError(ctypes.get_last_error())
 
-        if result == 0xFFFFFFFF:  # WAIT_FAILED
-            raise ctypes.WinError(ctypes.get_last_error())
+    return result == 0x00000000  # WAIT_OBJECT_0
 
-        if result != 0x00000000:  # WAIT_TIMEOUT
-            return False
+
+def peek_input(fd=None):
+    """
+    Peek at the next console input event without consuming it.
+
+    :arg int fd: Python file descriptor (e.g. ``sys.stdin.fileno()``).
+        If ``None``, uses :py:data:`sys.__stdin__`.
+    :returns: The next :py:class:`_INPUT_RECORD`, or ``None`` if the
+        buffer is empty.
+    :rtype: _INPUT_RECORD or None
+    :raises OSError: If PeekConsoleInputW_ fails.
+
+    .. _PeekConsoleInputW:
+        https://docs.microsoft.com/en-us/windows/console/peekconsoleinput
+    """
+    if fd is None:
+        fd = sys.__stdin__.fileno()
+
+    handle = msvcrt.get_osfhandle(fd)
+    record = _INPUT_RECORD()
+    count = wintypes.DWORD()
+
+    if not KERNEL32.PeekConsoleInputW(
+            handle, ctypes.byref(record), 1, ctypes.byref(count)):
+        raise ctypes.WinError(ctypes.get_last_error())
+
+    if count.value == 0:
+        return None
+    return record
+
+
+def read_input(fd=None):
+    """
+    Read and consume the next console input event.
+
+    :arg int fd: Python file descriptor (e.g. ``sys.stdin.fileno()``).
+        If ``None``, uses :py:data:`sys.__stdin__`.
+    :returns: The next :py:class:`_INPUT_RECORD`, or ``None`` if the
+        buffer is empty.
+    :rtype: _INPUT_RECORD or None
+    :raises OSError: If ReadConsoleInputW_ fails.
+
+    .. _ReadConsoleInputW:
+        https://docs.microsoft.com/en-us/windows/console/readconsoleinput
+    """
+    if fd is None:
+        fd = sys.__stdin__.fileno()
+
+    handle = msvcrt.get_osfhandle(fd)
+    record = _INPUT_RECORD()
+    count = wintypes.DWORD()
+
+    if not KERNEL32.ReadConsoleInputW(
+            handle, ctypes.byref(record), 1, ctypes.byref(count)):
+        raise ctypes.WinError(ctypes.get_last_error())
+
+    if count.value == 0:
+        return None
+    return record
