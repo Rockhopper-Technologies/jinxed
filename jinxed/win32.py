@@ -5,6 +5,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+# pylint: disable=too-few-public-methods
 """
 Support functions and wrappers for calls to the Windows API
 """
@@ -60,10 +61,10 @@ GTS_SUPPORTED = hasattr(os, 'get_terminal_size')
 TerminalSize = namedtuple('TerminalSize', ('columns', 'lines'))
 
 
-class ConsoleScreenBufferInfo(ctypes.Structure):  # pylint: disable=too-few-public-methods
+class ConsoleScreenBufferInfo(ctypes.Structure):
     """
     Python representation of CONSOLE_SCREEN_BUFFER_INFO structure
-    https://docs.microsoft.com/en-us/windows/console/console-screen-buffer-info-str
+    https://learn.microsoft.com/en-us/windows/console/console-screen-buffer-info-str
     """
 
     _fields_ = [('dwSize', COORD),
@@ -100,6 +101,93 @@ KERNEL32.SetConsoleMode.argtypes = (wintypes.HANDLE, wintypes.DWORD)
 
 KERNEL32.GetConsoleScreenBufferInfo.errcheck = _check_bool
 KERNEL32.GetConsoleScreenBufferInfo.argtypes = (wintypes.HANDLE, CSBIP)
+
+KERNEL32.WaitForSingleObject.argtypes = (wintypes.HANDLE, wintypes.DWORD)
+KERNEL32.WaitForSingleObject.restype = wintypes.DWORD
+
+# Console input record structures for PeekConsoleInputW/ReadConsoleInputW.
+
+
+class _KEY_EVENT_RECORD(ctypes.Structure):
+    """KEY_EVENT_RECORD structure."""
+
+    _fields_ = [
+        ('bKeyDown', wintypes.BOOL),
+        ('wRepeatCount', wintypes.WORD),
+        ('wVirtualKeyCode', wintypes.WORD),
+        ('wVirtualScanCode', wintypes.WORD),
+        ('uChar', wintypes.WCHAR),
+        ('dwControlKeyState', wintypes.DWORD),
+    ]
+
+
+class _MOUSE_EVENT_RECORD(ctypes.Structure):
+    """MOUSE_EVENT_RECORD structure."""
+
+    _fields_ = [
+        ('dwMousePosition', COORD),
+        ('dwButtonState', wintypes.DWORD),
+        ('dwControlKeyState', wintypes.DWORD),
+        ('dwEventFlags', wintypes.DWORD),
+    ]
+
+
+class _WINDOW_BUFFER_SIZE_RECORD(ctypes.Structure):
+    """WINDOW_BUFFER_SIZE_RECORD structure."""
+
+    _fields_ = [('dwSize', COORD)]
+
+
+class _INPUT_RECORD_EVENT(ctypes.Union):
+    """Union of console input event types."""
+
+    _fields_ = [
+        ('KeyEvent', _KEY_EVENT_RECORD),
+        ('MouseEvent', _MOUSE_EVENT_RECORD),
+        ('WindowBufferSizeEvent', _WINDOW_BUFFER_SIZE_RECORD),
+    ]
+
+
+class INPUT_RECORD(ctypes.Structure):
+    """INPUT_RECORD structure.
+
+    .. py:attribute:: EventType
+
+        Event type constant:
+
+        - ``0x0001`` -- KEY_EVENT
+        - ``0x0002`` -- MOUSE_EVENT
+        - ``0x0004`` -- WINDOW_BUFFER_SIZE_EVENT
+
+    .. py:attribute:: Event
+
+        Union of event data.  Access the member matching ``EventType``:
+
+        - ``Event.KeyEvent`` -- ``bKeyDown``, ``wRepeatCount``,
+          ``wVirtualKeyCode``, ``wVirtualScanCode``, ``uChar``,
+          ``dwControlKeyState``
+        - ``Event.MouseEvent`` -- ``dwMousePosition``, ``dwButtonState``,
+          ``dwControlKeyState``, ``dwEventFlags``
+        - ``Event.WindowBufferSizeEvent`` -- ``dwSize``
+    """
+
+    _fields_ = [
+        ('EventType', wintypes.WORD),
+        ('Event', _INPUT_RECORD_EVENT),
+    ]
+
+
+KEY_EVENT = 0x0001
+MOUSE_EVENT = 0x0002
+WINDOW_BUFFER_SIZE_EVENT = 0x0004
+
+KERNEL32.PeekConsoleInputW.argtypes = (
+    wintypes.HANDLE, ctypes.POINTER(INPUT_RECORD), wintypes.DWORD, LPDWORD)
+KERNEL32.PeekConsoleInputW.restype = wintypes.BOOL
+
+KERNEL32.ReadConsoleInputW.argtypes = (
+    wintypes.HANDLE, ctypes.POINTER(INPUT_RECORD), wintypes.DWORD, LPDWORD)
+KERNEL32.ReadConsoleInputW.restype = wintypes.BOOL
 
 
 def get_csbi(filehandle=None):
@@ -359,3 +447,100 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
             term = 'unknown'
 
     return term
+
+
+class ConsoleInput:
+    """Console input handle with wait, peek, and read operations.
+
+    :arg int fd: Python file descriptor (e.g. ``sys.stdin.fileno()``).
+
+    Example::
+
+        console = ConsoleInput(sys.stdin.fileno())
+        if console.wait(timeout=5.0):
+            event = console.peek()
+    """
+
+    def __init__(self, fd):
+        self._fd = fd
+        self._handle = msvcrt.get_osfhandle(fd)
+
+    @property
+    def fd(self):
+        """The Python file descriptor."""
+        return self._fd
+
+    @property
+    def handle(self):
+        """The Windows console handle."""
+        return self._handle
+
+    def wait(self, timeout=None):
+        """Wait for console input to become available.
+
+        :arg float timeout: Seconds to wait.  ``None`` blocks indefinitely,
+            ``0`` is non-blocking, positive values specify a deadline.
+        :returns: ``True`` if input is available, ``False`` on timeout.
+        :rtype: bool
+        :raises OSError: If WaitForSingleObject_ fails.
+
+        The call is non-destructive -- no events are consumed.
+
+        .. _WaitForSingleObject:
+            https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+        """
+        if timeout is None:
+            wait_ms = 0xFFFFFFFF  # INFINITE
+        else:
+            wait_ms = int(1000 * max(0, timeout))
+
+        result = KERNEL32.WaitForSingleObject(self._handle, wait_ms)
+
+        if result == 0xFFFFFFFF:  # WAIT_FAILED
+            raise ctypes.WinError(ctypes.get_last_error())
+
+        return result == 0x00000000  # WAIT_OBJECT_0
+
+    def peek(self):
+        """Peek at the next console input event without consuming it.
+
+        :returns: The next :py:class:`INPUT_RECORD`, or ``None`` if the
+            buffer is empty.
+        :rtype: INPUT_RECORD or None
+        :raises OSError: If PeekConsoleInputW_ fails.
+
+        .. _PeekConsoleInputW:
+            https://learn.microsoft.com/en-us/windows/console/peekconsoleinput
+        """
+        record = INPUT_RECORD()
+        count = wintypes.DWORD()
+
+        if not KERNEL32.PeekConsoleInputW(
+                self._handle, ctypes.byref(record), 1, ctypes.byref(count)):
+            raise ctypes.WinError(ctypes.get_last_error())
+
+        if count.value == 0:
+            return None
+        return record
+
+    def read(self):
+        """Read and consume the next console input event.
+
+        :returns: The next :py:class:`INPUT_RECORD`, or ``None`` if the
+            buffer is empty.
+        :rtype: INPUT_RECORD or None
+        :raises OSError: If ReadConsoleInputW_ fails.
+
+        .. _ReadConsoleInputW:
+            https://learn.microsoft.com/en-us/windows/console/readconsoleinput
+        """
+        record = INPUT_RECORD()
+        count = wintypes.DWORD()
+
+        if not KERNEL32.ReadConsoleInputW(
+                self._handle, ctypes.byref(record), 1, ctypes.byref(count)):
+            raise ctypes.WinError(ctypes.get_last_error())
+
+        if count.value == 0:
+            return None
+        return record
