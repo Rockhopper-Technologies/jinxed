@@ -15,9 +15,10 @@ jinxed
 
 .. py:module:: jinxed
 
-Jinxed is an implementation of a subset of the Python curses library for Windows
+Jinxed is a pure-Python implementation of a subset of the Python curses library.
 
 .. autofunction:: setupterm
+.. autofunction:: inject_xtgettcap
 .. autofunction:: tigetflag
 .. autofunction:: tigetnum
 .. autofunction:: tigetstr

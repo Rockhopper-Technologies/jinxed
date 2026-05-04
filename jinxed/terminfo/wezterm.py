@@ -1,5 +1,5 @@
 """
-xterm terminal info
+wezterm terminal info
 
 Generated: 2026-05-04T21:31:56.636866+00:00
 Source: ncurses 6.4.20240113 (hash: c9aac1e1e58b)
@@ -8,20 +8,19 @@ Source: ncurses 6.4.20240113 (hash: c9aac1e1e58b)
 BOOL_CAPS = [
     'am',
     'bce',
-    'km',
+    'ccc',
     'mc5i',
     'mir',
     'msgr',
     'npc',
-    'xenl',
 ]
 
 NUM_CAPS = {
-    'colors': 8,
+    'colors': 256,
     'cols': 80,
     'it': 8,
     'lines': 24,
-    'pairs': 64,
+    'pairs': 65536,
 }
 
 STR_CAPS = {
@@ -44,7 +43,6 @@ STR_CAPS = {
     'cup': b'\x1b[%i%p1%d;%p2%dH',
     'cuu': b'\x1b[%p1%dA',
     'cuu1': b'\x1b[A',
-    'cvvis': b'\x1b[?12;25h',
     'dch': b'\x1b[%p1%dP',
     'dch1': b'\x1b[P',
     'dim': b'\x1b[2m',
@@ -64,6 +62,7 @@ STR_CAPS = {
     'il1': b'\x1b[L',
     'ind': b'\n',
     'indn': b'\x1b[%p1%dS',
+    'initc': b'\x1b]4;%p1%d;rgb:%p2%{255}%*%{1000}%/%2.2X/%p3%{255}%*%{1000}%/%2.2X/%p4%{255}%*%{1000}%/%2.2X\x1b\x5c',
     'invis': b'\x1b[8m',
     'is2': b'\x1b[!p\x1b[?3;4l\x1b[4l\x1b>',
     'kDC': b'\x1b[3;2~',
@@ -166,6 +165,7 @@ STR_CAPS = {
     'memu': b'\x1bm',
     'mgc': b'\x1b[?69l',
     'nel': b'\x1bE',
+    'oc': b'\x1b]104\a',
     'op': b'\x1b[39;49m',
     'rc': b'\x1b8',
     'rep': b'%p1%c\x1b[%p2%{1}%-%db',
@@ -177,17 +177,14 @@ STR_CAPS = {
     'rmam': b'\x1b[?7l',
     'rmcup': b'\x1b[?1049l\x1b[23;0;0t',
     'rmir': b'\x1b[4l',
-    'rmkx': b'\x1b[?1l\x1b>',
-    'rmm': b'\x1b[?1034l',
+    'rmkx': b'\x1b[?1l',
     'rmso': b'\x1b[27m',
     'rmul': b'\x1b[24m',
-    'rs1': b'\x1bc',
+    'rs1': b'\x1bc\x1b]104\a',
     'rs2': b'\x1b[!p\x1b[?3;4l\x1b[4l\x1b>',
     'sc': b'\x1b7',
-    'setab': b'\x1b[4%p1%dm',
-    'setaf': b'\x1b[3%p1%dm',
-    'setb': b'\x1b[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m',
-    'setf': b'\x1b[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m',
+    'setab': b'\x1b[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m',
+    'setaf': b'\x1b[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m',
     'sgr': b'%?%p9%t\x1b(0%e\x1b(B%;\x1b[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m',
     'sgr0': b'\x1b(B\x1b[m',
     'sitm': b'\x1b[3m',
@@ -198,8 +195,7 @@ STR_CAPS = {
     'smglr': b'\x1b[?69h\x1b[%i%p1%d;%p2%ds',
     'smgrp': b'\x1b[?69h\x1b[%i;%p1%ds',
     'smir': b'\x1b[4h',
-    'smkx': b'\x1b[?1h\x1b=',
-    'smm': b'\x1b[?1034h',
+    'smkx': b'\x1b[?1h',
     'smso': b'\x1b[7m',
     'smul': b'\x1b[4m',
     'tbc': b'\x1b[3g',

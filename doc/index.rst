@@ -18,10 +18,12 @@
 Overview
 ========
 
-Jinxed is an implementation of a subset of the Python :py:mod:`curses` library for Windows
+Jinxed is a pure-Python implementation of a subset of the Python :py:mod:`curses` library.
 
-Jinxed is intended primarily for libraries that need to access terminfo functions
-such as tigetstr() and tparm() and was written specifically to support Blessed_ on Windows.
+It provides :py:func:`~jinxed.tigetstr`, :py:func:`~jinxed.tparm`, and related terminfo
+functions on all platforms, backed by a bundled virtual terminfo database.  It was written
+initially to support `Blessed <https://pypi.org/project/blessed>`_ on Windows, and now
+serves as its sole terminfo provider on all platforms.
 
 Installation
 ------------

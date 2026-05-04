@@ -1,5 +1,5 @@
 """
-xterm terminal info
+screen.xterm-256color terminal info
 
 Generated: 2026-05-04T21:31:56.636866+00:00
 Source: ncurses 6.4.20240113 (hash: c9aac1e1e58b)
@@ -7,7 +7,7 @@ Source: ncurses 6.4.20240113 (hash: c9aac1e1e58b)
 
 BOOL_CAPS = [
     'am',
-    'bce',
+    'bw',
     'km',
     'mc5i',
     'mir',
@@ -17,11 +17,11 @@ BOOL_CAPS = [
 ]
 
 NUM_CAPS = {
-    'colors': 8,
+    'colors': 256,
     'cols': 80,
     'it': 8,
     'lines': 24,
-    'pairs': 64,
+    'pairs': 65536,
 }
 
 STR_CAPS = {
@@ -64,15 +64,11 @@ STR_CAPS = {
     'il1': b'\x1b[L',
     'ind': b'\n',
     'indn': b'\x1b[%p1%dS',
-    'invis': b'\x1b[8m',
     'is2': b'\x1b[!p\x1b[?3;4l\x1b[4l\x1b>',
     'kDC': b'\x1b[3;2~',
     'kEND': b'\x1b[1;2F',
     'kHOM': b'\x1b[1;2H',
-    'kIC': b'\x1b[2;2~',
     'kLFT': b'\x1b[1;2D',
-    'kNXT': b'\x1b[6;2~',
-    'kPRV': b'\x1b[5;2~',
     'kRIT': b'\x1b[1;2C',
     'ka1': b'\x1bOw',
     'ka3': b'\x1bOy',
@@ -87,7 +83,7 @@ STR_CAPS = {
     'kcuf1': b'\x1bOC',
     'kcuu1': b'\x1bOA',
     'kdch1': b'\x1b[3~',
-    'kend': b'\x1bOF',
+    'kend': b'\x1b[4~',
     'kent': b'\x1bOM',
     'kf1': b'\x1bOP',
     'kf10': b'\x1b[21~',
@@ -152,27 +148,23 @@ STR_CAPS = {
     'kf7': b'\x1b[18~',
     'kf8': b'\x1b[19~',
     'kf9': b'\x1b[20~',
-    'khome': b'\x1bOH',
+    'khome': b'\x1b[1~',
     'kich1': b'\x1b[2~',
     'kind': b'\x1b[1;2B',
-    'kmous': b'\x1b[<',
+    'kmous': b'\x1b[M',
     'knp': b'\x1b[6~',
     'kpp': b'\x1b[5~',
     'kri': b'\x1b[1;2A',
     'mc0': b'\x1b[i',
     'mc4': b'\x1b[4i',
     'mc5': b'\x1b[5i',
-    'meml': b'\x1bl',
-    'memu': b'\x1bm',
     'mgc': b'\x1b[?69l',
     'nel': b'\x1bE',
     'op': b'\x1b[39;49m',
     'rc': b'\x1b8',
-    'rep': b'%p1%c\x1b[%p2%{1}%-%db',
     'rev': b'\x1b[7m',
     'ri': b'\x1bM',
     'rin': b'\x1b[%p1%dT',
-    'ritm': b'\x1b[23m',
     'rmacs': b'\x1b(B',
     'rmam': b'\x1b[?7l',
     'rmcup': b'\x1b[?1049l\x1b[23;0;0t',
@@ -184,13 +176,10 @@ STR_CAPS = {
     'rs1': b'\x1bc',
     'rs2': b'\x1b[!p\x1b[?3;4l\x1b[4l\x1b>',
     'sc': b'\x1b7',
-    'setab': b'\x1b[4%p1%dm',
-    'setaf': b'\x1b[3%p1%dm',
-    'setb': b'\x1b[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m',
-    'setf': b'\x1b[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m',
-    'sgr': b'%?%p9%t\x1b(0%e\x1b(B%;\x1b[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m',
+    'setab': b'\x1b[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m',
+    'setaf': b'\x1b[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m',
+    'sgr': b'%?%p9%t\x1b(0%e\x1b(B%;\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;m',
     'sgr0': b'\x1b(B\x1b[m',
-    'sitm': b'\x1b[3m',
     'smacs': b'\x1b(0',
     'smam': b'\x1b[?7h',
     'smcup': b'\x1b[?1049h\x1b[22;0;0t',

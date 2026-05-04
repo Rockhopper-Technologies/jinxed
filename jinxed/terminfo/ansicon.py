@@ -152,7 +152,3 @@ STR_CAPS['rs1'] = b'\x1bc\x1b]104ST'
 STR_CAPS['rs2'] = b'\x1b[!p'
 STR_CAPS['sgr'] = b'\x1b[%p1%d%?%p2%t;%p2%d%;%?%p3%t;%p3%d%;%?%p4%t;%p4%d%;%?%p5%t;%p5%d%;' \
                   b'%?%p6%t;%p6%d%;%?%p7%t;%p7%d%;%?%p8%t;%p8%d%;%?%p9%t;%p9%d%;m'
-
-# Need info - Left in, but unsure
-# acsc (covers some, but maybe not all)
-# mc0/mc4/mc5 (print screen/off/on)

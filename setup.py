@@ -8,10 +8,8 @@
 """
 Jinxed Terminal Library
 
-Jinxed is an implementation of a subset of the Python curses library for Windows
-
-Other libraries implement the full curses stack. Jinxed is intended primarily for libraries
-that need to access terminfo functions such as tigetstr() and tparm().
+Jinxed is a pure-Python implementation of a subset of the Python curses library,
+providing terminfo functions such as tigetstr() and tparm() on all platforms.
 """
 
 import os

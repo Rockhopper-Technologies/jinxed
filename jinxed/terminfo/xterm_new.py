@@ -1,5 +1,5 @@
 """
-xterm terminal info
+xterm-new terminal info
 
 Generated: 2026-05-04T21:31:56.636866+00:00
 Source: ncurses 6.4.20240113 (hash: c9aac1e1e58b)

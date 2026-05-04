@@ -1,5 +1,5 @@
 """
-xterm-256color terminal info
+xterm-88color terminal info
 
 Generated: 2026-05-04T21:31:56.636866+00:00
 Source: ncurses 6.4.20240113 (hash: c9aac1e1e58b)
@@ -14,8 +14,8 @@ STR_CAPS = STR_CAPS.copy()
 # Added bools
 BOOL_CAPS.append('ccc')
 # Modified/added nums
-NUM_CAPS['colors'] = 256
-NUM_CAPS['pairs'] = 65536
+NUM_CAPS['colors'] = 88
+NUM_CAPS['pairs'] = 7744
 # Added strings
 STR_CAPS['initc'] = b'\x1b]4;%p1%d;rgb:%p2%{255}%*%{1000}%/%2.2X/%p3%{255}%*%{1000}%/%2.2X/%p4%{255}%*%{1000}%/%2.2X\x1b\x5c'
 STR_CAPS['oc'] = b'\x1b]104\a'

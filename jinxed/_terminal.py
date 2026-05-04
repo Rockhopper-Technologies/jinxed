@@ -53,15 +53,44 @@ class Terminal(object):
         if term is None:
             term = get_term(self.stream_fd)
 
+        # XTGETTCAP injection caches (populated externally)
+        self._xtgettcap_str_caps = {}   # type: Dict[str, str]
+        self._xtgettcap_num_caps = {}   # type: Dict[str, int]
+        self._xtgettcap_bool_caps = set()  # type: Set[str]
+
         try:
-            self.terminfo = importlib.import_module('jinxed.terminfo.%s' % term.replace('-', '_'))
+            self.terminfo = importlib.import_module(
+                'jinxed.terminfo.%s' % term.replace('-', '_'))
         except ImportError:
             raise_from_none(error('Could not find terminal %s' % term))
+
+    def inject_xtgettcap(self, str_caps=None, num_caps=None, bool_caps=None):
+        # type: (Optional[Dict[str, str]], Optional[Dict[str, int]], Optional[Set[str]]) -> None
+        """
+        Inject capabilities obtained via XTGETTCAP (DCS +q) queries.
+
+        After injection, :meth:`tigetstr`, :meth:`tigetnum`, and :meth:`tigetflag`
+        consult these caches before falling back to the virtual terminfo database.
+
+        :arg dict str_caps: Mapping of capability name to decoded string value.
+        :arg dict num_caps: Mapping of capability name to integer value.
+        :arg set bool_caps: Set of boolean capability names that are present.
+        """
+        if str_caps:
+            self._xtgettcap_str_caps.update(str_caps)
+        if num_caps:
+            self._xtgettcap_num_caps.update(num_caps)
+        if bool_caps:
+            self._xtgettcap_bool_caps.update(bool_caps)
 
     def tigetstr(self, capname):
         """
         Reimplementation of curses.tigetstr()
         """
+
+        # XTGETTCAP cache takes priority
+        if capname in self._xtgettcap_str_caps:
+            return self._xtgettcap_str_caps[capname]
 
         return self.terminfo.STR_CAPS.get(capname, None)
 
@@ -70,12 +99,20 @@ class Terminal(object):
         Reimplementation of curses.tigetnum()
         """
 
+        # XTGETTCAP cache takes priority
+        if capname in self._xtgettcap_num_caps:
+            return self._xtgettcap_num_caps[capname]
+
         return self.terminfo.NUM_CAPS.get(capname, -1 if capname in NUM_CAPS else -2)
 
     def tigetflag(self, capname):
         """
         Reimplementation of curses.tigetflag()
         """
+
+        # XTGETTCAP cache takes priority
+        if capname in self._xtgettcap_bool_caps:
+            return 1
 
         if capname in self.terminfo.BOOL_CAPS:
             return 1
@@ -89,6 +126,24 @@ def setupterm(term=None, fd=-1):  # pylint: disable=invalid-name
 
     global TERM  # pylint: disable=global-statement
     TERM = Terminal(term, fd)
+
+
+def inject_xtgettcap(str_caps=None, num_caps=None, bool_caps=None):
+    # type: (Optional[Dict[str, str]], Optional[Dict[str, int]], Optional[Set[str]]) -> None
+    """
+    Inject capabilities obtained via XTGETTCAP (DCS +q) queries.
+
+    After injection, module-level :func:`tigetstr`, :func:`tigetnum`, and
+    :func:`tigetflag` consult these caches before falling back to the
+    virtual terminfo database.
+
+    :arg dict str_caps: Mapping of capability name to decoded string value.
+    :arg dict num_caps: Mapping of capability name to integer value.
+    :arg set bool_caps: Set of boolean capability names that are present.
+    """
+    if TERM is None:
+        raise error('Must call setupterm() first')
+    TERM.inject_xtgettcap(str_caps=str_caps, num_caps=num_caps, bool_caps=bool_caps)
 
 
 def tigetflag(capname):

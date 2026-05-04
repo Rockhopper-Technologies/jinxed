@@ -62,7 +62,3 @@ STR_CAPS['sgr'] = b'\x1b[%p1%d%?%p2%t;%p2%d%;%?%p3%t;%p3%d%;%?%p4%t;%p4%d%;%?%p5
                   b'%?%p6%t;%p6%d%;%?%p7%t;%p7%d%;%?%p8%t;%p8%d%;%?%p9%t;%p9%d%;m'
 STR_CAPS['smcup'] = b'\x1b[?1049h'
 STR_CAPS['u9'] = b'\x1b[0c'
-
-# Need info - Left in, but unsure
-# acsc (covers some, but maybe not all)
-# mc0/mc4/mc5 (print screen/off/on)
