@@ -49,8 +49,8 @@ def parse_terminfo(
 
     Returns (bool_caps, num_caps, str_caps) for a jinxed terminfo module.
     """
-    with open(path, 'rb') as f:
-        data = f.read()
+    with open(path, 'rb') as termfile:
+        data = termfile.read()
 
     if len(data) < 12:
         raise ValueError(f'File too short: {len(data)} bytes')
@@ -80,9 +80,9 @@ def parse_terminfo(
     num_caps: Dict[str, int] = OrderedDict()
     for idx in range(min(num_count, len(_NUM_NAMES))):
         if offset + 2 <= len(data):
-            val = struct.unpack_from(f'{endian}h', data, offset)[0]
-            if val >= 0:
-                num_caps[_NUM_NAMES[idx]] = val
+            value = struct.unpack_from(f'{endian}h', data, offset)[0]
+            if value >= 0:
+                num_caps[_NUM_NAMES[idx]] = value
             offset += 2
     if num_count > len(_NUM_NAMES):
         offset += 2 * (num_count - len(_NUM_NAMES))
@@ -90,22 +90,22 @@ def parse_terminfo(
     str_offsets: List[int] = []
     for _ in range(str_count):
         if offset + 2 <= len(data):
-            val = struct.unpack_from(f'{endian}h', data, offset)[0]
-            str_offsets.append(val)
+            value = struct.unpack_from(f'{endian}h', data, offset)[0]
+            str_offsets.append(value)
             offset += 2
 
     str_table_start = offset
 
     str_caps: Dict[str, bytes] = OrderedDict()
-    for idx, off in enumerate(str_offsets):
-        if off < 0:
+    for idx, str_offset in enumerate(str_offsets):
+        if str_offset < 0:
             continue
         if idx >= len(_STR_NAMES):
             break
-        end = data.find(b'\x00', str_table_start + off)
-        if end == -1:
-            end = len(data)
-        value = data[str_table_start + off:end]
+        null_pos = data.find(b'\x00', str_table_start + str_offset)
+        if null_pos == -1:
+            null_pos = len(data)
+        value = data[str_table_start + str_offset:null_pos]
         if value:
             str_caps[_STR_NAMES[idx]] = value
 

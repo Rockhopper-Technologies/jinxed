@@ -1,7 +1,7 @@
 """
 rxvt-unicode terminal info
 
-Generated: 2026-05-05T00:03:18.502357+00:00
+Generated: 2026-05-05T01:35:00.884232+00:00
 Source: ncurses terminfo.src 1.1198
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
@@ -10,30 +10,30 @@ distributed under the MIT/X11 license.  See LICENSE.ncurses.
 """
 
 BOOL_CAPS = [
-    'am',
-    'bce',
-    'bw',
-    'ccc',
-    'eo',
-    'hs',
-    'km',
-    'mc5i',
-    'mir',
-    'msgr',
-    'npc',
-    'xenl',
-    'xon',
+    'am',      # (auto_right_margin) terminal has automatic margins
+    'bce',     # (back_color_erase) screen erased with background color
+    'bw',      # (auto_left_margin) cub1 wraps from column 0 to last column
+    'ccc',     # (can_change) terminal can re-define existing colors
+    'eo',      # (erase_overstrike) can erase overstrikes with a blank
+    'hs',      # (has_status_line) has extra status line
+    'km',      # (has_meta_key) Has a meta key (i.e., sets 8th-bit)
+    'mc5i',    # (prtr_silent) printer will not echo on screen
+    'mir',     # (move_insert_mode) safe to move while in insert mode
+    'msgr',    # (move_standout_mode) safe to move while in standout mode
+    'npc',     # (no_pad_char) pad character does not exist
+    'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
+    'xon',     # (xon_xoff) terminal uses xon/xoff handshaking
 ]
 
 NUM_CAPS = {
-    'btns': 5,
-    'colors': 88,
-    'cols': 80,
-    'it': 8,
-    'lines': 24,
-    'lm': 0,
-    'ncv': 0,
-    'pairs': 7744,
+    'btns': 5,        # (buttons) number of buttons on mouse
+    'colors': 88,     # (max_colors) maximum number of colors on screen
+    'cols': 80,       # (columns) number of columns in a line
+    'it': 8,          # (init_tabs) tabs initially every # spaces
+    'lines': 24,      # (lines) number of lines on screen or page
+    'lm': 0,          # (lines_of_memory) lines of memory if > line. 0 means varies
+    'ncv': 0,         # (no_color_video) video attributes that cannot be used with colors
+    'pairs': 7744,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
 STR_CAPS = {

@@ -1,7 +1,7 @@
 """
 vt220 terminal info
 
-Generated: 2026-05-05T00:03:18.505551+00:00
+Generated: 2026-05-05T01:35:00.887831+00:00
 Source: ncurses terminfo.src 1.1198
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
@@ -10,19 +10,19 @@ distributed under the MIT/X11 license.  See LICENSE.ncurses.
 """
 
 BOOL_CAPS = [
-    'am',
-    'mc5i',
-    'mir',
-    'msgr',
-    'xenl',
-    'xon',
+    'am',      # (auto_right_margin) terminal has automatic margins
+    'mc5i',    # (prtr_silent) printer will not echo on screen
+    'mir',     # (move_insert_mode) safe to move while in insert mode
+    'msgr',    # (move_standout_mode) safe to move while in standout mode
+    'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
+    'xon',     # (xon_xoff) terminal uses xon/xoff handshaking
 ]
 
 NUM_CAPS = {
-    'cols': 80,
-    'it': 8,
-    'lines': 24,
-    'vt': 3,
+    'cols': 80,     # (columns) number of columns in a line
+    'it': 8,        # (init_tabs) tabs initially every # spaces
+    'lines': 24,    # (lines) number of lines on screen or page
+    'vt': 3,        # (virtual_terminal) virtual terminal number (CB/unix)
 }
 
 STR_CAPS = {

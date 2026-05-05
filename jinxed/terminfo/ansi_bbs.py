@@ -11,16 +11,16 @@ equivalent type reported over telnet TTYPE negotiation.
 """
 
 BOOL_CAPS = [
-    'am',
-    'eo',
-    'msgr',
+    'am',      # (auto_right_margin) terminal has automatic margins
+    'eo',      # (erase_overstrike) can erase overstrikes with a blank
+    'msgr',    # (move_standout_mode) safe to move while in standout mode
 ]
 
 NUM_CAPS = {
-    'colors': 8,
-    'cols': 80,
-    'lines': 24,
-    'pairs': 64,
+    'colors': 8,    # (max_colors) maximum number of colors on screen
+    'cols': 80,     # (columns) number of columns in a line
+    'lines': 24,    # (lines) number of lines on screen or page
+    'pairs': 64,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
 STR_CAPS = {

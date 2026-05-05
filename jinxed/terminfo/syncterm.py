@@ -15,18 +15,18 @@ see ansi-bbs.
 """
 
 BOOL_CAPS = [
-    'am',
-    'bce',
-    'ccc',
-    'msgr',
+    'am',      # (auto_right_margin) terminal has automatic margins
+    'bce',     # (back_color_erase) screen erased with background color
+    'ccc',     # (can_change) terminal can re-define existing colors
+    'msgr',    # (move_standout_mode) safe to move while in standout mode
 ]
 
 NUM_CAPS = {
-    'colors': 256,
-    'cols': 80,
-    'it': 8,
-    'lines': 24,
-    'pairs': 32767,
+    'colors': 256,   # (max_colors) maximum number of colors on screen
+    'cols': 80,      # (columns) number of columns in a line
+    'it': 8,         # (init_tabs) tabs initially every # spaces
+    'lines': 24,     # (lines) number of lines on screen or page
+    'pairs': 32767,  # (max_pairs) maximum number of color-pairs on the screen
 }
 
 STR_CAPS = {

@@ -1,7 +1,7 @@
 """
 ansi terminal info
 
-Generated: 2026-05-05T00:03:18.499495+00:00
+Generated: 2026-05-05T01:35:00.882730+00:00
 Source: ncurses terminfo.src 1.1198
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
@@ -10,19 +10,19 @@ distributed under the MIT/X11 license.  See LICENSE.ncurses.
 """
 
 BOOL_CAPS = [
-    'am',
-    'mc5i',
-    'mir',
-    'msgr',
+    'am',      # (auto_right_margin) terminal has automatic margins
+    'mc5i',    # (prtr_silent) printer will not echo on screen
+    'mir',     # (move_insert_mode) safe to move while in insert mode
+    'msgr',    # (move_standout_mode) safe to move while in standout mode
 ]
 
 NUM_CAPS = {
-    'colors': 8,
-    'cols': 80,
-    'it': 8,
-    'lines': 24,
-    'ncv': 3,
-    'pairs': 64,
+    'colors': 8,    # (max_colors) maximum number of colors on screen
+    'cols': 80,     # (columns) number of columns in a line
+    'it': 8,        # (init_tabs) tabs initially every # spaces
+    'lines': 24,    # (lines) number of lines on screen or page
+    'ncv': 3,       # (no_color_video) video attributes that cannot be used with colors
+    'pairs': 64,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
 STR_CAPS = {

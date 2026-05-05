@@ -1,7 +1,7 @@
 """
 putty terminal info
 
-Generated: 2026-05-05T00:03:18.500969+00:00
+Generated: 2026-05-05T01:35:00.883518+00:00
 Source: ncurses terminfo.src 1.1198
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
@@ -10,22 +10,22 @@ distributed under the MIT/X11 license.  See LICENSE.ncurses.
 """
 
 BOOL_CAPS = [
-    'am',
-    'bce',
-    'bw',
-    'ccc',
-    'hs',
-    'mir',
-    'msgr',
-    'xenl',
-    'xon',
+    'am',      # (auto_right_margin) terminal has automatic margins
+    'bce',     # (back_color_erase) screen erased with background color
+    'bw',      # (auto_left_margin) cub1 wraps from column 0 to last column
+    'ccc',     # (can_change) terminal can re-define existing colors
+    'hs',      # (has_status_line) has extra status line
+    'mir',     # (move_insert_mode) safe to move while in insert mode
+    'msgr',    # (move_standout_mode) safe to move while in standout mode
+    'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
+    'xon',     # (xon_xoff) terminal uses xon/xoff handshaking
 ]
 
 NUM_CAPS = {
-    'colors': 8,
-    'it': 8,
-    'ncv': 22,
-    'pairs': 64,
+    'colors': 8,    # (max_colors) maximum number of colors on screen
+    'it': 8,        # (init_tabs) tabs initially every # spaces
+    'ncv': 22,      # (no_color_video) video attributes that cannot be used with colors
+    'pairs': 64,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
 STR_CAPS = {

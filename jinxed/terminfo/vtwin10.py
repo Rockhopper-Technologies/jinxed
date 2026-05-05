@@ -24,21 +24,9 @@ STR_CAPS['setb'] = b'\x1b[48;5;%p1%dm'
 STR_CAPS['setf'] = b'\x1b[38;5;%p1%dm'
 
 # Removed - These do not appear to be supported
-del STR_CAPS['blink']
-del STR_CAPS['dim']
-del STR_CAPS['flash']
-del STR_CAPS['invis']
-del STR_CAPS['kmous']
-del STR_CAPS['meml']
-del STR_CAPS['memu']
-del STR_CAPS['ritm']
-del STR_CAPS['rmam']
-del STR_CAPS['rmir']
-del STR_CAPS['rmm']
-del STR_CAPS['sitm']
-del STR_CAPS['smam']
-del STR_CAPS['smir']
-del STR_CAPS['smm']
+for _drop in ('blink', 'dim', 'flash', 'invis', 'kmous', 'meml', 'memu',
+              'ritm', 'rmam', 'rmir', 'rmm', 'sitm', 'smam', 'smir', 'smm'):
+    STR_CAPS.pop(_drop, None)
 
 # Modified
 NUM_CAPS['colors'] = 256

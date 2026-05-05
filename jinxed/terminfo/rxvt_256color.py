@@ -1,7 +1,7 @@
 """
 rxvt-256color terminal info
 
-Generated: 2026-05-05T00:03:18.502155+00:00
+Generated: 2026-05-05T01:35:00.884118+00:00
 Source: ncurses terminfo.src 1.1198
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 

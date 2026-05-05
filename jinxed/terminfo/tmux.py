@@ -1,7 +1,7 @@
 """
 tmux terminal info
 
-Generated: 2026-05-05T00:03:18.504717+00:00
+Generated: 2026-05-05T01:35:00.887482+00:00
 Source: ncurses terminfo.src 1.1198
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
@@ -10,20 +10,20 @@ distributed under the MIT/X11 license.  See LICENSE.ncurses.
 """
 
 BOOL_CAPS = [
-    'am',
-    'hs',
-    'km',
-    'mir',
-    'msgr',
-    'xenl',
+    'am',      # (auto_right_margin) terminal has automatic margins
+    'hs',      # (has_status_line) has extra status line
+    'km',      # (has_meta_key) Has a meta key (i.e., sets 8th-bit)
+    'mir',     # (move_insert_mode) safe to move while in insert mode
+    'msgr',    # (move_standout_mode) safe to move while in standout mode
+    'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
 ]
 
 NUM_CAPS = {
-    'colors': 8,
-    'cols': 80,
-    'it': 8,
-    'lines': 24,
-    'pairs': 64,
+    'colors': 8,    # (max_colors) maximum number of colors on screen
+    'cols': 80,     # (columns) number of columns in a line
+    'it': 8,        # (init_tabs) tabs initially every # spaces
+    'lines': 24,    # (lines) number of lines on screen or page
+    'pairs': 64,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
 STR_CAPS = {

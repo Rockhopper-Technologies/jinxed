@@ -1,7 +1,7 @@
 """
 cons25 terminal info
 
-Generated: 2026-05-05T00:03:18.499992+00:00
+Generated: 2026-05-05T01:35:00.883011+00:00
 Source: ncurses terminfo.src 1.1198
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
@@ -10,21 +10,21 @@ distributed under the MIT/X11 license.  See LICENSE.ncurses.
 """
 
 BOOL_CAPS = [
-    'am',
-    'bce',
-    'bw',
-    'eo',
-    'msgr',
-    'npc',
+    'am',      # (auto_right_margin) terminal has automatic margins
+    'bce',     # (back_color_erase) screen erased with background color
+    'bw',      # (auto_left_margin) cub1 wraps from column 0 to last column
+    'eo',      # (erase_overstrike) can erase overstrikes with a blank
+    'msgr',    # (move_standout_mode) safe to move while in standout mode
+    'npc',     # (no_pad_char) pad character does not exist
 ]
 
 NUM_CAPS = {
-    'colors': 8,
-    'cols': 80,
-    'it': 8,
-    'lines': 25,
-    'ncv': 21,
-    'pairs': 64,
+    'colors': 8,    # (max_colors) maximum number of colors on screen
+    'cols': 80,     # (columns) number of columns in a line
+    'it': 8,        # (init_tabs) tabs initially every # spaces
+    'lines': 25,    # (lines) number of lines on screen or page
+    'ncv': 21,      # (no_color_video) video attributes that cannot be used with colors
+    'pairs': 64,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
 STR_CAPS = {

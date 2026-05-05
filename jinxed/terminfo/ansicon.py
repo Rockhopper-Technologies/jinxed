@@ -25,48 +25,13 @@ STR_CAPS['setb'] = b'\x1b[48;5;%p1%dm'
 STR_CAPS['setf'] = b'\x1b[38;5;%p1%dm'
 
 # Removed - These do not appear to be supported
-del STR_CAPS['dim']
-del STR_CAPS['flash']
-del STR_CAPS['invis']
-del STR_CAPS['kcbt']
-del STR_CAPS['kEND']
-del STR_CAPS['kf37']
-del STR_CAPS['kf38']
-del STR_CAPS['kf39']
-del STR_CAPS['kf40']
-del STR_CAPS['kf41']
-del STR_CAPS['kf42']
-del STR_CAPS['kf43']
-del STR_CAPS['kf44']
-del STR_CAPS['kf45']
-del STR_CAPS['kf46']
-del STR_CAPS['kf47']
-del STR_CAPS['kf48']
-del STR_CAPS['kf61']
-del STR_CAPS['kf62']
-del STR_CAPS['kf63']
-del STR_CAPS['kIC']
-del STR_CAPS['kind']
-del STR_CAPS['kLFT']
-del STR_CAPS['kmous']
-del STR_CAPS['kNXT']
-del STR_CAPS['kPRV']
-del STR_CAPS['kri']
-del STR_CAPS['kRIT']
-del STR_CAPS['meml']
-del STR_CAPS['memu']
-del STR_CAPS['ritm']
-del STR_CAPS['rmam']
-del STR_CAPS['rmcup']
-del STR_CAPS['rmir']
-del STR_CAPS['rmkx']
-del STR_CAPS['rmm']
-del STR_CAPS['sitm']
-del STR_CAPS['smam']
-del STR_CAPS['smcup']
-del STR_CAPS['smir']
-del STR_CAPS['smkx']
-del STR_CAPS['smm']
+for _drop in ('dim', 'flash', 'invis', 'kcbt', 'kEND', 'kf37', 'kf38', 'kf39',
+              'kf40', 'kf41', 'kf42', 'kf43', 'kf44', 'kf45', 'kf46', 'kf47',
+              'kf48', 'kf61', 'kf62', 'kf63', 'kIC', 'kind', 'kLFT', 'kmous',
+              'kNXT', 'kPRV', 'kri', 'kRIT', 'meml', 'memu', 'ritm', 'rmam',
+              'rmcup', 'rmir', 'rmkx', 'rmm', 'sitm', 'smam', 'smcup', 'smir',
+              'smkx', 'smm'):
+    STR_CAPS.pop(_drop, None)
 
 # Modified
 NUM_CAPS['colors'] = 16
