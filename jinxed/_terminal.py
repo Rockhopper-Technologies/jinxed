@@ -87,10 +87,10 @@ class Terminal(object):
         """
         Reimplementation of curses.tigetstr()
         """
-
         # XTGETTCAP cache takes priority
         if capname in self._xtgettcap_str_caps:
-            return self._xtgettcap_str_caps[capname]
+            val = self._xtgettcap_str_caps[capname]
+            return val if isinstance(val, bytes) else val.encode('latin-1')
 
         return self.terminfo.STR_CAPS.get(capname, None)
 
