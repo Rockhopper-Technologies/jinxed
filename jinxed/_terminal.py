@@ -128,24 +128,6 @@ def setupterm(term=None, fd=-1):  # pylint: disable=invalid-name
     TERM = Terminal(term, fd)
 
 
-def inject_xtgettcap(str_caps=None, num_caps=None, bool_caps=None):
-    # type: (Optional[Dict[str, str]], Optional[Dict[str, int]], Optional[Set[str]]) -> None
-    """
-    Inject capabilities obtained via XTGETTCAP (DCS +q) queries.
-
-    After injection, module-level :func:`tigetstr`, :func:`tigetnum`, and
-    :func:`tigetflag` consult these caches before falling back to the
-    virtual terminfo database.
-
-    :arg dict str_caps: Mapping of capability name to decoded string value.
-    :arg dict num_caps: Mapping of capability name to integer value.
-    :arg set bool_caps: Set of boolean capability names that are present.
-    """
-    if TERM is None:
-        raise error('Must call setupterm() first')
-    TERM.inject_xtgettcap(str_caps=str_caps, num_caps=num_caps, bool_caps=bool_caps)
-
-
 def tigetflag(capname):
     """
     Reimplementation of :py:func:`curses.tigetflag`

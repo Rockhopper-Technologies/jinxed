@@ -1,8 +1,12 @@
 """
 xterm terminal info
 
-Generated: 2026-05-04T21:31:56.636866+00:00
-Source: ncurses 6.4.20240113 (hash: c9aac1e1e58b)
+Generated: 2026-05-05T00:03:18.505866+00:00
+Source: ncurses terminfo.src 1.1198
+        https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
+
+This file is derived from the ncurses terminfo database, which is
+distributed under the MIT/X11 license.  See LICENSE.ncurses.
 """
 
 BOOL_CAPS = [
@@ -78,7 +82,7 @@ STR_CAPS = {
     'ka3': b'\x1bOy',
     'kb2': b'\x1bOu',
     'kbeg': b'\x1bOE',
-    'kbs': b'\x7f',
+    'kbs': b'\b',
     'kc1': b'\x1bOq',
     'kc3': b'\x1bOs',
     'kcbt': b'\x1b[Z',
@@ -162,8 +166,6 @@ STR_CAPS = {
     'mc0': b'\x1b[i',
     'mc4': b'\x1b[4i',
     'mc5': b'\x1b[5i',
-    'meml': b'\x1bl',
-    'memu': b'\x1bm',
     'mgc': b'\x1b[?69l',
     'nel': b'\x1bE',
     'op': b'\x1b[39;49m',

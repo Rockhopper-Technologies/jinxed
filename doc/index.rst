@@ -21,9 +21,10 @@ Overview
 Jinxed is a pure-Python implementation of a subset of the Python :py:mod:`curses` library.
 
 It provides :py:func:`~jinxed.tigetstr`, :py:func:`~jinxed.tparm`, and related terminfo
-functions on all platforms, backed by a bundled virtual terminfo database.  It was written
-initially to support `Blessed <https://pypi.org/project/blessed>`_ on Windows, and now
-serves as its sole terminfo provider on all platforms.
+functions on all platforms with a simplified terminfo(5) database derived from ncurses.
+
+It was written initially to support `Blessed <https://pypi.org/project/blessed>`_ on Windows, but
+serves as a pretty ok replacement of curses on all platforms.
 
 Installation
 ------------

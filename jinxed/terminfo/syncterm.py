@@ -2,7 +2,7 @@
 syncterm terminal info
 
 Source: SyncTERM src/syncterm/conn_pty.c
-  Function: pty_connect() — assembles termcap at runtime via xp_asprintf
+  Function: pty_connect() -- assembles termcap at runtime via xp_asprintf
   URL:      https://gitlab.synchro.net/main/sbbs/-/raw/master/src/syncterm/conn_pty.c
   Caps:     256-color palette when CONIO_OPT_PALETTE_SETTING is set,
             8-color fallback otherwise (this module uses 256-color).

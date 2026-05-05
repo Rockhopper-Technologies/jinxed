@@ -1,8 +1,12 @@
 """
 xterm-256color terminal info
 
-Generated: 2026-05-04T21:31:56.636866+00:00
-Source: ncurses 6.4.20240113 (hash: c9aac1e1e58b)
+Generated: 2026-05-05T00:03:18.506650+00:00
+Source: ncurses terminfo.src 1.1198
+        https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
+
+This file is derived from the ncurses terminfo database, which is
+distributed under the MIT/X11 license.  See LICENSE.ncurses.
 """
 
 from .xterm import BOOL_CAPS, NUM_CAPS, STR_CAPS
