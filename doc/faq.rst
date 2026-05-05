@@ -10,35 +10,41 @@
 Frequently Asked Questions
 ==========================
 
-
 Why is Jinxed called Jinxed?
 ----------------------------------
 
-Jinxed was written to support Blessed_ on Windows. We originally want to call it Cursed,
+Jinxed was written to support blessed_ on Windows. We originally want to call it Cursed,
 to continue the theme, but the name was taken. Jinxed is a synonym for cursed.
 
+Can you add support for a terminal?
+-----------------------------------
 
-Can you add support for _______ terminal?
----------------------------------------------------
+A select few terminal from `terminfo(5)`_ database were selected, excluding many historic and
+unlikely terminal types (like ``avatar``). Rather than distributed a full list of over 1,000
+code-generated python files, a small subset is selected.
 
-We are happy to add support for as many terminals as we can.
-However, not all terminals can be supported. There a few requirements.
+However, if we're missing support for a terminal please let us know its unique ``TERM`` name,
+whether it is in the `terminfo(5)`_ database, or provide an equivalent reference or directly `create
+an issue <https://github.com/Rockhopper-Technologies/jinxed/issues>`_ or pull request.
 
-  1. The terminal must be detectable programmatically
+We can also provide stubs for terminal capabilities, like what was done with the (now legacy) win32 
+console. Not all terminals can be supported, there a few requirements:
 
-      We need to be able to identify the terminal in some reasonable way
-      and differentiate it from other terminals. This could be through environment variables,
-      the :py:mod:`platform` module, or some other method.
+1. The terminal must be detectable programmatically
 
-  2. Virtual terminal codes must be supported and documented
+   We need to be able to identify the terminal in some reasonable way
+   and differentiate it from other terminals. This could be through environment variables,
+   (eg. ``TERM``) the :py:mod:`platform` module, ``TTYPE`` telnet negotiation, or some other method.
 
-      While not all codes need to be supported, a majority of them should be
+2. Virtual terminal codes must be supported and documented
 
-  3. Terminal dimensions must be detectable
+   While not all codes need to be supported, a majority of them should be
 
-      The height and width of the terminal must be available to the running process.
+3. Terminal dimensions must be detectable
 
-  4. The terminal should support modes similar to cbreak and raw
+   The height and width of the terminal must be available to the running process.
 
+4. The terminal should support modes similar to cbreak and raw
 
-.. _Blessed: https://pypi.org/project/blessed
+.. _blessed: https://pypi.org/project/blessed
+.. _`terminfo(5)`: https://invisible-island.net/ncurses/man/terminfo.5.html
