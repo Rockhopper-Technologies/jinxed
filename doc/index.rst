@@ -38,15 +38,12 @@ Installation
 
     $ pip install jinxed
 
-
-.. _Blessed: https://pypi.org/project/blessed
-
 Source
 ------
 
-Source is available on `GitHub <https://github.com/Rockhopper-Technologies/jinxed>`_
+Source is available `on GitHub <https://github.com/Rockhopper-Technologies/jinxed>`_
 
 Issues
 ------
 
-Please report issues `here <https://github.com/Rockhopper-Technologies/jinxed/issues>`_.
+Please report issues `on GitHub <https://github.com/Rockhopper-Technologies/jinxed/issues>`_.
