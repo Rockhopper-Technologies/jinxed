@@ -22,15 +22,18 @@ lifetime of the process, and may not be changed:
     >>> curses.tigetstr('sgr')
     b'%?%p9%t\x1b(0%e\x1b(B%;\x1b[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m'
 
-In this example, the second call of tigetstr should have returned a capability string for **vt100**,
-``b'\x1b[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\x0e%e\x0f%;$<2>``, but the
-**xterm** capability was returned, instead!
-
 This is especially a problem for writing telnet or ssh network services like MUDs or BBSs, where
 thread-safe support for multiple terminal capabilities in a single process session is required.
-
 Jinxed has no such limitation, offering a class-first variant of the global C functions, the
-`jinxed.Terminal`_ class can be instantiated for many terminal types per process.
+`jinxed.Terminal`_ class can be instantiated for many terminal types per process:
+
+.. code-block:: python
+
+    >>> import jinxed
+    >>> jinxed.Terminal('xterm').tigetstr('sgr')
+    b'\x1b[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m'
+    >>> jinxed.Terminal('vt100').tigetstr('sgr')
+    b'\x1b[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m'
 
 Database
 ---------
