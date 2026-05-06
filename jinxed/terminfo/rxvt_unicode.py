@@ -1,8 +1,8 @@
 """
 rxvt-unicode terminal info
 
-Generated: 2026-05-05T01:35:00.884232+00:00
-Source: ncurses terminfo.src 1.1198
+Revision: 1.1198 
+Source: ncurses terminfo.src
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -65,7 +65,8 @@ STR_CAPS = {
     'ed': b'\x1b[J',
     'el': b'\x1b[K',
     'el1': b'\x1b[1K',
-    'flash': b'\x1b[?5h$<20/>\x1b[?5l',
+    'enacs': b'',
+    'flash': b'\x1b[?5h\x1b[?5l',
     'fsl': b'\a',
     'home': b'\x1b[H',
     'hpa': b'\x1b[%i%p1%dG',
@@ -140,7 +141,7 @@ STR_CAPS = {
     'ri': b'\x1bM',
     'rin': b'\x1b[%p1%dT',
     'ritm': b'\x1b[23m',
-    'rmacs': b'\x1b(B',
+    'rmacs': b'',
     'rmam': b'\x1b[?7l',
     'rmcup': b'\x1b[r\x1b[?1049l',
     'rmir': b'\x1b[4l',
@@ -149,8 +150,8 @@ STR_CAPS = {
     'rmul': b'\x1b[24m',
     'rs1': b'\x1bc',
     'rs2': b'\x1b[r\x1b[m\x1b[?7;25h\x1b[?1;3;4;5;6;9;66;1000;1001;1049l\x1b[4l',
-    's0ds': b'\x1b(B',
-    's1ds': b'\x1b(0',
+    's0ds': b'',
+    's1ds': b'',
     's2ds': b'\x1b*B',
     's3ds': b'\x1b+B',
     'sc': b'\x1b7',
@@ -158,10 +159,10 @@ STR_CAPS = {
     'setaf': b'\x1b[38;5;%p1%dm',
     'setb': b'%?%p1%{7}%>%t\x1b[48;5;%p1%dm%e\x1b[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m%;',
     'setf': b'%?%p1%{7}%>%t\x1b[38;5;%p1%dm%e\x1b[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m%;',
-    'sgr': b'\x1b[%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\x1b(0%e\x1b(B%;',
-    'sgr0': b'\x1b[m\x1b(B',
+    'sgr': b'\x1b[%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m',
+    'sgr0': b'\x1b[m',
     'sitm': b'\x1b[3m',
-    'smacs': b'\x1b(0',
+    'smacs': b'',
     'smam': b'\x1b[?7h',
     'smcup': b'\x1b[?1049h',
     'smir': b'\x1b[4h',

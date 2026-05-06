@@ -1,8 +1,8 @@
 """
 screen terminal info
 
-Generated: 2026-05-05T01:35:00.886786+00:00
-Source: ncurses terminfo.src 1.1198
+Revision: 1.1198 
+Source: ncurses terminfo.src
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -54,7 +54,7 @@ STR_CAPS = {
     'ed': b'\x1b[J',
     'el': b'\x1b[K',
     'el1': b'\x1b[1K',
-    'enacs': b'\x1b(B\x1b)0',
+    'enacs': b'',
     'flash': b'\x1bg',
     'home': b'\x1b[H',
     'hpa': b'\x1b[%i%p1%dG',
@@ -65,7 +65,6 @@ STR_CAPS = {
     'il1': b'\x1b[L',
     'ind': b'\n',
     'indn': b'\x1b[%p1%dS',
-    'is2': b'\x1b)0',
     'kbs': b'\x7f',
     'kcbt': b'\x1b[Z',
     'kcub1': b'\x1bOD',
@@ -97,19 +96,21 @@ STR_CAPS = {
     'rev': b'\x1b[7m',
     'ri': b'\x1bM',
     'rin': b'\x1b[%p1%dT',
-    'rmacs': b'\x0f',
+    'rmacs': b'',
     'rmcup': b'\x1b[?1049l',
     'rmir': b'\x1b[4l',
     'rmkx': b'\x1b[?1l\x1b>',
     'rmso': b'\x1b[23m',
     'rmul': b'\x1b[24m',
     'rs2': b'\x1bc\x1b[?1000l\x1b[?25h',
+    's0ds': b'',
+    's1ds': b'',
     'sc': b'\x1b7',
     'setab': b'\x1b[4%p1%dm',
     'setaf': b'\x1b[3%p1%dm',
-    'sgr': b'\x1b[0%?%p6%t;1%;%?%p1%t;3%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;m%?%p9%t\x0e%e\x0f%;',
-    'sgr0': b'\x1b[m\x0f',
-    'smacs': b'\x0e',
+    'sgr': b'\x1b[0%?%p6%t;1%;%?%p1%t;3%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;m',
+    'sgr0': b'\x1b[m',
+    'smacs': b'',
     'smcup': b'\x1b[?1049h',
     'smir': b'\x1b[4h',
     'smkx': b'\x1b[?1h\x1b=',

@@ -1,8 +1,8 @@
 """
 vt220 terminal info
 
-Generated: 2026-05-05T01:35:00.887831+00:00
-Source: ncurses terminfo.src 1.1198
+Revision: 1.1198 
+Source: ncurses terminfo.src
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -52,8 +52,8 @@ STR_CAPS = {
     'ed': b'\x1b[J',
     'el': b'\x1b[K',
     'el1': b'\x1b[1K',
-    'enacs': b'\x1b)0',
-    'flash': b'\x1b[?5h$<200/>\x1b[?5l',
+    'enacs': b'',
+    'flash': b'\x1b[?5h\x1b[?5l',
     'home': b'\x1b[H',
     'ht': b'\t',
     'hts': b'\x1bH',
@@ -104,16 +104,18 @@ STR_CAPS = {
     'rc': b'\x1b8',
     'rev': b'\x1b[7m',
     'ri': b'\x1bM',
-    'rmacs': b'\x1b(B$<4>',
+    'rmacs': b'',
     'rmam': b'\x1b[?7l',
     'rmir': b'\x1b[4l',
     'rmso': b'\x1b[27m',
     'rmul': b'\x1b[24m',
     'rs1': b'\x1b[?3l',
+    's0ds': b'',
+    's1ds': b'',
     'sc': b'\x1b7',
-    'sgr': b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;m%?%p9%t\x1b(0%e\x1b(B%;$<2>',
-    'sgr0': b'\x1b[m\x1b(B',
-    'smacs': b'\x1b(0$<2>',
+    'sgr': b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;m',
+    'sgr0': b'\x1b[m',
+    'smacs': b'',
     'smam': b'\x1b[?7h',
     'smir': b'\x1b[4h',
     'smso': b'\x1b[7m',

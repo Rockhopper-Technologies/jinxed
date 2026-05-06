@@ -64,13 +64,14 @@ class Terminal(object):
         except ImportError:
             raise_from_none(error('Could not find terminal %s' % term))
 
-    def inject_xtgettcap(self, str_caps=None, num_caps=None, bool_caps=None):
+    def overlay_capabilities(self, str_caps=None, num_caps=None, bool_caps=None):
         # type: (Optional[Dict[str, str]], Optional[Dict[str, int]], Optional[Set[str]]) -> None
         """
-        Inject capabilities obtained via XTGETTCAP (DCS +q) queries.
+        Overlay terminfo capabilities onto this terminal instance.
 
-        After injection, :meth:`tigetstr`, :meth:`tigetnum`, and :meth:`tigetflag`
-        consult these caches before falling back to the virtual terminfo database.
+        Methods :meth:`tigetstr`, :meth:`tigetnum`, and :meth:`tigetflag` consult these given caches
+        before falling back to the virtual terminfo database. This can be used to "patch" the
+        capabilities database or with XTGETTCAP capability responses.
 
         :arg dict str_caps: Mapping of capability name to decoded string value.
         :arg dict num_caps: Mapping of capability name to integer value.

@@ -1,8 +1,8 @@
 """
 st terminal info
 
-Generated: 2026-05-05T01:35:00.887062+00:00
-Source: ncurses terminfo.src 1.1198
+Revision: 1.1198 
+Source: ncurses terminfo.src
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -57,8 +57,8 @@ STR_CAPS = {
     'ed': b'\x1b[J',
     'el': b'\x1b[K',
     'el1': b'\x1b[1K',
-    'enacs': b'\x1b)0',
-    'flash': b'\x1b[?5h$<100/>\x1b[?5l',
+    'enacs': b'',
+    'flash': b'\x1b[?5h\x1b[?5l',
     'fsl': b'\a',
     'home': b'\x1b[H',
     'hpa': b'\x1b[%i%p1%dG',
@@ -178,7 +178,7 @@ STR_CAPS = {
     'ri': b'\x1bM',
     'rin': b'\x1b[%p1%dT',
     'ritm': b'\x1b[23m',
-    'rmacs': b'\x1b(B',
+    'rmacs': b'',
     'rmcup': b'\x1b[?1049l',
     'rmir': b'\x1b[4l',
     'rmkx': b'\x1b[?1l\x1b>',
@@ -186,15 +186,17 @@ STR_CAPS = {
     'rmul': b'\x1b[24m',
     'rs1': b'\x1bc',
     'rs2': b'\x1b[4l\x1b>\x1b[?1034l',
+    's0ds': b'',
+    's1ds': b'',
     'sc': b'\x1b7',
     'setab': b'\x1b[4%p1%dm',
     'setaf': b'\x1b[3%p1%dm',
     'setb': b'\x1b[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m',
     'setf': b'\x1b[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m',
-    'sgr': b'%?%p9%t\x1b(0%e\x1b(B%;\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;8%;m',
+    'sgr': b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;8%;m',
     'sgr0': b'\x1b[0m',
     'sitm': b'\x1b[3m',
-    'smacs': b'\x1b(0',
+    'smacs': b'',
     'smcup': b'\x1b[?1049h',
     'smir': b'\x1b[4h',
     'smkx': b'\x1b[?1h\x1b=',

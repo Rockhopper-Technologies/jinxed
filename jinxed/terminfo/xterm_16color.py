@@ -1,8 +1,8 @@
 """
-xterm-16color terminal info
+xterm-16color terminal info (derived from xterm)
 
-Generated: 2026-05-05T01:35:00.888279+00:00
-Source: ncurses terminfo.src 1.1198
+Revision: 1.1198 
+Source: ncurses terminfo.src
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -15,14 +15,15 @@ BOOL_CAPS = BOOL_CAPS[:]
 NUM_CAPS = NUM_CAPS.copy()
 STR_CAPS = STR_CAPS.copy()
 
-# Added bools
 BOOL_CAPS.append('ccc')
-# Modified/added nums
+
 NUM_CAPS['colors'] = 16
 NUM_CAPS['pairs'] = 256
+
 # Added strings
 STR_CAPS['initc'] = b'\x1b]4;%p1%d;rgb:%p2%{255}%*%{1000}%/%2.2X/%p3%{255}%*%{1000}%/%2.2X/%p4%{255}%*%{1000}%/%2.2X\x1b\x5c'
 STR_CAPS['oc'] = b'\x1b]104\a'
+
 # Modified strings
 STR_CAPS['rs1'] = b'\x1bc\x1b]104\a'
 STR_CAPS['setab'] = b'\x1b[%?%p1%{8}%<%t%p1%\x27(\x27%+%e%p1%{92}%+%;%dm'

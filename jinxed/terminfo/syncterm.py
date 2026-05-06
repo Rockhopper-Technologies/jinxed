@@ -30,8 +30,12 @@ NUM_CAPS = {
 }
 
 STR_CAPS = {
+    'enacs': b'',  # empty (G0/SO/SI stripped)
+    'rmacs': b'',  # empty (G0/SO/SI stripped)
+    's0ds': b'',  # empty (G0/SO/SI stripped)
+    's1ds': b'',  # empty (G0/SO/SI stripped)
+    'smacs': b'',  # empty (G0/SO/SI stripped)
     'acsc': (
-        b'\x7d\x9c|\x80{\x82+\x10,\x11l\x8am\x80k\xb7j\x99'
         b'u\x94t\x83v\x81w\x82q\x84x\x93n\x85`^Da\xb0f\xf8'
         b'g\xf1~\xf9.^Y-^Xh\xb1i^U0\x9by\xf3z\xf2'
     ),

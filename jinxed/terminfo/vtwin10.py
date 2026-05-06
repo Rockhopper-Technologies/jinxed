@@ -12,6 +12,12 @@ from .xterm_256color import BOOL_CAPS, NUM_CAPS, STR_CAPS
 BOOL_CAPS = BOOL_CAPS[:]
 NUM_CAPS = NUM_CAPS.copy()
 STR_CAPS = STR_CAPS.copy()
+STR_CAPS['enacs'] = b''  # empty (G0/SO/SI stripped)
+STR_CAPS['rmacs'] = b''  # empty (G0/SO/SI stripped)
+STR_CAPS['s0ds'] = b''  # empty (G0/SO/SI stripped)
+STR_CAPS['s1ds'] = b''  # empty (G0/SO/SI stripped)
+STR_CAPS['smacs'] = b''  # empty (G0/SO/SI stripped)
+
 
 # Added
 STR_CAPS['cht'] = b'\x1b[%p1%dI'

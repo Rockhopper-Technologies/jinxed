@@ -54,31 +54,59 @@
 
 .. end-badges
 
+Introduction
+============
 
-Overview
-========
+Jinxed is a pure-Python implementation of a subset of the Python curses_ library.
 
-Jinxed is an implementation of a subset of the Python curses_ library.
-It provides pure Python implementations of terminfo functions such as `tigetstr()`_
-and `tparm()`_ as well as convenience methods for working with Windows terminals.
+It provides :py:func:`~jinxed.tigetstr`, :py:func:`~jinxed.tparm`, and related terminfo
+functions on all platforms with a virtual `terminfo(5)`_ database.
 
-Jinxed was initially written to support Blessed_ on Windows, but will work on all platforms.
+Jinxed provides pure-python implementations of curses_ functions:
 
+- `setupterm()`_ as `jinxed.setupterm()`_
+- `tigetflag()`_ as `jinxed.tigetflag()`_
+- `tigetnum()`_ as `jinxed.tigetnum()`_
+- `tigetstr()`_ as `jinxed.tigetstr()`_
+- `tparm()`_ as `jinxed.tparm()`_
+
+Although Jinxed was created primarily to be a dependency to supply Windows support for the
+`blessed`_ 1.16 release for lightweight sequences for the (now legacy) win32 Console API, it has
+since been extended to contain a subset of the ncurses 6.6 `terminfo(5)`_ database and to allow
+dynamic injection capabilities for `XTGETTCAP`_ support, demonstrated in blessed_ 1.40.
+
+Further documentation can be found on `Read the Docs <https://jinxed.readthedocs.io/en/stable/>`_.
 
 Installation
-============
+------------
 
 .. code-block:: console
 
     $ pip install jinxed
 
+Source
+------
 
-Documentation
-=============
+Source is available `on GitHub <https://github.com/Rockhopper-Technologies/jinxed>`_
 
-Jinxed documentation can be found on `Read the Docs <https://jinxed.readthedocs.io/en/stable/>`_.
+Issues
+------
 
-.. _Blessed: https://pypi.org/project/blessed
+Please report issues `on GitHub <https://github.com/Rockhopper-Technologies/jinxed/issues>`_
+
 .. _curses: https://docs.python.org/library/curses.html
-.. _tigetstr(): https://docs.python.org/library/curses.html#curses.tigetstr
-.. _tparm(): https://docs.python.org/library/curses.html#curses.tparm
+.. _`jinxed.setupterm()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.setupterm
+.. _`jinxed.tigetflag()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.tigetflag
+.. _`jinxed.tigetnum()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.tigetnum
+.. _`jinxed.tigetstr()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.tigetstr
+.. _`jinxed.tparm()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.tparm
+.. _`setupterm()`: https://docs.python.org/library/curses.html#curses.setupterm
+.. _`terminfo(5)`: https://man7.org/linux/man-pages/man5/terminfo.5.html
+.. _`terminfo.src`: https://invisible-island.net/ncurses/terminfo.src.html
+.. _`tigetflag()`: https://docs.python.org/library/curses.html#curses.tigetflag
+.. _`tigetflag()`: https://docs.python.org/library/curses.html#curses.tigetflag
+.. _`tigetnum()`: https://docs.python.org/library/curses.html#curses.tigetnum
+.. _`tigetnum()`: https://docs.python.org/library/curses.html#curses.tigetnum
+.. _`tigetstr()`: https://docs.python.org/library/curses.html#curses.tigetstr
+.. _`tigetstr()`: https://docs.python.org/library/curses.html#curses.tigetstr
+.. _`tparm()`: https://docs.python.org/library/curses.html#curses.tparm

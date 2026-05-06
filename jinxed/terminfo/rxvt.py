@@ -1,8 +1,8 @@
 """
 rxvt terminal info
 
-Generated: 2026-05-05T01:35:00.883885+00:00
-Source: ncurses terminfo.src 1.1198
+Revision: 1.1198 
+Source: ncurses terminfo.src
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -51,8 +51,8 @@ STR_CAPS = {
     'ed': b'\x1b[J',
     'el': b'\x1b[K',
     'el1': b'\x1b[1K',
-    'enacs': b'\x1b(B\x1b)0',
-    'flash': b'\x1b[?5h$<100/>\x1b[?5l',
+    'enacs': b'',
+    'flash': b'\x1b[?5h\x1b[?5l',
     'home': b'\x1b[H',
     'hpa': b'\x1b[%i%p1%dG',
     'ht': b'\t',
@@ -144,7 +144,7 @@ STR_CAPS = {
     'rc': b'\x1b8',
     'rev': b'\x1b[7m',
     'ri': b'\x1bM',
-    'rmacs': b'\x0f',
+    'rmacs': b'',
     'rmcup': b'\x1b[2J\x1b[?47l\x1b8',
     'rmir': b'\x1b[4l',
     'rmkx': b'\x1b>',
@@ -152,14 +152,14 @@ STR_CAPS = {
     'rmul': b'\x1b[24m',
     'rs1': b'\x1b>\x1b[1;3;4;5;6l\x1b[?7h\x1b[m\x1b[r\x1b[2J\x1b[H',
     'rs2': b'\x1b[r\x1b[m\x1b[2J\x1b[H\x1b[?7h\x1b[?1;3;4;6l\x1b[4l\x1b>\x1b[?1000l\x1b[?25h',
-    's0ds': b'\x1b(B',
-    's1ds': b'\x1b(0',
+    's0ds': b'',
+    's1ds': b'',
     'sc': b'\x1b7',
     'setab': b'\x1b[4%p1%dm',
     'setaf': b'\x1b[3%p1%dm',
-    'sgr': b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\x0e%e\x0f%;',
-    'sgr0': b'\x1b[m\x0f',
-    'smacs': b'\x0e',
+    'sgr': b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m',
+    'sgr0': b'\x1b[m',
+    'smacs': b'',
     'smcup': b'\x1b7\x1b[?47h',
     'smir': b'\x1b[4h',
     'smkx': b'\x1b=',

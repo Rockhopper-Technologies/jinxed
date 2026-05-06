@@ -1,8 +1,8 @@
 """
 cons25 terminal info
 
-Generated: 2026-05-05T01:35:00.883011+00:00
-Source: ncurses terminfo.src 1.1198
+Revision: 1.1198 
+Source: ncurses terminfo.src
         https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -54,6 +54,7 @@ STR_CAPS = {
     'ech': b'\x1b[%p1%dX',
     'ed': b'\x1b[J',
     'el': b'\x1b[K',
+    'enacs': b'',
     'home': b'\x1b[H',
     'hpa': b'\x1b[%i%p1%d`',
     'ht': b'\t',
@@ -130,13 +131,17 @@ STR_CAPS = {
     'rev': b'\x1b[7m',
     'ri': b'\x1b[T',
     'rin': b'\x1b[%p1%dT',
+    'rmacs': b'',
     'rmso': b'\x1b[m',
     'rs2': b'\x1b[x\x1b[m\x1bc',
+    's0ds': b'',
+    's1ds': b'',
     'sc': b'\x1b7',
     'setab': b'\x1b[4%p1%dm',
     'setaf': b'\x1b[3%p1%dm',
     'sgr': b'\x1b[0%?%p1%t;2;7%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;30;1%;%?%p6%t;1%;m',
     'sgr0': b'\x1b[m',
+    'smacs': b'',
     'smso': b'\x1b[7m',
     'vpa': b'\x1b[%i%p1%dd',
 }
