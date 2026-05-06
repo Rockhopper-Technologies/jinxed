@@ -8,9 +8,8 @@ libraries.
 Singleton-free
 --------------
 
-Python's :func:`curses.setupterm` has something of an undocumented singleton:
-:func:`curses.setupterm` allows only a single terminal type to be initialized for the lifetime of
-the process, and may not be changed:
+Python's has something of an undocumented singleton in :func:`curses.setupterm`: it allows only a
+single terminal type to be initialized for the lifetime of the process, and may not be changed:
 
 .. code-block:: python
 
@@ -19,6 +18,7 @@ the process, and may not be changed:
     >>> curses.tigetstr('sgr')
     b'%?%p9%t\x1b(0%e\x1b(B%;\x1b[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m'
     >>> curses.setupterm('vt100')
+    # bug: curses return capabilities 'xterm' after call setupterm('vt100')
     >>> curses.tigetstr('sgr')
     b'%?%p9%t\x1b(0%e\x1b(B%;\x1b[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m'
 
@@ -32,6 +32,7 @@ Jinxed has no such limitation, offering a class-first variant of the global C fu
     >>> import jinxed
     >>> jinxed.Terminal('xterm').tigetstr('sgr')
     b'\x1b[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m'
+    # fixed: jinxed correctly returns for 'vt100'
     >>> jinxed.Terminal('vt100').tigetstr('sgr')
     b'\x1b[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m'
 
