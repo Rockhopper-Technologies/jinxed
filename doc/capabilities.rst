@@ -133,9 +133,9 @@ Three kinds of Control Codes **are** removed from the virtual database:
   and their related ``\x0e`` and ``\x0f`` Shift-Out and Shift-In control codes are removed.  These
   legacy sequences no longer apply to unicode/utf-8 terminals, and mainly only cause confusion.
 
-  Historically, when a curses program used an sgr sequences, the 9th parameter could be used to turn
-  on line drawing mode, ``tparm(sgr, 0,0,0,0,0,0,0,0,1)``, and the sgr string yielded with
-  ``\x1b(0``, and calling with param 9=0 (default) emitted sequence ``\x1b(B`` to switch back.
+  Historically, when a curses program used an sgr sequence the 9th parameter could be used to turn
+  on line drawing mode, ``tparm(sgr, 0,0,0,0,0,0,0,0,1)``, and the sgr string was yielded with
+  ``\x1b(0``, and calling with param 9=0 (default) yield with ``\x1b(B`` to switch back.
 
   Jinxed provides no functions to manage historic terminal character sets and so they are removed.
 
