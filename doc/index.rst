@@ -1,3 +1,7 @@
+=================================
+Welcome to Jinxed documentation!
+=================================
+
 ..
   Copyright 2019 Avram Lubkin, All Rights Reserved
 
@@ -8,7 +12,6 @@
 :github_url: https://github.com/Rockhopper-Technologies/jinxed
 
 .. toctree::
-   :hidden:
 
    intro
    capabilities
