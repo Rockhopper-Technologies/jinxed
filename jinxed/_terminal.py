@@ -54,10 +54,10 @@ class Terminal(object):
         if term is None:
             term = get_term(self.stream_fd)
 
-        # XTGETTCAP injection caches (populated externally)
-        self._xtgettcap_str_caps = {}   # type: Dict[str, bytes]
-        self._xtgettcap_num_caps = {}   # type: Dict[str, int]
-        self._xtgettcap_bool_caps = set()  # type: Set[str]
+        # Overlay capability caches (populated externally)
+        self._overlay_str_caps = {}   # type: Dict[str, bytes]
+        self._overlay_num_caps = {}   # type: Dict[str, int]
+        self._overlay_bool_caps = set()  # type: Set[str]
 
         try:
             self.terminfo = importlib.import_module(
@@ -81,7 +81,7 @@ class Terminal(object):
 
         Methods :meth:`tigetstr`, :meth:`tigetnum`, and :meth:`tigetflag` consult these given caches
         before falling back to the virtual terminfo database. This can be used to "patch" the
-        capabilities database or with XTGETTCAP capability responses.
+        capabilities database or with dynamic capability responses.
 
         :arg dict str_caps: Mapping of capability name to decoded string value.
         :arg dict num_caps: Mapping of capability name to integer value.
@@ -89,18 +89,18 @@ class Terminal(object):
         """
         if str_caps:
             for k, v in str_caps.items():
-                self._xtgettcap_str_caps[k] = v if isinstance(v, bytes) else v.encode('latin-1')
+                self._overlay_str_caps[k] = v if isinstance(v, bytes) else v.encode('latin-1')
         if num_caps:
-            self._xtgettcap_num_caps.update(num_caps)
+            self._overlay_num_caps.update(num_caps)
         if bool_caps:
-            self._xtgettcap_bool_caps.update(bool_caps)
+            self._overlay_bool_caps.update(bool_caps)
 
     def tigetstr(self, capname):
         """
         Reimplementation of curses.tigetstr()
         """
-        # XTGETTCAP cache takes priority (values are pre-encoded in overlay_capabilities)
-        val = self._xtgettcap_str_caps.get(capname)
+        # Overlay cache takes priority (values are pre-encoded in overlay_capabilities)
+        val = self._overlay_str_caps.get(capname)
         if val is not None:
             return val
 
@@ -111,9 +111,9 @@ class Terminal(object):
         Reimplementation of curses.tigetnum()
         """
 
-        # XTGETTCAP cache takes priority
-        if capname in self._xtgettcap_num_caps:
-            return self._xtgettcap_num_caps[capname]
+        # Overlay cache takes priority
+        if capname in self._overlay_num_caps:
+            return self._overlay_num_caps[capname]
 
         return self.terminfo.NUM_CAPS.get(capname, -1 if capname in NUM_CAPS else -2)
 
@@ -122,8 +122,8 @@ class Terminal(object):
         Reimplementation of curses.tigetflag()
         """
 
-        # XTGETTCAP cache takes priority
-        if capname in self._xtgettcap_bool_caps:
+        # Overlay cache takes priority
+        if capname in self._overlay_bool_caps:
             return 1
 
         if capname in self.terminfo.BOOL_CAPS:

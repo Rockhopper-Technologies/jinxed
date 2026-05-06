@@ -20,8 +20,7 @@ Can you add support for a terminal?
 -----------------------------------
 
 A select few terminal from `terminfo(5)`_ database were selected, excluding many historic and
-unlikely terminal types (like ``avatar``). Rather than distributed a full list of over 1,000
-code-generated python files, a small subset is selected.
+unlikely terminal types like ``avatar`` to reduce packaging size.
 
 However, if we're missing support for a terminal please let us know its unique ``TERM`` name,
 whether it is in the `terminfo(5)`_ database, or provide an equivalent reference or directly `create
