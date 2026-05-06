@@ -176,12 +176,62 @@ class TestAliases(TestCase):
         finally:
             ALIASES.pop('xtestalias', None)
 
+    def test_xterm_ghostty_alias(self):
+        """
+        setupterm('xterm-ghostty') resolves to ghostty module via EXTRA_ALIASES
+        """
+        jinxed.setupterm('xterm-ghostty')
+        self.assertIs(jinxed._terminal.TERM.terminfo, jinxed.terminfo.ghostty)
+
+    def test_xterm_kitty_alias(self):
+        """
+        setupterm('xterm-kitty') resolves to kitty module via EXTRA_ALIASES
+        """
+        jinxed.setupterm('xterm-kitty')
+        self.assertIs(jinxed._terminal.TERM.terminfo, jinxed.terminfo.kitty)
+
     def test_alias_unknown(self):
         """
         Raise error if alias does not resolve
         """
         with self.assertRaisesRegex(jinxed.error, 'Could not find terminal not-analias'):
             jinxed.setupterm('not-analias')
+
+
+class TestAllTerminals(TestCase):
+    """
+    Verify setupterm() succeeds for every terminal in terminals.txt
+    and all hand-maintained modules.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls._termlist = None
+
+    def _get_terminal_names(self):
+        if self._termlist is not None:
+            return self._termlist
+        terminals_file = os.path.join(os.path.dirname(__file__), '..', 'terminals.txt')
+        names = []
+        with open(terminals_file, 'r') as fh:
+            for line in fh:
+                name = line.split('#')[0].strip()
+                if name:
+                    names.append(name)
+        # Hand-maintained modules not in terminals.txt
+        names.extend(['syncterm', 'ansi-bbs', 'ansicon', 'vtwin10'])
+        self.__class__._termlist = names
+        return names
+
+    def test_all_terminals_load(self):
+        """
+        setupterm() succeeds for each listed and hand-maintained terminal
+        """
+        for term in self._get_terminal_names():
+            with self.subTest(term=term):
+                jinxed.setupterm(term)
+                self.assertIsNotNone(jinxed._terminal.TERM)
+                self.assertTrue(hasattr(jinxed._terminal.TERM, 'terminfo'))
 
 
 class TestTigetstr(TestCase):

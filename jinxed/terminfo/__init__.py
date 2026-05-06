@@ -1,11 +1,9 @@
 """
 jinxed terminal info library
 
-Most of this information came from the terminfo(5) man pages of ncurses.
-
-..seealso::
-
-   ncurses : https://www.gnu.org/software/ncurses/ncurses.html
+Most of this information came from the terminfo man pages, part of ncurses
+More information on ncurses can be found at:
+https://www.gnu.org/software/ncurses/ncurses.html
 
 Boolean and numeric capabilities are listed here to support tigetnum() and tigetflag()
 """

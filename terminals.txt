@@ -11,6 +11,7 @@
 xterm-256color
 xterm
 xterm-16color
+xterm-new
 linux
 linux-16color
 cons25

@@ -42,17 +42,19 @@ DELAY_TOKEN = re.compile(b'\\$<[^>]+>')
 EMPTY_CAPS = frozenset({'smacs', 'rmacs', 'enacs', 's0ds', 's1ds'})
 
 URL = 'https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz'
-SCRIPT_DIR = Path(__file__).resolve().parent
-OUTDIR = SCRIPT_DIR / 'jinxed' / 'terminfo'
+HERE_DIR = Path(__file__).resolve().parent
+OUT_DIR = HERE_DIR / 'jinxed' / 'terminfo'
 
-TERMFILE = SCRIPT_DIR / 'terminals.txt'
+TERMINALS_TXT = HERE_DIR / 'terminals.txt'
+
+# We track 'hand maintained' ones so that we can more clearly attribute their origin in the
+# documentation we generate
 HAND_MAINTAINED = {'syncterm', 'ansi-bbs', 'ansicon', 'vtwin10'}
 
-# Aliases not present in the ncurses source but commonly found on systems
-# (e.g. Debian/Ubuntu patches, terminal-emulator-installed entries).
-EXTRA_ALIASES = {
-    'xterm-ghostty': 'ghostty',
-}
+# Aliases not present in the ncurses source but can be found on systems, in my case, the 'ghostty'
+# installed from source uses TERM=xterm-ghostty, but this is only available with the installed local
+# termcap $HOME/.terminfo/g/ghostty, so we provide this alias for code generation on other systems.
+EXTRA_ALIASES = {'xterm-ghostty': 'ghostty', 'xterm-kitty': 'kitty'}
 
 GITHUB_BASE = 'https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo'
 
@@ -97,7 +99,7 @@ def parse_cap_comments() -> tuple[dict[str, str], dict[str, str]]:
 
     Returns (bool_comments, num_comments) dicts mapping cap name to comment text.
     """
-    init_py = SCRIPT_DIR / 'jinxed' / 'terminfo' / '__init__.py'
+    init_py = HERE_DIR / 'jinxed' / 'terminfo' / '__init__.py'
     source = init_py.read_text()
 
     bool_comments: dict[str, str] = {}
@@ -216,10 +218,7 @@ def parse(output: str) -> TermData:
             if name in EMPTY_CAPS:
                 strs[name] = b''
                 continue
-            try:
-                val = decode(raw)
-            except (ValueError, SyntaxError):
-                val = b''
+            val = decode(raw)
             if val:
                 val = strip_g0(val)
             if val:
@@ -232,40 +231,31 @@ def parse(output: str) -> TermData:
     return TermData(bools, nums, strs)
 
 
-def fetch() -> tuple[Path, str, str]:
+def fetch() -> tuple[Path, str]:
     """Download and compile the ncurses terminfo source.
 
-    Returns (db_path, version, cvs_tags).
+    Returns (db_path, version).
     """
-    cache = Path(tempfile.gettempdir()) / 'jinxed-terminfo'
-    cache.mkdir(exist_ok=True)
+    cache = Path(tempfile.mkdtemp(prefix='jinxed-terminfo-'))
     gz = cache / 'terminfo.src.gz'
     src = cache / 'terminfo.src'
     db = cache / 'terminfo.db'
 
-    if not gz.exists():
-        urlretrieve(URL, gz)
+    urlretrieve(URL, gz)
 
-    if not src.exists() or src.stat().st_mtime < gz.stat().st_mtime:
-        src.write_bytes(gzip.decompress(gz.read_bytes()))
+    src.write_bytes(gzip.decompress(gz.read_bytes()))
 
     version = 'unknown'
     header = src.read_text(errors='replace')[:4000]
-    tags: list[str] = []
-    for pattern in (r'\$Revision: (\S+) \$', r'\$Date: (\S+) \$'):
-        m = re.search(pattern, header)
-        if m:
-            tags.append(m.group(0))
-            if version == 'unknown':
-                version = m.group(1)
-    cvs_tags = ' '.join(tags) if tags else 'unknown'
-    cvs_tags = cvs_tags.replace('$', '')  # Strip CVS '$' delimiters
+    m = re.search(r'\$Revision: (\S+) \$', header)
+    if m:
+        version = m.group(1)
 
-    if not db.exists() or db.stat().st_mtime < src.stat().st_mtime:
-        db.mkdir(exist_ok=True)
-        subprocess.run(['tic', '-o', str(db), str(src)], check=True, capture_output=True)
+    db.mkdir(exist_ok=True)
+    # Let tic write directly to the terminal so errors are visible
+    subprocess.run(['tic', '-o', str(db), str(src)], check=True)
 
-    return db, version, cvs_tags
+    return db, version
 
 
 def parse_terminal_aliases(src: Path, wanted: set[str]) -> dict[str, str]:
@@ -321,10 +311,10 @@ def generate_aliases(aliases: dict[str, str], outdir: Path) -> None:
 
 
 def parse_use_chain(src: Path, wanted: set[str]) -> dict[str, str | None]:
-    """Parse ``use=`` directives from the ncurses source for terminals in *wanted*.
+    """Parse ``use=`` directives from terminfo.src for terminals in 'wanted'.
 
-    Returns a dict mapping terminal name to base terminal name, or None if
-    the terminal has no ``use=`` target that is also in *wanted*.
+    Returns dict mapping terminal name to a 'base' terminal name,
+    or None if the terminal has no ``use=`` target that is also in *wanted*.
     """
     text = src.read_text(errors='replace')
     term_uses: dict[str, list[str]] = {}
@@ -350,20 +340,25 @@ def extract(kind: str, db: Path) -> TermData | None:
     """Extract compiled terminfo entry via infocmp."""
     env = {**os.environ, 'TERMINFO': str(db), 'TERMINFO_DIRS': str(db)}
     try:
-        r = subprocess.run(['infocmp', '-1', kind], capture_output=True,
-                           text=True, timeout=10, env=env)
-        return parse(r.stdout) if r.returncode == 0 else None
-    except Exception:
+        r = subprocess.check_output(['infocmp', '-1', kind],
+                                    text=True, timeout=10, env=env)
+        return parse(r)
+    except (subprocess.SubprocessError, OSError):
         return None
 
 
 def expand(db: Path) -> list[str]:
     """Return sorted list of terminal names to generate."""
-    wanted = {line.split('#')[0].strip() for line in TERMFILE.read_text().splitlines()
+    wanted = {line.split('#')[0].strip() for line in TERMINALS_TXT.read_text().splitlines()
               if line.split('#')[0].strip()}
 
     env = {**os.environ, 'TERMINFO': str(db), 'TERMINFO_DIRS': str(db)}
-    r = subprocess.run(['toe', '-a'], capture_output=True, text=True, env=env)
+    try:
+        r = subprocess.run(['toe', '-a'], capture_output=True, text=True, env=env,
+                           check=True)
+    except (subprocess.SubprocessError, OSError):
+        print('WARNING: toe -a failed, no terminals available', file=sys.stderr)
+        return []
     available = {line.split(None, 1)[0] for line in r.stdout.splitlines() if line.strip()}
 
     return sorted(wanted & available - HAND_MAINTAINED)
@@ -384,26 +379,23 @@ def bytes_repr(value: bytes) -> str:
     return "b'" + ''.join(parts) + "'"
 
 
-def generate(kind: str, data: TermData, base: str | None = None,
-             base_data: TermData | None = None,
-             cvs_tags: str = '') -> str:
+def generate(kind: str, data: TermData, version: str, base: str | None = None,
+             base_data: TermData | None = None) -> str:
     """Generate a jinxed terminfo module for *kind*.
 
     When *base* and *base_data* are given, generates a derived (inheriting)
     module that only records differences from the base terminal.
     """
-    doc_title = f'{kind} terminal info'
     lines = [
-        f'"""',
+        '"""',
         f'{kind} terminal info' + (f' (derived from {base})' if base else ''),
-        f'',
-        f'{cvs_tags}',
-        f'Source: ncurses terminfo.src',
-        f'        {URL}',
-        f'',
-        f'This file is derived from the ncurses terminfo database, which is',
-        f'distributed under the MIT/X11 license.  See LICENSE.ncurses.',
-        f'"""',
+        '',
+        f'Revision: {version}',
+        f'Source: {URL}',
+        '',
+        'This file is derived from the ncurses terminfo database, which is',
+        'distributed under the MIT/X11 license.  See LICENSE.ncurses.',
+        '"""',
         '',
     ]
 
@@ -470,7 +462,7 @@ def generate(kind: str, data: TermData, base: str | None = None,
 
 def update_capabilities_rst(term_dir: Path) -> None:
     """Regenerate the terminal list between BEGIN/END markers in capabilities.rst."""
-    rst_path = SCRIPT_DIR / 'doc' / 'capabilities.rst'
+    rst_path = HERE_DIR / 'doc' / 'capabilities.rst'
     if not rst_path.exists():
         return
 
@@ -506,7 +498,7 @@ def update_capabilities_rst(term_dir: Path) -> None:
 
 
 def main() -> None:
-    db, version, cvs_tags = fetch()
+    db, version = fetch()
     terms = expand(db)
 
     data_map: dict[str, TermData] = {}
@@ -519,39 +511,31 @@ def main() -> None:
 
     # Parse use= directives from the ncurses source to find explicit
     # derivation chains (e.g. rio -> alacritty).
-    src = Path(tempfile.gettempdir()) / 'jinxed-terminfo' / 'terminfo.src'
+    src = db.parent / 'terminfo.src'
 
     # Generate terminal name aliases
-    wanted = set(data_map)
-    aliases = parse_terminal_aliases(src, wanted)
+    wanted_terms = set(data_map)
+    aliases = parse_terminal_aliases(src, wanted_terms)
     for alias, primary in EXTRA_ALIASES.items():
-        if primary in wanted and alias not in aliases:
+        if primary in wanted_terms and alias not in aliases:
             aliases[alias] = primary
-    generate_aliases(aliases, OUTDIR)
-    use_base = parse_use_chain(src, set(data_map))
+    generate_aliases(aliases, OUT_DIR)
+    mapping_use_base = parse_use_chain(src, wanted_terms)
 
-    OUTDIR.mkdir(parents=True, exist_ok=True)
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
     for k, d in data_map.items():
         base: str | None = None
         base_data: TermData | None = None
-        for suffix in ('-256color', '-direct', '-24bit', '-16color', '-88color'):
-            if k.endswith(suffix):
-                bk = k[:-len(suffix)]
-                if bk in data_map:
-                    base = bk
-                    base_data = data_map[bk]
-                break
-        if base is None and use_base.get(k) and use_base[k] in data_map:
-            base = use_base[k]
+        if mapping_use_base.get(k) and mapping_use_base[k] in data_map:
+            base = mapping_use_base[k]
             base_data = data_map[base]
-            print(f'  -> derived from {base} (use= directive)', file=sys.stderr)
-        fpath = OUTDIR / f'{k.replace("-", "_")}.py'
-        fpath.write_text(generate(k, d, base, base_data, cvs_tags))
+        fpath = OUT_DIR / f'{k.replace("-", "_")}.py'
+        fpath.write_text(generate(k, d, version, base, base_data))
 
-    print(f'{len(data_map)} modules -> {OUTDIR}', file=sys.stderr)
+    print(f'{len(data_map)} modules -> {OUT_DIR}', file=sys.stderr)
     print(f'Source: ncurses terminfo.src {version}', file=sys.stderr)
 
-    update_capabilities_rst(OUTDIR)
+    update_capabilities_rst(OUT_DIR)
 
 
 if __name__ == '__main__':

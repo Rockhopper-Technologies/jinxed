@@ -1,9 +1,8 @@
 """
 vt102 terminal info (derived from vt100)
 
-Revision: 1.1198 
-Source: ncurses terminfo.src
-        https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
+Revision: 1.1198
+Source: https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
 This file is derived from the ncurses terminfo database, which is
 distributed under the MIT/X11 license.  See LICENSE.ncurses.

@@ -55,7 +55,7 @@ class Terminal(object):
             term = get_term(self.stream_fd)
 
         # XTGETTCAP injection caches (populated externally)
-        self._xtgettcap_str_caps = {}   # type: Dict[str, str]
+        self._xtgettcap_str_caps = {}   # type: Dict[str, bytes]
         self._xtgettcap_num_caps = {}   # type: Dict[str, int]
         self._xtgettcap_bool_caps = set()  # type: Set[str]
 
@@ -74,7 +74,8 @@ class Terminal(object):
                 raise_from_none(error('Could not find terminal %s' % term))
 
     def overlay_capabilities(self, str_caps=None, num_caps=None, bool_caps=None):
-        # type: (Optional[Dict[str, str]], Optional[Dict[str, int]], Optional[Set[str]]) -> None
+        # type: (Optional[Dict[str, Union[str, bytes]]], Optional[Dict[str, int]],
+        #         Optional[Set[str]]) -> None
         """
         Overlay terminfo capabilities onto this terminal instance.
 
@@ -87,7 +88,8 @@ class Terminal(object):
         :arg set bool_caps: Set of boolean capability names that are present.
         """
         if str_caps:
-            self._xtgettcap_str_caps.update(str_caps)
+            for k, v in str_caps.items():
+                self._xtgettcap_str_caps[k] = v if isinstance(v, bytes) else v.encode('latin-1')
         if num_caps:
             self._xtgettcap_num_caps.update(num_caps)
         if bool_caps:
@@ -97,10 +99,10 @@ class Terminal(object):
         """
         Reimplementation of curses.tigetstr()
         """
-        # XTGETTCAP cache takes priority
-        if capname in self._xtgettcap_str_caps:
-            val = self._xtgettcap_str_caps[capname]
-            return val if isinstance(val, bytes) else val.encode('latin-1')
+        # XTGETTCAP cache takes priority (values are pre-encoded in overlay_capabilities)
+        val = self._xtgettcap_str_caps.get(capname)
+        if val is not None:
+            return val
 
         return self.terminfo.STR_CAPS.get(capname, None)
 

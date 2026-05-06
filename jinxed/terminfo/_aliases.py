@@ -18,4 +18,5 @@ ALIASES = {
     'vt300': 'vt320',
     'wyse50': 'wy50',
     'xterm-ghostty': 'ghostty',
+    'xterm-kitty': 'kitty',
 }
