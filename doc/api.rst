@@ -22,7 +22,8 @@ Jinxed is a pure-Python implementation of a subset of the Python curses library.
 .. autofunction:: tigetnum
 .. autofunction:: tigetstr
 .. autofunction:: tparm(str[, ...])
-.. autoclass:: Terminal 
+.. autoclass:: Terminal
+  :members:
 .. autoexception:: error
 
 
