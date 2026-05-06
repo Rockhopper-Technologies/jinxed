@@ -8,9 +8,9 @@ libraries.
 Singleton-free
 --------------
 
-Python's curses_ terminal types used with :func:`curses.setupterm` is something of an undocumented
-singleton. :func:`curses.setupterm` allows only a single terminal type to be initialized for the
-lifetime of the process, and may not be changed:
+Python's :func:`curses.setupterm` has something of an undocumented singleton:
+:func:`curses.setupterm` allows only a single terminal type to be initialized for the lifetime of
+the process, and may not be changed:
 
 .. code-block:: python
 
