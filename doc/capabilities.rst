@@ -40,9 +40,9 @@ Database
 
 Jinxed ships a **virtual terminfo database** as python code distributed in its `terminfo/`_ folder,
 and uses no system terminfo, termcap or ncurses C Library code.  This is important for some
-distributions of Python like the standard Python Windows release, though containing the curses_
-module, its capability database is empty. Many Python distributions may also be missing support for
-curses_ entirely.
+distributions of Python, such as the Windows release, though containing the curses_ module, its
+capability database is empty. Many Python distributions may also be missing support for curses_
+entirely (raising ImportError).
 
 If you request an unsupported ``$TERM``, jinxed raises ``jinxed.error``.  Catch it and fall back to
 a common terminal type, like ``xterm-256color``.
