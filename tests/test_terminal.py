@@ -158,6 +158,76 @@ class TestTigetnum(TestCase):
         self.assertEqual(jinxed.tigetnum('howmuchwoodawoodchuckwillchuck'), -2)
 
 
+class TestOverlayCapabilities(TestCase):
+    """
+    Tests for Terminal.overlay_capabilities()
+    """
+
+    def setUp(self):
+        jinxed.setupterm('xterm')
+
+    def test_str_caps_overlay(self):
+        """
+        overlay_capabilities() string caps take priority over terminfo database
+        """
+        term = jinxed._terminal.TERM
+        orig = term.tigetstr('clear')
+        self.assertNotEqual(orig, b'TEST_CLEAR')
+
+        term.overlay_capabilities(str_caps={'clear': 'TEST_CLEAR'})
+        self.assertEqual(term.tigetstr('clear'), b'TEST_CLEAR')
+
+    def test_num_caps_overlay(self):
+        """
+        overlay_capabilities() numeric caps take priority over terminfo database
+        """
+        term = jinxed._terminal.TERM
+        orig = term.tigetnum('colors')
+        self.assertNotEqual(orig, 999)
+
+        term.overlay_capabilities(num_caps={'colors': 999})
+        self.assertEqual(term.tigetnum('colors'), 999)
+
+    def test_bool_caps_overlay(self):
+        """
+        overlay_capabilities() boolean caps set returns 1 for overlaid cap
+        """
+        term = jinxed._terminal.TERM
+        self.assertEqual(term.tigetflag('hz'), 0)
+
+        term.overlay_capabilities(bool_caps={'hz'})
+        self.assertEqual(term.tigetflag('hz'), 1)
+
+    def test_non_overlaid_caps_fall_through(self):
+        """
+        Capabilities not in overlay still resolve from terminfo database
+        """
+        term = jinxed._terminal.TERM
+        term.overlay_capabilities(str_caps={'clear': 'TEST_CLEAR'},
+                                  num_caps={'colors': 999},
+                                  bool_caps={'hz'})
+
+        self.assertEqual(term.tigetnum('cols'), 80)
+        self.assertIsNotNone(term.tigetstr('cup'))
+
+    def test_bytes_str_cap_preserved(self):
+        """
+        str_caps values passed as bytes are stored as-is without re-encoding
+        """
+        term = jinxed._terminal.TERM
+        term.overlay_capabilities(str_caps={'clear': b'BYTES_TEST'})
+        self.assertEqual(term.tigetstr('clear'), b'BYTES_TEST')
+
+    def test_none_args_are_noops(self):
+        """
+        None arguments do not raise or clear existing overlays
+        """
+        term = jinxed._terminal.TERM
+        term.overlay_capabilities(str_caps={'clear': 'FIRST'})
+        term.overlay_capabilities(str_caps=None, num_caps=None, bool_caps=None)
+        self.assertEqual(term.tigetstr('clear'), b'FIRST')
+
+
 class TestAliases(TestCase):
     """
     Tests for terminal alias resolution

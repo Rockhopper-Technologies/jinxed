@@ -4,10 +4,6 @@
 # Uses ncurses primary (base) names. Aliases are auto-generated into
 # jinxed/terminfo/_aliases.py by codegen_terminfo.py.
 #
-# Modern terminal types are extracted even if they differ only slightly from
-# xterm-256color.  The codegen automatically detects near-clones and generates
-# derived (inheriting) files instead of full copies.
-#
 xterm-256color
 xterm
 xterm-16color
