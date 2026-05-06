@@ -14,7 +14,6 @@ from .linux import BOOL_CAPS, NUM_CAPS, STR_CAPS
 BOOL_CAPS = BOOL_CAPS[:]
 NUM_CAPS = NUM_CAPS.copy()
 STR_CAPS = STR_CAPS.copy()
-
 NUM_CAPS['colors'] = 16
 NUM_CAPS['ncv'] = 42
 NUM_CAPS['pairs'] = 256

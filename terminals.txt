@@ -1,0 +1,33 @@
+#
+# Curated terminal list for jinxed virtual terminfo database.
+#
+# Modern terminal types are extracted even if they differ only slightly from
+# xterm-256color.  The codegen automatically detects near-clones and generates
+# derived (inheriting) files instead of full copies.
+#
+xterm-256color
+xterm
+xterm-16color
+linux
+linux-16color
+cons25
+vt220
+screen
+screen-256color
+tmux
+tmux-256color
+rxvt-unicode
+rxvt-unicode-256color
+rxvt
+rxvt-256color
+putty
+putty-256color
+st
+st-256color
+ansi
+kitty
+ghostty
+rio
+wezterm
+contour
+alacritty

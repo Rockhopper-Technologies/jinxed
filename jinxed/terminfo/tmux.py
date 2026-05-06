@@ -14,7 +14,6 @@ from .screen import BOOL_CAPS, NUM_CAPS, STR_CAPS
 BOOL_CAPS = BOOL_CAPS[:]
 NUM_CAPS = NUM_CAPS.copy()
 STR_CAPS = STR_CAPS.copy()
-
 BOOL_CAPS.append('hs')
 
 # Added strings

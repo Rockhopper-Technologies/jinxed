@@ -19,6 +19,7 @@
 
 import os
 import sys
+import datetime
 sys.path.insert(0, os.path.abspath('..'))
 
 from setup_helpers import get_version  # noqa: E402
@@ -53,7 +54,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Jinxed'
-copyright = '2019 - 2024, Avram Lubkin'
+THIS_YEAR = datetime.datetime.now().year
+copyright = f'2019 - {THIS_YEAR}, Avram Lubkin'
 author = 'Avram Lubkin'
 
 # The version info for the project you're documenting, acts as replacement for

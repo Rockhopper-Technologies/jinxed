@@ -1,0 +1,511 @@
+#!/usr/bin/env python3
+"""
+Generate jinxed terminfo modules from the ncurses terminfo source.
+
+This script runs on modern Python (3.14 at time of writing) but the modules it generates are Python
+2.7-safe -- they use only list, dict, bytes, and string literals, and do not use f-strings, type
+annotations, or typing imports.
+"""
+
+import gzip
+import os
+import re
+import subprocess
+import sys
+import tempfile
+from dataclasses import dataclass
+from pathlib import Path
+from urllib.request import urlretrieve
+
+from jinxed.terminfo import BOOL_CAPS as BOOL_NAMES, NUM_CAPS as NUM_NAMES
+
+BOOL_CAPS = frozenset(BOOL_NAMES)
+NUM_CAPS = frozenset(NUM_NAMES)
+
+# G0/G1 character set designation sequences: ESC ( X or ESC ) X
+# where X is one of 0, A, B, U, K (DEC Special Graphics, UK, ASCII,
+# Null, User).  Stripped because they are harmful on modern UTF-8
+# terminals, where they corrupt output by switching away from UTF-8.
+G0_G1_DESIGNATION = re.compile(b'\x1b[()][0ABUK]')
+
+# After stripping G0/SO/SI bytes from
+#   %?%p9%t<g0_seq>%e<g0_seq>%;
+# the conditional reduces to a no-op husk  %?%p9%t%e%;
+# with empty then/else branches.  Clean it up.
+SGR_EMPTY_COND = re.compile(b'%\\?%p9%t%e%;')
+
+# Delay tokens: $<N> (ms), $<N/M> (fractional seconds), $<N*> (proportional).
+# Harmful on modern terminal emulators; stripped from all string capabilities.
+DELAY_TOKEN = re.compile(b'\\$<[^>]+>')
+
+# Capabilities that are inherently G0/G1 character-set operations.
+# Set to empty bytes rather than dropped -- signals "unsupported" to callers.
+EMPTY_CAPS = frozenset({'smacs', 'rmacs', 'enacs', 's0ds', 's1ds'})
+
+URL = 'https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz'
+SCRIPT_DIR = Path(__file__).resolve().parent
+OUTDIR = SCRIPT_DIR / 'jinxed' / 'terminfo'
+
+TERMFILE = SCRIPT_DIR / 'terminals.txt'
+HAND_MAINTAINED = {'syncterm', 'ansi-bbs', 'ansicon', 'vtwin10'}
+
+SYSTEM_TERMINALS = {
+    'dtterm': 'dtterm', 'vt100': 'vt100', 'vt102': 'vt102',
+    'vt320': 'vt320', 'foot': 'foot', 'hpterm': 'hpterm',
+    'wyse50': 'wy50', 'iris-ansi': 'iris-ansi', 'sun': 'sun',
+}
+
+GITHUB_BASE = 'https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo'
+
+# Lazy-initialised after parse_cap_comments() is called.
+BOOL_COMMENTS: dict[str, str] = {}
+NUM_COMMENTS: dict[str, str] = {}
+
+
+@dataclass
+class TermData:
+    """Parsed terminfo capabilities with classification (diff) support."""
+
+    bools: list[str]
+    nums: dict[str, int]
+    strs: dict[str, bytes]
+
+    def diff(self, base: 'TermData') -> dict:
+        """Return structured diff of this terminal against *base*."""
+        return {
+            'add_b': [c for c in self.bools if c not in base.bools],
+            'rm_b': [c for c in base.bools if c not in self.bools],
+            'mod_n': {k: v for k, v in self.nums.items()
+                      if k not in base.nums or base.nums.get(k) != v},
+            'add_s': {k: v for k, v in self.strs.items() if k not in base.strs},
+            'rm_s': [k for k in base.strs if k not in self.strs],
+            'mod_s': {k: v for k, v in self.strs.items()
+                      if k in base.strs and base.strs[k] != v},
+        }
+
+
+def strip_g0(value: bytes) -> bytes:
+    """Strip G0 character set designation sequences, SO/SI, and delay tokens."""
+    value = G0_G1_DESIGNATION.sub(b'', value)
+    value = value.replace(b'\x0e', b'').replace(b'\x0f', b'')
+    value = SGR_EMPTY_COND.sub(b'', value)
+    value = DELAY_TOKEN.sub(b'', value)
+    return value
+
+
+def parse_cap_comments() -> tuple[dict[str, str], dict[str, str]]:
+    """Parse inline comments from jinxed/terminfo/__init__.py.
+
+    Returns (bool_comments, num_comments) dicts mapping cap name to comment text.
+    """
+    init_py = SCRIPT_DIR / 'jinxed' / 'terminfo' / '__init__.py'
+    source = init_py.read_text()
+
+    bool_comments: dict[str, str] = {}
+    num_comments: dict[str, str] = {}
+    current: str | None = None
+    for line in source.splitlines():
+        stripped = line.strip()
+        if stripped == 'BOOL_CAPS = [':
+            current = 'bool'
+            continue
+        if stripped == 'NUM_CAPS = [':
+            current = 'num'
+            continue
+        if stripped == ']':
+            current = None
+            continue
+        if current is None:
+            continue
+        m = re.match(r"^\s*'(\w+)',\s*#\s*(.*)$", line)
+        if m:
+            target = bool_comments if current == 'bool' else num_comments
+            target[m.group(1)] = m.group(2).rstrip()
+    return bool_comments, num_comments
+
+
+def decode(value: str) -> bytes:
+    """Decode an infocmp -1 string value into bytes."""
+    result = bytearray()
+    i = 0
+    while i < len(value):
+        c = value[i]
+        if c == '\\':
+            i += 1
+            if i >= len(value):
+                break
+            esc = value[i]
+            if esc in ('E', 'e'):
+                result.append(0x1b)
+            elif esc == 'n':
+                result.append(0x0a)
+            elif esc == 't':
+                result.append(0x09)
+            elif esc == 'r':
+                result.append(0x0d)
+            elif esc == 'b':
+                result.append(0x08)
+            elif esc == 'f':
+                result.append(0x0c)
+            elif esc == 's':
+                result.append(0x20)
+            elif esc == 'l':
+                result.append(0x0a)
+            elif esc in ',:^\\':
+                result.append(ord(esc))
+            elif esc in '01234567':
+                octal = esc
+                for _ in range(2):
+                    if i + 1 < len(value) and value[i + 1] in '01234567':
+                        i += 1
+                        octal += value[i]
+                result.append(int(octal, 8))
+            elif esc == 'x':
+                i += 1
+                if i >= len(value):
+                    break
+                h = value[i]
+                if i + 1 < len(value) and value[i + 1] in '0123456789abcdefABCDEF':
+                    i += 1
+                    h += value[i]
+                result.append(int(h, 16))
+            else:
+                result.append(ord(esc))
+        elif c == '^':
+            i += 1
+            if i >= len(value):
+                break
+            ctrl = value[i]
+            if 'A' <= ctrl <= '_':
+                result.append(ord(ctrl) - ord('A') + 1)
+            elif ctrl == '?':
+                result.append(0x7f)
+            else:
+                result.append(ord(ctrl) & 0x1f)
+        elif c == ',' and i == len(value) - 1:
+            break
+        else:
+            result.append(ord(c))
+        i += 1
+    return bytes(result)
+
+
+def parse(output: str) -> TermData:
+    """Parse infocmp -1 output into a TermData instance."""
+    bools: list[str] = []
+    nums: dict[str, int] = {}
+    strs: dict[str, bytes] = {}
+    for line in output.strip().splitlines():
+        line = line.strip().rstrip(',')
+        if not line or line.startswith('#'):
+            continue
+        m = re.match(r'^(\w+)#(-?[\d]+|0[xX][\da-fA-F]+|0[0-7]+)$', line)
+        if m:
+            name, vs = m.group(1), m.group(2)
+            if vs.startswith(('0x', '0X')):
+                val = int(vs, 16)
+            elif vs.startswith('0') and len(vs) > 1:
+                val = int(vs, 8)
+            else:
+                val = int(vs)
+            if name in NUM_CAPS:
+                nums[name] = val
+            continue
+        m = re.match(r"^(\w+)=(.*)$", line)
+        if m:
+            name, raw = m.group(1), m.group(2)
+            if name in EMPTY_CAPS:
+                strs[name] = b''
+                continue
+            try:
+                val = decode(raw)
+            except (ValueError, SyntaxError):
+                val = b''
+            if val:
+                val = strip_g0(val)
+            if val:
+                strs[name] = val
+            continue
+        if re.match(r'^(\w+)$', line) and line in BOOL_CAPS:
+            bools.append(line)
+    for cap_name in EMPTY_CAPS:
+        strs.setdefault(cap_name, b'')
+    return TermData(bools, nums, strs)
+
+
+def fetch() -> tuple[Path, str, str]:
+    """Download and compile the ncurses terminfo source.
+
+    Returns (db_path, version, cvs_tags).
+    """
+    cache = Path(tempfile.gettempdir()) / 'jinxed-terminfo'
+    cache.mkdir(exist_ok=True)
+    gz = cache / 'terminfo.src.gz'
+    src = cache / 'terminfo.src'
+    db = cache / 'terminfo.db'
+
+    if not gz.exists():
+        urlretrieve(URL, gz)
+
+    if not src.exists() or src.stat().st_mtime < gz.stat().st_mtime:
+        src.write_bytes(gzip.decompress(gz.read_bytes()))
+
+    version = 'unknown'
+    header = src.read_text(errors='replace')[:4000]
+    tags: list[str] = []
+    for pattern in (r'\$Revision: (\S+) \$', r'\$Date: (\S+) \$'):
+        m = re.search(pattern, header)
+        if m:
+            tags.append(m.group(0))
+            if version == 'unknown':
+                version = m.group(1)
+    cvs_tags = ' '.join(tags) if tags else 'unknown'
+    cvs_tags = cvs_tags.replace('$', '')  # Strip CVS '$' delimiters
+
+    if not db.exists() or db.stat().st_mtime < src.stat().st_mtime:
+        db.mkdir(exist_ok=True)
+        subprocess.run(['tic', '-o', str(db), str(src)], check=True, capture_output=True)
+
+    return db, version, cvs_tags
+
+
+def parse_use_chain(src: Path, wanted: set[str]) -> dict[str, str | None]:
+    """Parse ``use=`` directives from the ncurses source for terminals in *wanted*.
+
+    Returns a dict mapping terminal name to base terminal name, or None if
+    the terminal has no ``use=`` target that is also in *wanted*.
+    """
+    text = src.read_text(errors='replace')
+    term_uses: dict[str, list[str]] = {}
+    current_term: str | None = None
+    for line in text.splitlines():
+        if not line or line[0] in '#\t ':
+            if current_term and line.strip():
+                for m in re.finditer(r'use=(\S+?),', line):
+                    term_uses.setdefault(current_term, []).append(m.group(1))
+            continue
+        current_term = line.split('|')[0].strip()
+        if current_term.endswith('+'):
+            current_term = None
+
+    result: dict[str, str | None] = {}
+    for name in wanted:
+        targets = term_uses.get(name, [])
+        result[name] = next((t for t in targets if t in wanted), None)
+    return result
+
+
+def extract(kind: str, db: Path) -> TermData | None:
+    """Extract compiled terminfo entry via infocmp."""
+    env = {**os.environ, 'TERMINFO': str(db), 'TERMINFO_DIRS': str(db)}
+    try:
+        r = subprocess.run(['infocmp', '-1', kind], capture_output=True,
+                           text=True, timeout=10, env=env)
+        return parse(r.stdout) if r.returncode == 0 else None
+    except Exception:
+        return None
+
+
+def expand(db: Path) -> list[str]:
+    """Return sorted list of terminal names to generate."""
+    wanted = {line.split('#')[0].strip() for line in TERMFILE.read_text().splitlines()
+              if line.split('#')[0].strip()}
+
+    env = {**os.environ, 'TERMINFO': str(db), 'TERMINFO_DIRS': str(db)}
+    r = subprocess.run(['toe', '-a'], capture_output=True, text=True, env=env)
+    available = {line.split(None, 1)[0] for line in r.stdout.splitlines() if line.strip()}
+
+    return sorted(wanted & available - HAND_MAINTAINED)
+
+
+def bytes_repr(value: bytes) -> str:
+    """Format bytes value as a Python bytes literal."""
+    named = {0x07: '\\a', 0x08: '\\b', 0x09: '\\t', 0x0a: '\\n',
+             0x0d: '\\r', 0x0c: '\\f', 0x0b: '\\v', 0x1b: '\\x1b'}
+    parts: list[str] = []
+    for byte in value:
+        if byte in named:
+            parts.append(named[byte])
+        elif 0x20 <= byte <= 0x7e and byte not in (0x27, 0x5c):
+            parts.append(chr(byte))
+        else:
+            parts.append(f'\\x{byte:02x}')
+    return "b'" + ''.join(parts) + "'"
+
+
+def generate(kind: str, data: TermData, base: str | None = None,
+             base_data: TermData | None = None,
+             cvs_tags: str = '') -> str:
+    """Generate a jinxed terminfo module for *kind*.
+
+    When *base* and *base_data* are given, generates a derived (inheriting)
+    module that only records differences from the base terminal.
+    """
+    doc_title = f'{kind} terminal info'
+    lines = [
+        f'"""',
+        f'{kind} terminal info' + (f' (derived from {base})' if base else ''),
+        f'',
+        f'{cvs_tags}',
+        f'Source: ncurses terminfo.src',
+        f'        {URL}',
+        f'',
+        f'This file is derived from the ncurses terminfo database, which is',
+        f'distributed under the MIT/X11 license.  See LICENSE.ncurses.',
+        f'"""',
+        '',
+    ]
+
+    if base and base_data:
+        base_mod = base.replace('-', '_')
+        lines += [
+            f'from .{base_mod} import BOOL_CAPS, NUM_CAPS, STR_CAPS',
+            '',
+            'BOOL_CAPS = BOOL_CAPS[:]',
+            'NUM_CAPS = NUM_CAPS.copy()',
+            'STR_CAPS = STR_CAPS.copy()',
+        ]
+        d = data.diff(base_data)
+        for cap in d['add_b']:
+            lines.append(f"BOOL_CAPS.append('{cap}')")
+        for cap in d['rm_b']:
+            lines.append(f"BOOL_CAPS.remove('{cap}')  # noqa")
+        for k, v in sorted(d['mod_n'].items()):
+            lines.append(f"NUM_CAPS['{k}'] = {v}")
+        for label, items in (
+            ('Added strings', d['add_s']),
+            ('Removed strings', d['rm_s']),
+            ('Modified strings', d['mod_s']),
+        ):
+            if items:
+                lines.append('')
+                lines.append(f'# {label}')
+                if isinstance(items, dict):
+                    for k, v in sorted(items.items()):
+                        lines.append(f"STR_CAPS['{k}'] = {bytes_repr(v)}")
+                else:
+                    for k in items:
+                        lines.append(f"del STR_CAPS['{k}']")
+    else:
+        lines.append('BOOL_CAPS = [')
+        bool_entries: list[tuple[str, str | None]] = [
+            (f"    '{cap_name}',", BOOL_COMMENTS.get(cap_name))
+            for cap_name in data.bools
+        ]
+        max_bool = max((len(e) for e, _ in bool_entries), default=0)
+        for entry, comment in bool_entries:
+            lines.append(f"{entry:<{max_bool + 2}}  # {comment}" if comment else entry)
+        lines.append(']')
+        lines.append('')
+
+        lines.append('NUM_CAPS = {')
+        num_entries: list[tuple[str, str | None]] = [
+            (f"    '{k}': {v},", NUM_COMMENTS.get(k))
+            for k, v in sorted(data.nums.items())
+        ]
+        max_num = max((len(e) for e, _ in num_entries), default=0)
+        for entry, comment in num_entries:
+            lines.append(f"{entry:<{max_num + 2}}  # {comment}" if comment else entry)
+        lines.append('}')
+        lines.append('')
+
+        lines.append('STR_CAPS = {')
+        lines.extend(f"    '{k}': {bytes_repr(v)},"
+                     for k, v in sorted(data.strs.items()))
+        lines.append('}')
+    lines.append('')
+    return '\n'.join(lines)
+
+
+def update_capabilities_rst(term_dir: Path) -> None:
+    """Regenerate the terminal list between BEGIN/END markers in capabilities.rst."""
+    rst_path = SCRIPT_DIR / 'doc' / 'capabilities.rst'
+    if not rst_path.exists():
+        return
+
+    modules = sorted(p.stem for p in term_dir.glob('*.py') if p.stem != '__init__')
+
+    lines_out: list[str] = []
+    in_marker = False
+    for line in rst_path.read_text().splitlines():
+        stripped = line.strip()
+        if stripped == '.. BEGIN_TERMINAL_LIST':
+            in_marker = True
+            lines_out.append(line)
+            auto = [m for m in modules if m.replace('_', '-') not in HAND_MAINTAINED]
+            hand = [m for m in modules if m.replace('_', '-') in HAND_MAINTAINED]
+            for mod in auto:
+                lines_out.append(f'- `{mod.replace("_", "-")} <{GITHUB_BASE}/{mod}.py>`_')
+            if hand:
+                lines_out.append('')
+                lines_out.append('Hand-maintained (not generated by codegen):')
+                lines_out.append('')
+                for mod in hand:
+                    lines_out.append(f'- `{mod.replace("_", "-")} <{GITHUB_BASE}/{mod}.py>`_')
+            continue
+        if stripped == '.. END_TERMINAL_LIST':
+            in_marker = False
+            lines_out.append(line)
+            continue
+        if not in_marker:
+            lines_out.append(line)
+
+    rst_path.write_text('\n'.join(lines_out) + '\n')
+    print(f'Updated {rst_path} ({len(modules)} terminals)', file=sys.stderr)
+
+
+def main() -> None:
+    db, version, cvs_tags = fetch()
+    terms = expand(db)
+
+    data_map: dict[str, TermData] = {}
+    for k in terms:
+        d = extract(k, db)
+        if d:
+            data_map[k] = d
+        else:
+            print(f'SKIP: {k}', file=sys.stderr)
+
+    # Also extract system-derived terminals for deterministic results.
+    for mod_name, term_name in SYSTEM_TERMINALS.items():
+        key = mod_name.replace('_', '-')
+        if key in data_map:
+            continue
+        d = extract(term_name, db)
+        if d:
+            data_map[key] = d
+        else:
+            print(f'SKIP: {term_name} (not in ncurses src)', file=sys.stderr)
+
+    # Parse use= directives from the ncurses source to find explicit
+    # derivation chains (e.g. rio -> alacritty).
+    src = Path(tempfile.gettempdir()) / 'jinxed-terminfo' / 'terminfo.src'
+    use_base = parse_use_chain(src, set(data_map))
+
+    OUTDIR.mkdir(parents=True, exist_ok=True)
+    for k, d in data_map.items():
+        base: str | None = None
+        base_data: TermData | None = None
+        for suffix in ('-256color', '-direct', '-24bit', '-16color', '-88color'):
+            if k.endswith(suffix):
+                bk = k[:-len(suffix)]
+                if bk in data_map:
+                    base = bk
+                    base_data = data_map[bk]
+                break
+        if base is None and use_base.get(k) and use_base[k] in data_map:
+            base = use_base[k]
+            base_data = data_map[base]
+            print(f'  -> derived from {base} (use= directive)', file=sys.stderr)
+        fpath = OUTDIR / f'{k.replace("-", "_")}.py'
+        fpath.write_text(generate(k, d, base, base_data, cvs_tags))
+
+    print(f'{len(data_map)} modules -> {OUTDIR}', file=sys.stderr)
+    print(f'Source: ncurses terminfo.src {version}', file=sys.stderr)
+
+    update_capabilities_rst(OUTDIR)
+
+
+if __name__ == '__main__':
+    BOOL_COMMENTS, NUM_COMMENTS = parse_cap_comments()
+    main()
