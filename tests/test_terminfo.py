@@ -52,19 +52,20 @@ class TestTermInfo(TestCase):
             # Empty caps must be present and empty
             for cap_name in _EMPTY_CAPS:
                 self.assertIn(cap_name, module.STR_CAPS,
-                              f'{term}: missing empty cap {cap_name}')
+                              '{}: missing empty cap {}'.format(term, cap_name))
                 self.assertEqual(module.STR_CAPS[cap_name], b'',
-                                 f'{term}.{cap_name}: expected b\"\", got {module.STR_CAPS[cap_name]!r}')
+                                 '{}.{}: expected b"", got {!r}'.format(
+                                     term, cap_name, module.STR_CAPS[cap_name]))
 
             # No G0/G1 designation sequences or delay tokens in any STR_CAPS
             for cap_name, cap_value in module.STR_CAPS.items():
                 self.assertIsNone(
                     _G0_G1.search(cap_value),
-                    f'{term}.{cap_name}: contains G0/G1 designation',
+                    '{}.{}: contains G0/G1 designation'.format(term, cap_name),
                 )
                 self.assertIsNone(
                     _DELAY.search(cap_value),
-                    f'{term}.{cap_name}: contains delay token',
+                    '{}.{}: contains delay token'.format(term, cap_name),
                 )
 
         func.__name__ = name

@@ -1,17 +1,9 @@
 """
 syncterm terminal info
 
-Source: SyncTERM src/syncterm/conn_pty.c
-  Function: pty_connect() -- assembles termcap at runtime via xp_asprintf
-  URL:      https://gitlab.synchro.net/main/sbbs/-/raw/master/src/syncterm/conn_pty.c
-  Caps:     256-color palette when CONIO_OPT_PALETTE_SETTING is set,
-            8-color fallback otherwise (this module uses 256-color).
+Source: https://gitlab.synchro.net/main/sbbs/-/raw/master/src/syncterm/conn_pty.c
 
-syncterm is SyncTERM's native terminal type, reported via TTYPE
-negotiation over telnet.  It extends ANSI with BBS-oriented escape
-sequences including DECSC/DECRC mouse tracking, SGR cursor styling,
-and insert/delete line/char operations.  For local-mode connections,
-see ansi-bbs.
+syncterm is the SyncTERM BBS Client's terminal type, reported via TTYPE negotiation over telnet.
 """
 
 BOOL_CAPS = [

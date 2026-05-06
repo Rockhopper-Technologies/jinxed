@@ -1,13 +1,7 @@
 """
-ansi-bbs terminal info
+ansi-bbs
 
-Source: SyncTERM install/termcap
-  URL:  https://gitlab.synchro.net/main/sbbs/-/raw/master/install/termcap
-  Caps: 8-color ANSI with BBS extensions (DECSC/DECRC, function keys)
-
-ansi-bbs is SyncTERM's local-mode terminal type, an extended ANSI
-variant used for direct BBS connections.  syncterm (q.v.) is the
-equivalent type reported over telnet TTYPE negotiation.
+Source: https://gitlab.synchro.net/main/sbbs/-/raw/master/install/termcap
 """
 
 BOOL_CAPS = [
@@ -23,7 +17,8 @@ NUM_CAPS = {
     'pairs': 64,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
-STR_CAPS = {    'acsc': b'\x7d\x9c|\x80{\x82+\x10,\x11l\x8am\x80k\xb7j\x99u\x94t\x83v\x81w\x82q\x84x\x93n\x85`^Da\xb0f\xf8g\xf1~\xf9.^Y-^Xh\xb1i^U0\x9by\xf3z\xf2',
+STR_CAPS = {
+    'acsc': b'\x7d\x9c|\x80{\x82+\x10,\x11l\x8am\x80k\xb7j\x99u\x94t\x83v\x81w\x82q\x84x\x93n\x85`^Da\xb0f\xf8g\xf1~\xf9.^Y-^Xh\xb1i^U0\x9by\xf3z\xf2',
     'enacs': b'',  # empty (G0/SO/SI stripped)
     'rmacs': b'',  # empty (G0/SO/SI stripped)
     's0ds': b'',  # empty (G0/SO/SI stripped)
