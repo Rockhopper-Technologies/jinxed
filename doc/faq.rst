@@ -13,7 +13,7 @@ Frequently Asked Questions
 Why is Jinxed called Jinxed?
 ----------------------------------
 
-Jinxed was written to support blessed_ on Windows. We originally want to call it Cursed,
+Jinxed was written to support blessed_ on Windows. We originally wanted to call it Cursed,
 to continue the theme, but the name was taken. Jinxed is a synonym for cursed.
 
 Can you add support for a terminal?

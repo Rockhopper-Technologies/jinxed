@@ -49,7 +49,7 @@ TERMINALS_TXT = HERE_DIR / 'terminals.txt'
 
 # We track 'hand maintained' ones so that we can more clearly attribute their origin in the
 # documentation we generate
-HAND_MAINTAINED = {'syncterm', 'ansi-bbs', 'ansicon', 'vtwin10'}
+HAND_MAINTAINED = {'syncterm', 'ansi-bbs', 'ansicon', 'vtwin10', 'ansi'}
 
 # Aliases not present in the ncurses source but can be found on systems, in my case, the 'ghostty'
 # installed from source uses TERM=xterm-ghostty, but this is only available with the installed local

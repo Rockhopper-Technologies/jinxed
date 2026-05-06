@@ -1,11 +1,15 @@
 """
 ansi terminal info
 
-Revision: 1.1198
+Derived from Revision: 1.1198
 Source: https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
 
-This file is derived from the ncurses terminfo database, which is
-distributed under the MIT/X11 license.  See LICENSE.ncurses.
+jquast: added capabilities commonly available in 1980s-1990s terminal emulator programs (like
+minicom, telix, etc), but absent from the ANSI X3.64 standard: sc (save_cursor), rc
+(restore_cursor), civis (cursor_invisible), cnorm (cursor_normal).
+
+This file is derived from the ncurses terminfo database, which is distributed under the MIT/X11
+license.  See LICENSE.ncurses.
 """
 
 BOOL_CAPS = [
@@ -31,6 +35,8 @@ STR_CAPS = {
     'bold': b'\x1b[1m',
     'cbt': b'\x1b[Z',
     'clear': b'\x1b[H\x1b[J',
+    'civis': b'\x1b[?25l',
+    'cnorm': b'\x1b[?25h',
     'cr': b'\r',
     'cub': b'\x1b[%p1%dD',
     'cub1': b'\x1b[D',
@@ -73,6 +79,7 @@ STR_CAPS = {
     'nel': b'\r\x1b[S',
     'op': b'\x1b[39;49m',
     'rep': b'%p1%c\x1b[%p2%{1}%-%db',
+    'rc': b'\x1b[u',
     'rev': b'\x1b[7m',
     'rin': b'\x1b[%p1%dT',
     'rmacs': b'',
@@ -87,6 +94,7 @@ STR_CAPS = {
     'setaf': b'\x1b[3%p1%dm',
     'sgr': b'\x1b[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m',
     'sgr0': b'\x1b[0;10m',
+    'sc': b'\x1b[s',
     'smacs': b'',
     'smpch': b'\x1b[11m',
     'smso': b'\x1b[7m',

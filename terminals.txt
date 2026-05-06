@@ -24,7 +24,6 @@ putty
 putty-256color
 st
 st-256color
-ansi
 kitty
 ghostty
 rio

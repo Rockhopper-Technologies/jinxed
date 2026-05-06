@@ -83,7 +83,10 @@ class Terminal(object):
         before falling back to the virtual terminfo database. This can be used to "patch" the
         capabilities database or with dynamic capability responses.
 
-        :arg dict str_caps: Mapping of capability name to decoded string value.
+        :arg dict str_caps: Mapping of capability name to string value.
+            String values are encoded as ``latin-1``; ``bytes`` values are
+            stored directly.  For non-ASCII text, prefer ``bytes`` to avoid
+            ambiguities with ``latin-1`` encoding.
         :arg dict num_caps: Mapping of capability name to integer value.
         :arg set bool_caps: Set of boolean capability names that are present.
         """

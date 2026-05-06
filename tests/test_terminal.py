@@ -227,6 +227,16 @@ class TestOverlayCapabilities(TestCase):
         term.overlay_capabilities(str_caps=None, num_caps=None, bool_caps=None)
         self.assertEqual(term.tigetstr('clear'), b'FIRST')
 
+    def test_overlay_does_not_mutate_terminfo_module(self):
+        """
+        Overlays on one Terminal instance do not mutate the shared terminfo module
+        """
+        import jinxed.terminfo.xterm as xtmod
+        orig_clear = xtmod.STR_CAPS['clear']
+        term = jinxed._terminal.TERM
+        term.overlay_capabilities(str_caps={'clear': 'MUTATION_TEST'})
+        self.assertEqual(xtmod.STR_CAPS['clear'], orig_clear)
+
 
 class TestAliases(TestCase):
     """
@@ -267,6 +277,17 @@ class TestAliases(TestCase):
         with self.assertRaisesRegex(jinxed.error, 'Could not find terminal not-analias'):
             jinxed.setupterm('not-analias')
 
+    def test_all_aliases_resolve(self):
+        """
+        Every key in ALIASES resolves via setupterm() to the primary module
+        """
+        from importlib import import_module
+        from jinxed.terminfo._aliases import ALIASES
+        for alias, primary in ALIASES.items():
+            jinxed.setupterm(alias)
+            mod = import_module(f'jinxed.terminfo.{primary.replace("-", "_")}')
+            self.assertIs(jinxed._terminal.TERM.terminfo, mod)
+
 
 class TestAllTerminals(TestCase):
     """
@@ -289,7 +310,7 @@ class TestAllTerminals(TestCase):
                 if name:
                     names.append(name)
         # Hand-maintained modules not in terminals.txt
-        names.extend(['syncterm', 'ansi-bbs', 'ansicon', 'vtwin10'])
+        names.extend(['syncterm', 'ansi-bbs', 'ansicon', 'vtwin10', 'ansi'])
         self.__class__._termlist = names
         return names
 
