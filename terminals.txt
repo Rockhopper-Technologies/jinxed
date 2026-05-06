@@ -1,6 +1,9 @@
 #
 # Curated terminal list for jinxed virtual terminfo database.
 #
+# Uses ncurses primary (base) names. Aliases are auto-generated into
+# jinxed/terminfo/_aliases.py by codegen_terminfo.py.
+#
 # Modern terminal types are extracted even if they differ only slightly from
 # xterm-256color.  The codegen automatically detects near-clones and generates
 # derived (inheriting) files instead of full copies.
@@ -31,3 +34,12 @@ rio
 wezterm
 contour
 alacritty
+dtterm
+foot
+hpterm
+iris-ansi
+sun
+vt100
+vt102
+vt320
+wy50

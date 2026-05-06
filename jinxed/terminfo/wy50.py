@@ -1,5 +1,5 @@
 """
-wyse50 terminal info
+wy50 terminal info
 
 Revision: 1.1198 
 Source: ncurses terminfo.src

@@ -76,4 +76,6 @@ class TestTermInfo(TestCase):
 
 
 for mod in pkgutil.iter_modules([os.path.dirname(jinxed.terminfo.__file__)]):
+    if mod[1].startswith('_'):
+        continue
     TestTermInfo.set_func(mod[1])

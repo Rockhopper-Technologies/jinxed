@@ -65,6 +65,7 @@ script found in Jinxed source repository, `codegen_terminfo.py
 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/codegen_terminfo.py>`_.
 
 .. BEGIN_TERMINAL_LIST
+- `-aliases <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/_aliases.py>`_
 - `alacritty <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/alacritty.py>`_
 - `ansi <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/ansi.py>`_
 - `cons25 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/cons25.py>`_
@@ -96,7 +97,7 @@ script found in Jinxed source repository, `codegen_terminfo.py
 - `vt220 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/vt220.py>`_
 - `vt320 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/vt320.py>`_
 - `wezterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/wezterm.py>`_
-- `wyse50 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/wyse50.py>`_
+- `wy50 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/wy50.py>`_
 - `xterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/xterm.py>`_
 - `xterm-16color <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/xterm_16color.py>`_
 - `xterm-256color <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/xterm_256color.py>`_

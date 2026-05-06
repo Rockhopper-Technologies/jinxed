@@ -158,6 +158,32 @@ class TestTigetnum(TestCase):
         self.assertEqual(jinxed.tigetnum('howmuchwoodawoodchuckwillchuck'), -2)
 
 
+class TestAliases(TestCase):
+    """
+    Tests for terminal alias resolution
+    """
+
+    def test_alias_resolution(self):
+        """
+        setupterm() resolves aliases to primary module
+        """
+        from jinxed.terminfo._aliases import ALIASES
+
+        try:
+            ALIASES['xtestalias'] = 'xterm'
+            jinxed.setupterm('xtestalias')
+            self.assertIs(jinxed._terminal.TERM.terminfo, jinxed.terminfo.xterm)
+        finally:
+            ALIASES.pop('xtestalias', None)
+
+    def test_alias_unknown(self):
+        """
+        Raise error if alias does not resolve
+        """
+        with self.assertRaisesRegex(jinxed.error, 'Could not find terminal not-analias'):
+            jinxed.setupterm('not-analias')
+
+
 class TestTigetstr(TestCase):
     """
     Tests for jinxed.tigetstr()

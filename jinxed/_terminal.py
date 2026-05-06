@@ -16,6 +16,7 @@ import platform
 import sys
 
 from jinxed.terminfo import BOOL_CAPS, NUM_CAPS
+from jinxed.terminfo._aliases import ALIASES
 from jinxed._util import BASESTRING, error, raise_from_none
 
 if platform.system() == 'Windows':  # pragma: no branch
@@ -62,7 +63,15 @@ class Terminal(object):
             self.terminfo = importlib.import_module(
                 'jinxed.terminfo.%s' % term.replace('-', '_'))
         except ImportError:
-            raise_from_none(error('Could not find terminal %s' % term))
+            base = ALIASES.get(term)
+            if base:
+                try:
+                    self.terminfo = importlib.import_module(
+                        'jinxed.terminfo.%s' % base.replace('-', '_'))
+                except ImportError:
+                    raise_from_none(error('Could not find terminal %s' % term))
+            else:
+                raise_from_none(error('Could not find terminal %s' % term))
 
     def overlay_capabilities(self, str_caps=None, num_caps=None, bool_caps=None):
         # type: (Optional[Dict[str, str]], Optional[Dict[str, int]], Optional[Set[str]]) -> None
