@@ -47,7 +47,7 @@ HERE_DIR = Path(__file__).resolve().parent
 OUT_DIR = HERE_DIR / 'jinxed' / 'terminfo'
 
 TERMINALS_TXT = HERE_DIR / 'terminals.txt'
-FIXUPS_TOML = HERE_DIR / 'terminals-fixups.toml'
+FIXUPS_PATH = HERE_DIR / 'terminals-fixups.toml'
 
 _MODULE_RE = re.compile(r'[.-]')
 
