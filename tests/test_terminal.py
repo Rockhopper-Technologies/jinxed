@@ -22,7 +22,7 @@ from jinxed._util import mock
 
 from tests import TestCase
 
-# pylint: disable=protected-access
+# pylint: disable=protected-access,import-outside-toplevel
 
 
 class TestSetuperm(TestCase):

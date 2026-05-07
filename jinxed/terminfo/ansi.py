@@ -12,6 +12,9 @@ This file is derived from the ncurses terminfo database, which is distributed un
 license.  See LICENSE.ncurses.
 """
 
+# flake8: noqa: E501
+# pylint: disable=line-too-long
+
 BOOL_CAPS = [
     'am',      # (auto_right_margin) terminal has automatic margins
     'mc5i',    # (prtr_silent) printer will not echo on screen

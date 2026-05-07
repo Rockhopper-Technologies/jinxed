@@ -4,6 +4,9 @@ ansi-bbs
 Source: https://gitlab.synchro.net/main/sbbs/-/raw/master/install/termcap
 """
 
+# flake8: noqa: E501
+# pylint: disable=line-too-long
+
 BOOL_CAPS = [
     'am',      # (auto_right_margin) terminal has automatic margins
     'eo',      # (erase_overstrike) can erase overstrikes with a blank

@@ -5,7 +5,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-# pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods,invalid-name
 """
 Support functions and wrappers for calls to the Windows API
 """

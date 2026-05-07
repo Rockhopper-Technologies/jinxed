@@ -8,6 +8,9 @@ This file is derived from the ncurses terminfo database, which is
 distributed under the MIT/X11 license.  See LICENSE.ncurses.
 """
 
+# flake8: noqa: E501
+# pylint: disable=line-too-long
+
 BOOL_CAPS = [
     'am',      # (auto_right_margin) terminal has automatic margins
     'bw',      # (auto_left_margin) cub1 wraps from column 0 to last column
