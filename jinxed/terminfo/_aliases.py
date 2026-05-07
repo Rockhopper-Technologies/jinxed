@@ -9,6 +9,7 @@ ALIASES = {
     'ansis': 'cons25',
     'contour-latest': 'contour',
     'iris-ansi-net': 'iris-ansi',
+    'iterm2': 'iTerm2.app',
     'rxvt-color': 'rxvt',
     'stterm': 'st',
     'stterm-256color': 'st-256color',

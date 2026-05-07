@@ -39,3 +39,4 @@ vt100
 vt102
 vt320
 wy50
+iTerm2.app
