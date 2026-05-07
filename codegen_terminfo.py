@@ -49,10 +49,6 @@ TERMINALS_TXT = HERE_DIR / 'terminals.txt'
 
 _MODULE_RE = re.compile(r'[.-]')
 
-def _module_name(term: str) -> str:
-    """Convert a terminal name to a valid Python module name."""
-    return _MODULE_RE.sub('_', term).lower()
-
 # We track 'hand maintained' ones so that we can more clearly attribute their origin in the
 # documentation we generate
 HAND_MAINTAINED = {'syncterm', 'ansi-bbs', 'ansicon', 'vtwin10', 'ansi'}
@@ -64,12 +60,15 @@ EXTRA_ALIASES = {'xterm-ghostty': 'ghostty', 'xterm-kitty': 'kitty'}
 
 GITHUB_BASE = 'https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo'
 
-# Fixups applied to capability data. These were discovered by comparing XTGETTCAP results form the
-# ucs-detect project https://github.com/jquast/ucs-detect/ vs. ncurses entries.
+def _module_name(term: str) -> str:
+    """Convert a terminal name to a valid Python module name."""
+    return _MODULE_RE.sub('_', term).lower()
 
 
 def apply_fixups(data_map: dict[str, 'TermData']) -> None:
     """Patch known ncurses terminfo errors in-place."""
+    # Fixups applied to capability data. These were discovered by comparing XTGETTCAP results form
+    # the ucs-detect project https://github.com/jquast/ucs-detect/ vs. ncurses entries.
     for name, data in data_map.items():
         if name == 'kitty':
             # ncurses att610+cvis0: cnorm=\E[?12l               (blink off)

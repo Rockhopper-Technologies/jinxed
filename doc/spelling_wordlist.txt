@@ -73,3 +73,6 @@ wezterm
 wyse
 xoff
 xon
+pangoterm
+mlterm
+domterm
