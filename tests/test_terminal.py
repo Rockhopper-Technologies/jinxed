@@ -14,6 +14,7 @@ import io
 import os
 import re
 import sys
+import warnings
 
 import jinxed
 import jinxed.has_key
@@ -307,11 +308,13 @@ class TestAllTerminals(TestCase):
         terminals_file = os.path.join(os.path.dirname(__file__), '..', 'terminals.toml')
         names = []
         # parse toml file with regex to avoid dependency on older python
-        with codecs.open(terminals_file, 'r', encoding='utf-8') as fh:
-            for line in fh:
-                match = re.match(r'^\["?([a-zA-Z0-9_.-]+)"?\]\s*$', line)
-                if match:
-                    names.append(match.group(1))
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', DeprecationWarning)
+            with codecs.open(terminals_file, 'r', encoding='utf-8') as fh:
+                for line in fh:
+                    match = re.match(r'^\["?([a-zA-Z0-9_.-]+)"?\]\s*$', line)
+                    if match:
+                        names.append(match.group(1))
         # Hand-maintained modules not in 'terminals.toml'
         names.extend(['syncterm', 'ansi-bbs', 'ansicon', 'vtwin10', 'ansi'])
         self.__class__._termlist = names
