@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 from urllib.request import urlretrieve
@@ -46,6 +47,7 @@ HERE_DIR = Path(__file__).resolve().parent
 OUT_DIR = HERE_DIR / 'jinxed' / 'terminfo'
 
 TERMINALS_TXT = HERE_DIR / 'terminals.txt'
+FIXUPS_TOML = HERE_DIR / 'terminals-fixups.toml'
 
 _MODULE_RE = re.compile(r'[.-]')
 
@@ -66,49 +68,33 @@ def _module_name(term: str) -> str:
     return _MODULE_RE.sub('_', term).lower()
 
 
+def load_fixups(path: Path) -> list[dict]:
+    """Load terminal fixups from a TOML configuration file.
+
+    Returns a list of fixup entries, each with ``terminal`` and ``patch`` keys.
+    Returns an empty list if the file does not exist or cannot be parsed.
+    """
+    return tomllib.loads(path.read_text()).get('fixup')
+
+
 def apply_fixups(data_map: dict[str, 'TermData']) -> None:
-    """Patch known ncurses terminfo errors in-place."""
-    # Fixups applied to capability data. These were discovered by comparing XTGETTCAP results form
-    # the ucs-detect project https://github.com/jquast/ucs-detect/ vs. ncurses entries.
-    for name, data in data_map.items():
-        if name == 'kitty':
-            # ncurses att610+cvis0: cnorm=\E[?12l               (blink off)
-            # kitty kitty/terminfo.py:128: 'cnorm': r'\E[?12h'  (blink on)
-            if data.strs.get('cnorm') == b'\x1b[?12l\x1b[?25h':
-                data.strs['cnorm'] = b'\x1b[?12h\x1b[?25h'
-        elif name == 'contour':
-            # ncurses vt220+cvis: cnorm=\E[?25h                 (no mode 12)
-            # contour Capabilities.cpp:104: "\033[?12l\033[?25h"
-            if data.strs.get('cnorm') == b'\x1b[?25h':
-                data.strs['cnorm'] = b'\x1b[?12l\x1b[?25h'
-        elif name == 'wezterm':
-            # ncurses ansi+erase:  clear=\E[H\E[J               (no ED param)
-            # ncurses xterm+256color2: 48:5:                    (colon sep)
-            # wezterm wezterm.terminfo:40,81-82:
-            #   cnorm=\E[?12l\E[?25h, clear=\E[H\E[2J,
-            #   setab/setaf use 48;5; / 38;5;
-            if data.strs.get('cnorm') == b'\x1b[?25h':
-                data.strs['cnorm'] = b'\x1b[?12l\x1b[?25h'
-            if data.strs.get('clear') == b'\x1b[H\x1b[J':
-                data.strs['clear'] = b'\x1b[H\x1b[2J'
-            if data.strs.get('setab') == (
-                b'\x1b[%?%p1%{8}%<%t4%p1%d'
-                b'%e%p1%{16}%<%t10%p1%{8}%-%d'
-                b'%e48:5:%p1%d%;m'
-            ):
-                data.strs['setab'] = (
-                    b'\x1b[%?%p1%{8}%<%t4%p1%d'
-                    b'%e%p1%{16}%<%t10%p1%{8}%-%d'
-                    b'%e48;5;%p1%d%;m')
-            if data.strs.get('setaf') == (
-                b'\x1b[%?%p1%{8}%<%t3%p1%d'
-                b'%e%p1%{16}%<%t9%p1%{8}%-%d'
-                b'%e38:5:%p1%d%;m'
-            ):
-                data.strs['setaf'] = (
-                    b'\x1b[%?%p1%{8}%<%t3%p1%d'
-                    b'%e%p1%{16}%<%t9%p1%{8}%-%d'
-                    b'%e38;5;%p1%d%;m')
+    """Patch known ncurses terminfo errors in-place from a config file.
+
+    Fixups were discovered by comparing XTGETTCAP results from the ucs-detect
+    project https://github.com/jquast/ucs-detect/
+    """
+    for entry in load_fixups(FIXUPS_PATH):
+        name = entry['terminal']
+        if name not in data_map:
+            raise ValueError(f"Fixup {name!r} not found in terminfo.src! "
+                             f"check FIXUPS_PATH={FIXUPS_PATH!r}")
+        data = data_map[name]
+        for patch in entry['patch']:
+            cap = patch['cap']
+            from_val = decode(patch['from'])
+            to_val = decode(patch['to'])
+            if data.strs.get(cap) == from_val:
+                data.strs[cap] = to_val
 
 
 # Lazy-initialised after parse_cap_comments() is called.
