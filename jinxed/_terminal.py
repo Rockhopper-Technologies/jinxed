@@ -59,7 +59,7 @@ class Terminal(object):
         self._overlay_num_caps = {}   # type: Dict[str, int]
         self._overlay_bool_caps = set()  # type: Set[str]
 
-        modname = ALIASES.get(term, term).replace('-', '_')
+        modname = ALIASES.get(term, term).replace('-', '_').replace('.', '_')
         try:
             self.terminfo = importlib.import_module(
                 'jinxed.terminfo.%s' % modname)

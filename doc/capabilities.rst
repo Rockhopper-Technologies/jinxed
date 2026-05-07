@@ -76,7 +76,7 @@ script found in Jinxed source repository, `codegen_terminfo.py
 - `foot <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/foot.py>`_
 - `ghostty <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/ghostty.py>`_, xterm-ghostty
 - `hpterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/hpterm.py>`_, X-hpterm
-- `iTerm2.app <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/iTerm2.app.py>`_, iterm2
+- `iTerm2-app <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/iTerm2_app.py>`_, iterm2
 - `iris-ansi <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/iris_ansi.py>`_, iris-ansi-net
 - `kitty <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/kitty.py>`_, xterm-kitty
 - `linux <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/linux.py>`_
