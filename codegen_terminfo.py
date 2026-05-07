@@ -60,6 +60,7 @@ EXTRA_ALIASES = {'xterm-ghostty': 'ghostty', 'xterm-kitty': 'kitty'}
 
 GITHUB_BASE = 'https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo'
 
+
 def _module_name(term: str) -> str:
     """Convert a terminal name to a valid Python module name."""
     return _MODULE_RE.sub('_', term).lower()
