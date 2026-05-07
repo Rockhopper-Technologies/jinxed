@@ -59,19 +59,12 @@ class Terminal(object):
         self._overlay_num_caps = {}   # type: Dict[str, int]
         self._overlay_bool_caps = set()  # type: Set[str]
 
+        modname = ALIASES.get(term, term).replace('-', '_')
         try:
             self.terminfo = importlib.import_module(
-                'jinxed.terminfo.%s' % term.replace('-', '_'))
+                'jinxed.terminfo.%s' % modname)
         except ImportError:
-            base = ALIASES.get(term)
-            if base:
-                try:
-                    self.terminfo = importlib.import_module(
-                        'jinxed.terminfo.%s' % base.replace('-', '_'))
-                except ImportError:
-                    raise_from_none(error('Could not find terminal %s' % term))
-            else:
-                raise_from_none(error('Could not find terminal %s' % term))
+            raise_from_none(error('Could not find terminal %s' % term))
 
     def overlay_capabilities(self, str_caps=None, num_caps=None, bool_caps=None):
         # type: (Optional[Dict[str, Union[str, bytes]]], Optional[Dict[str, int]],
