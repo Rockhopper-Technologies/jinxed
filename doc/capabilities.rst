@@ -1,9 +1,8 @@
 Capabilities
 ============
 
-Jinxed provides a lightweight virtual `capabilities database` with its `terminfo(5)`_ family of
-functions derived from the gnu ncurses file `terminfo.src`_ without the requirement of any system
-libraries.
+Jinxed provides a lightweight virtual capabilities database derived from the gnu ncurses file
+`terminfo.src`_ without the requirement of any system libraries.
 
 Singleton-free
 --------------
@@ -149,7 +148,6 @@ Three kinds of Control Codes **are** removed from the virtual database:
 
   Jinxed provides no functions to manage historic character sets and so they are removed.
 
-.. _`capabilities database`: https://jinxed.readthedocs.io/en/stable/capabilities.html
 .. _curses: https://docs.python.org/3/library/curses.html
 .. _jinxed.terminal: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.terminal
 .. _`terminfo(5)`: https://invisible-island.net/ncurses/man/terminfo.5.html
