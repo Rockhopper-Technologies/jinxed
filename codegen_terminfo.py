@@ -461,7 +461,7 @@ def generate(kind: str, data: TermData, version: str, base: str | None = None,
 
 
 def update_capabilities_rst(term_dir: Path,
-                           aliases: dict[str, str] | None = None) -> None:
+                            aliases: dict[str, str] | None = None) -> None:
     """Regenerate the terminal list between BEGIN/END markers in capabilities.rst."""
     rst_path = HERE_DIR / 'doc' / 'capabilities.rst'
     if not rst_path.exists():
@@ -477,6 +477,7 @@ def update_capabilities_rst(term_dir: Path,
         if stripped == '.. BEGIN_TERMINAL_LIST':
             in_marker = True
             lines_out.append(line)
+            lines_out.append('')
             auto = [m for m in modules if m.replace('_', '-') not in HAND_MAINTAINED]
             hand = [m for m in modules if m.replace('_', '-') in HAND_MAINTAINED]
             for mod in auto:
@@ -496,6 +497,7 @@ def update_capabilities_rst(term_dir: Path,
             continue
         if stripped == '.. END_TERMINAL_LIST':
             in_marker = False
+            lines_out.append('')
             lines_out.append(line)
             continue
         if not in_marker:

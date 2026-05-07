@@ -19,7 +19,6 @@ STR_CAPS['s1ds'] = b''  # empty (G0/SO/SI stripped)
 STR_CAPS['smacs'] = b''  # empty (G0/SO/SI stripped)
 
 
-
 # Added
 STR_CAPS['cht'] = b'\x1b[%p1%dI'
 STR_CAPS['cnl'] = b'\x1b[%p1%dE'

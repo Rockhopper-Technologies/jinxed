@@ -25,6 +25,9 @@ good-names=e
 # Spelling dictionary name. Available dictionaries: en_US (myspell).
 spelling-dict=en_US
 
+# Path to a file that contains private dictionary; one word per line.
+spelling-private-dict-file=doc/spelling_wordlist.txt
+
 # List of comma separated words that should not be checked.
 spelling-ignore-words=
     acsc, ansicon, API, args, Avram,

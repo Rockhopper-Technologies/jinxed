@@ -9,6 +9,7 @@
 Test module for jinxed._terminal
 """
 
+import codecs
 import io
 import os
 import sys
@@ -231,11 +232,10 @@ class TestOverlayCapabilities(TestCase):
         """
         Overlays on one Terminal instance do not mutate the shared terminfo module
         """
-        import jinxed.terminfo.xterm as xtmod
-        orig_clear = xtmod.STR_CAPS['clear']
+        orig_clear = jinxed.terminfo.xterm.STR_CAPS['clear']
         term = jinxed._terminal.TERM
         term.overlay_capabilities(str_caps={'clear': 'MUTATION_TEST'})
-        self.assertEqual(xtmod.STR_CAPS['clear'], orig_clear)
+        self.assertEqual(jinxed.terminfo.xterm.STR_CAPS['clear'], orig_clear)
 
 
 class TestAliases(TestCase):
@@ -304,7 +304,7 @@ class TestAllTerminals(TestCase):
             return self._termlist
         terminals_file = os.path.join(os.path.dirname(__file__), '..', 'terminals.txt')
         names = []
-        with open(terminals_file, 'r') as fh:
+        with codecs.open(terminals_file, 'r', encoding='utf-8') as fh:
             for line in fh:
                 name = line.split('#')[0].strip()
                 if name:
