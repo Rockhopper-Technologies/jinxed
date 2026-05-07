@@ -19,12 +19,13 @@ to continue the theme, but the name was taken. Jinxed is a synonym for cursed.
 Can you add support for a terminal?
 -----------------------------------
 
-A select few terminals from the `terminfo(5)`_ database were selected to reduce packaging
-size, excluding many historic and unlikely terminal types like ``avatar``.
+A select few terminals from the `terminfo(5)`_ database were included to reduce packaging
+size. Many historic and unlikely terminal types, like ``avatar``, were excluded.
 
-If we are missing support for a terminal, please let us know its unique ``TERM`` name,
-whether it is in the `terminfo(5)`_ database, or provide an equivalent reference or directly
-`create an issue <https://github.com/Rockhopper-Technologies/jinxed/issues>`_ or pull request.
+If we are missing support for a terminal, please let us know its unique ``TERM`` name
+and whether it is in the `terminfo(5)`_ database, or provide an equivalent reference. To submit,
+`create an issue <https://github.com/Rockhopper-Technologies/jinxed/issues>`_
+or `pull request <https://github.com/Rockhopper-Technologies/jinxed/pulls>`_.
 
 We can also provide stubs for terminal capabilities, like what was done with the (now legacy) win32 
 console. Not all terminals can be supported, there a few requirements:

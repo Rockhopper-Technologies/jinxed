@@ -58,6 +58,50 @@ EXTRA_ALIASES = {'xterm-ghostty': 'ghostty', 'xterm-kitty': 'kitty'}
 
 GITHUB_BASE = 'https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo'
 
+# Fixups applied to capability data. These were discovered by comparing XTGETTCAP results form the
+# ucs-detect project https://github.com/jquast/ucs-detect/ vs. ncurses entries.
+
+
+def apply_fixups(data_map: dict[str, 'TermData']) -> None:
+    """Patch known ncurses terminfo errors in-place."""
+    for name, data in data_map.items():
+        if name == 'kitty':
+            # ncurses att610+cvis0: cnorm=\E[?12l               (blink off)
+            # kitty kitty/terminfo.py:128: 'cnorm': r'\E[?12h'  (blink on)
+            if data.strs.get('cnorm') == b'\x1b[?12l\x1b[?25h':
+                data.strs['cnorm'] = b'\x1b[?12h\x1b[?25h'
+        elif name == 'contour':
+            # ncurses vt220+cvis: cnorm=\E[?25h                 (no mode 12)
+            # contour Capabilities.cpp:104: "\033[?12l\033[?25h"
+            if data.strs.get('cnorm') == b'\x1b[?25h':
+                data.strs['cnorm'] = b'\x1b[?12l\x1b[?25h'
+        elif name == 'wezterm':
+            # ncurses ansi+erase:  clear=\E[H\E[J               (no ED param)
+            # ncurses xterm+256color2: 48:5:                    (colon sep)
+            # wezterm wezterm.terminfo:40,81-82:
+            #   cnorm=\E[?12l\E[?25h, clear=\E[H\E[2J,
+            #   setab/setaf use 48;5; / 38;5;
+            if data.strs.get('cnorm') == b'\x1b[?25h':
+                data.strs['cnorm'] = b'\x1b[?12l\x1b[?25h'
+            if data.strs.get('clear') == b'\x1b[H\x1b[J':
+                data.strs['clear'] = b'\x1b[H\x1b[2J'
+            if data.strs.get('setab') == (
+                b'\x1b[%?%p1%{8}%<%t4%p1%d'
+                b'%e%p1%{16}%<%t10%p1%{8}%-%d'
+                b'%e48:5:%p1%d%;m'):
+                    data.strs['setab'] = (
+                        b'\x1b[%?%p1%{8}%<%t4%p1%d'
+                        b'%e%p1%{16}%<%t10%p1%{8}%-%d'
+                        b'%e48;5;%p1%d%;m')
+            if data.strs.get('setaf') == (
+                b'\x1b[%?%p1%{8}%<%t3%p1%d'
+                b'%e%p1%{16}%<%t9%p1%{8}%-%d'
+                b'%e38:5:%p1%d%;m'):
+                    data.strs['setaf'] = (
+                        b'\x1b[%?%p1%{8}%<%t3%p1%d'
+                        b'%e%p1%{16}%<%t9%p1%{8}%-%d'
+                        b'%e38;5;%p1%d%;m')
+
 # Lazy-initialised after parse_cap_comments() is called.
 BOOL_COMMENTS: dict[str, str] = {}
 NUM_COMMENTS: dict[str, str] = {}
@@ -74,14 +118,15 @@ class TermData:
     def diff(self, base: 'TermData') -> dict:
         """Return structured diff of this terminal against *base*."""
         return {
-            'add_b': [c for c in self.bools if c not in base.bools],
-            'rm_b': [c for c in base.bools if c not in self.bools],
-            'mod_n': {k: v for k, v in self.nums.items()
-                      if k not in base.nums or base.nums.get(k) != v},
-            'add_s': {k: v for k, v in self.strs.items() if k not in base.strs},
-            'rm_s': [k for k in base.strs if k not in self.strs],
-            'mod_s': {k: v for k, v in self.strs.items()
-                      if k in base.strs and base.strs[k] != v},
+            'add_b': [cap for cap in self.bools if cap not in base.bools],
+            'rm_b': [cap for cap in base.bools if cap not in self.bools],
+            'mod_n': {key: val for key, val in self.nums.items()
+                      if key not in base.nums or base.nums.get(key) != val},
+            'add_s': {key: val for key, val in self.strs.items()
+                      if key not in base.strs},
+            'rm_s': [key for key in base.strs if key not in self.strs],
+            'mod_s': {key: val for key, val in self.strs.items()
+                      if key in base.strs and base.strs[key] != val},
         }
 
 
@@ -118,24 +163,23 @@ def parse_cap_comments() -> tuple[dict[str, str], dict[str, str]]:
             continue
         if current is None:
             continue
-        m = re.match(r"^\s*'(\w+)',\s*#\s*(.*)$", line)
-        if m:
+        if (match := re.match(r"^\s*'(\w+)',\s*#\s*(.*)$", line)):
             target = bool_comments if current == 'bool' else num_comments
-            target[m.group(1)] = m.group(2).rstrip()
+            target[match.group(1)] = match.group(2).rstrip()
     return bool_comments, num_comments
 
 
 def decode(value: str) -> bytes:
     """Decode an infocmp -1 string value into bytes."""
     result = bytearray()
-    i = 0
-    while i < len(value):
-        c = value[i]
-        if c == '\\':
-            i += 1
-            if i >= len(value):
+    idx = 0
+    while idx < len(value):
+        char = value[idx]
+        if char == '\\':
+            idx += 1
+            if idx >= len(value):
                 break
-            esc = value[i]
+            esc = value[idx]
             if esc in ('E', 'e'):
                 result.append(0x1b)
             elif esc == 'n':
@@ -157,37 +201,37 @@ def decode(value: str) -> bytes:
             elif esc in '01234567':
                 octal = esc
                 for _ in range(2):
-                    if i + 1 < len(value) and value[i + 1] in '01234567':
-                        i += 1
-                        octal += value[i]
+                    if idx + 1 < len(value) and value[idx + 1] in '01234567':
+                        idx += 1
+                        octal += value[idx]
                 result.append(int(octal, 8))
             elif esc == 'x':
-                i += 1
-                if i >= len(value):
+                idx += 1
+                if idx >= len(value):
                     break
-                h = value[i]
-                if i + 1 < len(value) and value[i + 1] in '0123456789abcdefABCDEF':
-                    i += 1
-                    h += value[i]
-                result.append(int(h, 16))
+                hx = value[idx]
+                if idx + 1 < len(value) and value[idx + 1] in '0123456789abcdefABCDEF':
+                    idx += 1
+                    hx += value[idx]
+                result.append(int(hx, 16))
             else:
                 result.append(ord(esc))
-        elif c == '^':
-            i += 1
-            if i >= len(value):
+        elif char == '^':
+            idx += 1
+            if idx >= len(value):
                 break
-            ctrl = value[i]
+            ctrl = value[idx]
             if 'A' <= ctrl <= '_':
                 result.append(ord(ctrl) - ord('A') + 1)
             elif ctrl == '?':
                 result.append(0x7f)
             else:
                 result.append(ord(ctrl) & 0x1f)
-        elif c == ',' and i == len(value) - 1:
+        elif char == ',' and idx == len(value) - 1:
             break
         else:
-            result.append(ord(c))
-        i += 1
+            result.append(ord(char))
+        idx += 1
     return bytes(result)
 
 
@@ -200,9 +244,8 @@ def parse(output: str) -> TermData:
         line = line.strip().rstrip(',')
         if not line or line.startswith('#'):
             continue
-        m = re.match(r'^(\w+)#(-?[\d]+|0[xX][\da-fA-F]+|0[0-7]+)$', line)
-        if m:
-            name, vs = m.group(1), m.group(2)
+        if (match := re.match(r'^(\w+)#(-?[\d]+|0[xX][\da-fA-F]+|0[0-7]+)$', line)):
+            name, vs = match.group(1), match.group(2)
             if vs.startswith(('0x', '0X')):
                 val = int(vs, 16)
             elif vs.startswith('0') and len(vs) > 1:
@@ -212,9 +255,8 @@ def parse(output: str) -> TermData:
             if name in NUM_CAPS:
                 nums[name] = val
             continue
-        m = re.match(r"^(\w+)=(.*)$", line)
-        if m:
-            name, raw = m.group(1), m.group(2)
+        if (match := re.match(r"^(\w+)=(.*)$", line)):
+            name, raw = match.group(1), match.group(2)
             if name in EMPTY_CAPS:
                 strs[name] = b''
                 continue
@@ -247,9 +289,8 @@ def fetch() -> tuple[Path, str]:
 
     version = 'unknown'
     header = src.read_text(errors='replace')[:4000]
-    m = re.search(r'\$Revision: (\S+) \$', header)
-    if m:
-        version = m.group(1)
+    if (match := re.search(r'\$Revision: (\S+) \$', header)):
+        version = match.group(1)
 
     db.mkdir(exist_ok=True)
     # Let tic write directly to the terminal so errors are visible
@@ -275,7 +316,7 @@ def parse_terminal_aliases(src: Path, wanted: set[str]) -> dict[str, str]:
             continue
         # Split on comma first, then on |
         header = line.split(',')[0]
-        fields = [f.strip() for f in header.split('|')]
+        fields = [field.strip() for field in header.split('|')]
         if len(fields) < 2:
             continue
         primary = fields[0]
@@ -323,8 +364,8 @@ def parse_use_chain(src: Path, wanted: set[str]) -> dict[str, str | None]:
     for line in text.splitlines():
         if not line or line[0] in '#\t ':
             if current_term and line.strip():
-                for m in re.finditer(r'use=(\S+?),', line):
-                    term_uses.setdefault(current_term, []).append(m.group(1))
+                for match in re.finditer(r'use=(\S+?),', line):
+                    term_uses.setdefault(current_term, []).append(match.group(1))
             continue
         current_term = line.split('|')[0].strip()
         if current_term.endswith('+'):
@@ -333,7 +374,7 @@ def parse_use_chain(src: Path, wanted: set[str]) -> dict[str, str | None]:
     result: dict[str, str | None] = {}
     for name in wanted:
         targets = term_uses.get(name, [])
-        result[name] = next((t for t in targets if t in wanted), None)
+        result[name] = next((trg for trg in targets if trg in wanted), None)
     return result
 
 
@@ -341,9 +382,9 @@ def extract(kind: str, db: Path) -> TermData | None:
     """Extract compiled terminfo entry via infocmp."""
     env = {**os.environ, 'TERMINFO': str(db), 'TERMINFO_DIRS': str(db)}
     try:
-        r = subprocess.check_output(['infocmp', '-1', kind],
-                                    text=True, timeout=10, env=env)
-        return parse(r)
+        output = subprocess.check_output(['infocmp', '-1', kind],
+                                         text=True, timeout=10, env=env)
+        return parse(output)
     except (subprocess.SubprocessError, OSError):
         return None
 
@@ -355,12 +396,13 @@ def expand(db: Path) -> list[str]:
 
     env = {**os.environ, 'TERMINFO': str(db), 'TERMINFO_DIRS': str(db)}
     try:
-        r = subprocess.run(['toe', '-a'], capture_output=True, text=True, env=env,
-                           check=True)
+        result = subprocess.run(['toe', '-a'], capture_output=True, text=True, env=env,
+                                check=True)
     except (subprocess.SubprocessError, OSError):
         print('WARNING: toe -a failed, no terminals available', file=sys.stderr)
         return []
-    available = {line.split(None, 1)[0] for line in r.stdout.splitlines() if line.strip()}
+    available = {line.split(None, 1)[0] for line in result.stdout.splitlines()
+                 if line.strip()}
 
     return sorted(wanted & available - HAND_MAINTAINED)
 
@@ -412,34 +454,34 @@ def generate(kind: str, data: TermData, version: str, base: str | None = None,
             'NUM_CAPS = NUM_CAPS.copy()',
             'STR_CAPS = STR_CAPS.copy()',
         ]
-        d = data.diff(base_data)
-        for cap in d['add_b']:
+        diff = data.diff(base_data)
+        for cap in diff['add_b']:
             lines.append(f"BOOL_CAPS.append('{cap}')")
-        for cap in d['rm_b']:
+        for cap in diff['rm_b']:
             lines.append(f"BOOL_CAPS.remove('{cap}')  # noqa")
-        for k, v in sorted(d['mod_n'].items()):
-            lines.append(f"NUM_CAPS['{k}'] = {v}")
+        for key, val in sorted(diff['mod_n'].items()):
+            lines.append(f"NUM_CAPS['{key}'] = {val}")
         for label, items in (
-            ('Added strings', d['add_s']),
-            ('Removed strings', d['rm_s']),
-            ('Modified strings', d['mod_s']),
+            ('Added strings', diff['add_s']),
+            ('Removed strings', diff['rm_s']),
+            ('Modified strings', diff['mod_s']),
         ):
             if items:
                 lines.append('')
                 lines.append(f'# {label}')
                 if isinstance(items, dict):
-                    for k, v in sorted(items.items()):
-                        lines.append(f"STR_CAPS['{k}'] = {bytes_repr(v)}")
+                    for key, val in sorted(items.items()):
+                        lines.append(f"STR_CAPS['{key}'] = {bytes_repr(val)}")
                 else:
-                    for k in items:
-                        lines.append(f"del STR_CAPS['{k}']")
+                    for key in items:
+                        lines.append(f"del STR_CAPS['{key}']")
     else:
         lines.append('BOOL_CAPS = [')
         bool_entries: list[tuple[str, str | None]] = [
             (f"    '{cap_name}',", BOOL_COMMENTS.get(cap_name))
             for cap_name in data.bools
         ]
-        max_bool = max((len(e) for e, _ in bool_entries), default=0)
+        max_bool = max((len(ent) for ent, _ in bool_entries), default=0)
         for entry, comment in bool_entries:
             lines.append(f"{entry:<{max_bool + 2}}  # {comment}" if comment else entry)
         lines.append(']')
@@ -447,18 +489,18 @@ def generate(kind: str, data: TermData, version: str, base: str | None = None,
 
         lines.append('NUM_CAPS = {')
         num_entries: list[tuple[str, str | None]] = [
-            (f"    '{k}': {v},", NUM_COMMENTS.get(k))
-            for k, v in sorted(data.nums.items())
+            (f"    '{key}': {val},", NUM_COMMENTS.get(key))
+            for key, val in sorted(data.nums.items())
         ]
-        max_num = max((len(e) for e, _ in num_entries), default=0)
+        max_num = max((len(ent) for ent, _ in num_entries), default=0)
         for entry, comment in num_entries:
             lines.append(f"{entry:<{max_num + 2}}  # {comment}" if comment else entry)
         lines.append('}')
         lines.append('')
 
         lines.append('STR_CAPS = {')
-        lines.extend(f"    '{k}': {bytes_repr(v)},"
-                     for k, v in sorted(data.strs.items()))
+        lines.extend(f"    '{key}': {bytes_repr(val)},"
+                     for key, val in sorted(data.strs.items()))
         lines.append('}')
     lines.append('')
     return '\n'.join(lines)
@@ -471,8 +513,8 @@ def update_capabilities_rst(term_dir: Path,
     if not rst_path.exists():
         return
 
-    modules = sorted(p.stem for p in term_dir.glob('*.py')
-                     if p.stem not in ('__init__', '_aliases'))
+    modules = sorted(path.stem for path in term_dir.glob('*.py')
+                     if path.stem not in ('__init__', '_aliases'))
 
     lines_out: list[str] = []
     in_marker = False
@@ -482,13 +524,15 @@ def update_capabilities_rst(term_dir: Path,
             in_marker = True
             lines_out.append(line)
             lines_out.append('')
-            auto = [m for m in modules if m.replace('_', '-') not in HAND_MAINTAINED]
-            hand = [m for m in modules if m.replace('_', '-') in HAND_MAINTAINED]
+            auto = [mod for mod in modules
+                    if mod.replace('_', '-') not in HAND_MAINTAINED]
+            hand = [mod for mod in modules
+                    if mod.replace('_', '-') in HAND_MAINTAINED]
             for mod in auto:
                 line = f'- `{mod.replace("_", "-")} <{GITHUB_BASE}/{mod}.py>`_'
                 if aliases:
-                    mod_aliases = sorted(a for a, p in aliases.items()
-                                         if p == mod.replace('_', '-'))
+                    mod_aliases = sorted(als for als, pri in aliases.items()
+                                         if pri == mod.replace('_', '-'))
                     if mod_aliases:
                         line += ', ' + ', '.join(mod_aliases)
                 lines_out.append(line)
@@ -497,7 +541,8 @@ def update_capabilities_rst(term_dir: Path,
                 lines_out.append('Hand-maintained (not generated by codegen):')
                 lines_out.append('')
                 for mod in hand:
-                    lines_out.append(f'- `{mod.replace("_", "-")} <{GITHUB_BASE}/{mod}.py>`_')
+                    lines_out.append(
+                        f'- `{mod.replace("_", "-")} <{GITHUB_BASE}/{mod}.py>`_')
             continue
         if stripped == '.. END_TERMINAL_LIST':
             in_marker = False
@@ -516,12 +561,14 @@ def main() -> None:
     terms = expand(db)
 
     data_map: dict[str, TermData] = {}
-    for k in terms:
-        d = extract(k, db)
-        if d:
-            data_map[k] = d
+    for kind in terms:
+        data = extract(kind, db)
+        if data:
+            data_map[kind] = data
         else:
-            print(f'SKIP: {k}', file=sys.stderr)
+            print(f'SKIP: {kind}', file=sys.stderr)
+
+    apply_fixups(data_map)
 
     # Parse use= directives from the ncurses source to find explicit
     # derivation chains (e.g. rio -> alacritty).
@@ -537,14 +584,14 @@ def main() -> None:
     mapping_use_base = parse_use_chain(src, wanted_terms)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    for k, d in data_map.items():
+    for kind, data in data_map.items():
         base: str | None = None
         base_data: TermData | None = None
-        if mapping_use_base.get(k) and mapping_use_base[k] in data_map:
-            base = mapping_use_base[k]
+        if mapping_use_base.get(kind) and mapping_use_base[kind] in data_map:
+            base = mapping_use_base[kind]
             base_data = data_map[base]
-        fpath = OUT_DIR / f'{k.replace("-", "_")}.py'
-        fpath.write_text(generate(k, d, version, base, base_data))
+        fpath = OUT_DIR / f'{kind.replace("-", "_")}.py'
+        fpath.write_text(generate(kind, data, version, base, base_data))
 
     print(f'{len(data_map)} modules -> {OUT_DIR}', file=sys.stderr)
     print(f'Source: ncurses terminfo.src {version}', file=sys.stderr)
