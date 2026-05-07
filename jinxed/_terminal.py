@@ -91,8 +91,8 @@ class Terminal(object):
         :arg set bool_caps: Set of boolean capability names that are present.
         """
         if str_caps:
-            for k, v in str_caps.items():
-                self._overlay_str_caps[k] = v if isinstance(v, bytes) else v.encode('latin-1')
+            for key, val in str_caps.items():
+                self._overlay_str_caps[key] = val if isinstance(val, bytes) else val.encode('latin-1')
         if num_caps:
             self._overlay_num_caps.update(num_caps)
         if bool_caps:

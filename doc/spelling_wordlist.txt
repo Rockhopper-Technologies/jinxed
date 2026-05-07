@@ -1,6 +1,5 @@
 Ansicon
 cbreak
-eg
 filehandle
 natively
 ncurses
@@ -12,7 +11,6 @@ stderr
 stdout
 termcap
 terminfo
-th
 tigetstr
 tparm
 unicode

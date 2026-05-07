@@ -19,12 +19,12 @@ to continue the theme, but the name was taken. Jinxed is a synonym for cursed.
 Can you add support for a terminal?
 -----------------------------------
 
-A select few terminal from `terminfo(5)`_ database were selected, excluding many historic and
-unlikely terminal types like ``avatar`` to reduce packaging size.
+A select few terminals from the `terminfo(5)`_ database were selected to reduce packaging
+size, excluding many historic and unlikely terminal types like ``avatar``.
 
-However, if we're missing support for a terminal please let us know its unique ``TERM`` name,
-whether it is in the `terminfo(5)`_ database, or provide an equivalent reference or directly `create
-an issue <https://github.com/Rockhopper-Technologies/jinxed/issues>`_ or pull request.
+If we are missing support for a terminal, please let us know its unique ``TERM`` name,
+whether it is in the `terminfo(5)`_ database, or provide an equivalent reference or directly
+`create an issue <https://github.com/Rockhopper-Technologies/jinxed/issues>`_ or pull request.
 
 We can also provide stubs for terminal capabilities, like what was done with the (now legacy) win32 
 console. Not all terminals can be supported, there a few requirements:
@@ -32,8 +32,8 @@ console. Not all terminals can be supported, there a few requirements:
 1. The terminal must be detectable programmatically
 
    We need to be able to identify the terminal in some reasonable way
-   and differentiate it from other terminals. This could be through environment variables,
-   (eg. ``TERM``) the :py:mod:`platform` module, ``TTYPE`` telnet negotiation, or some other method.
+   and differentiate it from other terminals. This could be through
+   environment variables (e.g. ``TERM``), the :py:mod:`platform` module, ``TTYPE`` telnet negotiation, or some other method.
 
 2. Virtual terminal codes must be supported and documented
 
