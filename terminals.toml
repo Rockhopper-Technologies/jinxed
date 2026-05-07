@@ -17,10 +17,12 @@ patch = [
 [dtterm]
 [foot]
 [ghostty]
+extra_aliases = ["xterm-ghostty"]
 [hpterm]
 [iris-ansi]
 ["iTerm2.app"]
 [kitty]
+extra_aliases = ["xterm-kitty"]
 patch = [
     # ncurses att610+cvis0: cnorm=\E[?12l               (blink off)
     # kitty kitty/terminfo.py:128: 'cnorm': r'\E[?12h'  (blink on)

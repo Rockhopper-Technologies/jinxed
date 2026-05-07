@@ -260,14 +260,14 @@ class TestAliases(TestCase):
 
     def test_xterm_ghostty_alias(self):
         """
-        setupterm('xterm-ghostty') resolves to ghostty module via EXTRA_ALIASES
+        setupterm('xterm-ghostty') resolves to ghostty module via extra_aliases in terminals.toml
         """
         jinxed.setupterm('xterm-ghostty')
         self.assertIs(jinxed._terminal.TERM.terminfo, jinxed.terminfo.ghostty)
 
     def test_xterm_kitty_alias(self):
         """
-        setupterm('xterm-kitty') resolves to kitty module via EXTRA_ALIASES
+        setupterm('xterm-kitty') resolves to kitty module via extra_aliases in terminals.toml
         """
         jinxed.setupterm('xterm-kitty')
         self.assertIs(jinxed._terminal.TERM.terminfo, jinxed.terminfo.kitty)

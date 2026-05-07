@@ -54,11 +54,6 @@ _MODULE_RE = re.compile(r'[.-]')
 # documentation we generate
 HAND_MAINTAINED = {'syncterm', 'ansi-bbs', 'ansicon', 'vtwin10', 'ansi'}
 
-# Aliases not present in the ncurses source but can be found on systems, in my case, the 'ghostty'
-# installed from source uses TERM=xterm-ghostty, but this is only available with the installed local
-# termcap $HOME/.terminfo/g/ghostty, so we provide this alias for code generation on other systems.
-EXTRA_ALIASES = {'xterm-ghostty': 'ghostty', 'xterm-kitty': 'kitty'}
-
 GITHUB_BASE = 'https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo'
 
 
@@ -79,6 +74,23 @@ def load_fixups(path: Path) -> list[dict]:
         if 'patch' in entry:
             fixups.append({'terminal': terminal, 'patch': entry['patch']})
     return fixups
+
+
+def load_extra_aliases(path: Path) -> dict[str, str]:
+    """Load extra terminal aliases not present in the ncurses source.
+
+    Terminals can declare ``extra_aliases`` in terminals.toml for aliases
+    that are found on real systems but missing from terminfo.src (e.g.
+    xterm-ghostty for ghostty, xterm-kitty for kitty).
+
+    Returns a dict mapping alias name to primary terminal name.
+    """
+    data = tomllib.loads(path.read_text())
+    extra: dict[str, str] = {}
+    for terminal, entry in data.items():
+        for alias in entry.get('extra_aliases', []):
+            extra[alias] = terminal
+    return extra
 
 
 def apply_fixups(data_map: dict[str, 'TermData']) -> None:
@@ -583,7 +595,7 @@ def main() -> None:
     # Generate terminal name aliases
     wanted_terms = set(data_map)
     aliases = parse_terminal_aliases(src, wanted_terms)
-    for alias, primary in EXTRA_ALIASES.items():
+    for alias, primary in load_extra_aliases(TERMINALS_TOML).items():
         if primary in wanted_terms and alias not in aliases:
             aliases[alias] = primary
     generate_aliases(aliases, OUT_DIR)
