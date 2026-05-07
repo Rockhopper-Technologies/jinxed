@@ -88,19 +88,22 @@ def apply_fixups(data_map: dict[str, 'TermData']) -> None:
             if data.strs.get('setab') == (
                 b'\x1b[%?%p1%{8}%<%t4%p1%d'
                 b'%e%p1%{16}%<%t10%p1%{8}%-%d'
-                b'%e48:5:%p1%d%;m'):
-                    data.strs['setab'] = (
-                        b'\x1b[%?%p1%{8}%<%t4%p1%d'
-                        b'%e%p1%{16}%<%t10%p1%{8}%-%d'
-                        b'%e48;5;%p1%d%;m')
+                b'%e48:5:%p1%d%;m'
+            ):
+                data.strs['setab'] = (
+                    b'\x1b[%?%p1%{8}%<%t4%p1%d'
+                    b'%e%p1%{16}%<%t10%p1%{8}%-%d'
+                    b'%e48;5;%p1%d%;m')
             if data.strs.get('setaf') == (
                 b'\x1b[%?%p1%{8}%<%t3%p1%d'
                 b'%e%p1%{16}%<%t9%p1%{8}%-%d'
-                b'%e38:5:%p1%d%;m'):
-                    data.strs['setaf'] = (
-                        b'\x1b[%?%p1%{8}%<%t3%p1%d'
-                        b'%e%p1%{16}%<%t9%p1%{8}%-%d'
-                        b'%e38;5;%p1%d%;m')
+                b'%e38:5:%p1%d%;m'
+            ):
+                data.strs['setaf'] = (
+                    b'\x1b[%?%p1%{8}%<%t3%p1%d'
+                    b'%e%p1%{16}%<%t9%p1%{8}%-%d'
+                    b'%e38;5;%p1%d%;m')
+
 
 # Lazy-initialised after parse_cap_comments() is called.
 BOOL_COMMENTS: dict[str, str] = {}
