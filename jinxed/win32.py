@@ -410,7 +410,7 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
 
         # See if Windows Terminal is being used Windows Terminal (wt.exe, now Terminal.exe) is a
         # modern host application distinct from the legacy Windows Console Host (conhost.exe).
-        # On github as https://github.com/microsoft/terminal
+        # On GitHub as https://github.com/microsoft/terminal
         elif os.environ.get('WT_SESSION', None):
             term = 'ms-terminal'
 
