@@ -46,8 +46,7 @@ URL = 'https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz'
 HERE_DIR = Path(__file__).resolve().parent
 OUT_DIR = HERE_DIR / 'jinxed' / 'terminfo'
 
-TERMINALS_TXT = HERE_DIR / 'terminals.txt'
-FIXUPS_PATH = HERE_DIR / 'terminals-fixups.toml'
+TERMINALS_TOML = HERE_DIR / 'terminals.toml'
 
 _MODULE_RE = re.compile(r'[.-]')
 
@@ -72,9 +71,14 @@ def load_fixups(path: Path) -> list[dict]:
     """Load terminal fixups from a TOML configuration file.
 
     Returns a list of fixup entries, each with ``terminal`` and ``patch`` keys.
-    Returns an empty list if the file does not exist or cannot be parsed.
+    Returns an empty list if no terminals have patch data.
     """
-    return tomllib.loads(path.read_text()).get('fixup')
+    data = tomllib.loads(path.read_text())
+    fixups = []
+    for terminal, entry in data.items():
+        if 'patch' in entry:
+            fixups.append({'terminal': terminal, 'patch': entry['patch']})
+    return fixups
 
 
 def apply_fixups(data_map: dict[str, 'TermData']) -> None:
@@ -83,11 +87,11 @@ def apply_fixups(data_map: dict[str, 'TermData']) -> None:
     Fixups were discovered by comparing XTGETTCAP results from the ucs-detect
     project https://github.com/jquast/ucs-detect/
     """
-    for entry in load_fixups(FIXUPS_PATH):
+    for entry in load_fixups(TERMINALS_TOML):
         name = entry['terminal']
         if name not in data_map:
             raise ValueError(f"Fixup {name!r} not found in terminfo.src! "
-                             f"check FIXUPS_PATH={FIXUPS_PATH!r}")
+                             f"check TERMINALS_TOML={TERMINALS_TOML!r}")
         data = data_map[name]
         for patch in entry['patch']:
             cap = patch['cap']
@@ -393,8 +397,8 @@ def extract(kind: str, db: Path) -> TermData | None:
 
 def expand(db: Path) -> list[str]:
     """Return sorted list of terminal names to generate."""
-    wanted = {line.split('#')[0].strip() for line in TERMINALS_TXT.read_text().splitlines()
-              if line.split('#')[0].strip()}
+    data = tomllib.loads(TERMINALS_TOML.read_text())
+    wanted = set(data.keys())
 
     env = {**os.environ, 'TERMINFO': str(db), 'TERMINFO_DIRS': str(db)}
     try:

@@ -12,6 +12,7 @@ Test module for jinxed._terminal
 import codecs
 import io
 import os
+import re
 import sys
 
 import jinxed
@@ -292,7 +293,7 @@ class TestAliases(TestCase):
 
 class TestAllTerminals(TestCase):
     """
-    Verify setupterm() succeeds for every terminal in terminals.txt
+    Verify setupterm() succeeds for every terminal in terminals.toml
     and all hand-maintained modules.
     """
 
@@ -303,14 +304,15 @@ class TestAllTerminals(TestCase):
     def _get_terminal_names(self):
         if self._termlist is not None:
             return self._termlist
-        terminals_file = os.path.join(os.path.dirname(__file__), '..', 'terminals.txt')
+        terminals_file = os.path.join(os.path.dirname(__file__), '..', 'terminals.toml')
         names = []
+        # parse toml file with regex to avoid dependency on older python
         with codecs.open(terminals_file, 'r', encoding='utf-8') as fh:
             for line in fh:
-                name = line.split('#')[0].strip()
-                if name:
-                    names.append(name)
-        # Hand-maintained modules not in terminals.txt
+                match = re.match(r'^\["?([a-zA-Z0-9_.-]+)"?\]\s*$', line)
+                if match:
+                    names.append(match.group(1))
+        # Hand-maintained modules not in 'terminals.toml'
         names.extend(['syncterm', 'ansi-bbs', 'ansicon', 'vtwin10', 'ansi'])
         self.__class__._termlist = names
         return names
