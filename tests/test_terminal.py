@@ -285,7 +285,8 @@ class TestAliases(TestCase):
         from jinxed.terminfo._aliases import ALIASES
         for alias, primary in ALIASES.items():
             jinxed.setupterm(alias)
-            mod = import_module(f'jinxed.terminfo.{primary.replace("-", "_")}')
+            term_mod = primary.replace("-", "_")
+            mod = import_module('jinxed.terminfo.{0}'.format(term_mod))
             self.assertIs(jinxed._terminal.TERM.terminfo, mod)
 
 
