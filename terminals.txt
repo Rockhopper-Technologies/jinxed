@@ -44,3 +44,7 @@ mlterm
 warp
 domterm
 pangoterm
+vscode
+ms-terminal
+winconsole
+mintty

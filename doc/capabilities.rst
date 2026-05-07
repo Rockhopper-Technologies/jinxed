@@ -82,7 +82,9 @@ script found in Jinxed source repository, `codegen_terminfo.py
 - `kitty <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/kitty.py>`_, xterm-kitty
 - `linux <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/linux.py>`_
 - `linux-16color <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/linux_16color.py>`_
+- `mintty <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/mintty.py>`_
 - `mlterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/mlterm.py>`_
+- `ms-terminal <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/ms_terminal.py>`_
 - `pangoterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/pangoterm.py>`_
 - `putty <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/putty.py>`_
 - `putty-256color <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/putty_256color.py>`_
@@ -98,12 +100,14 @@ script found in Jinxed source repository, `codegen_terminfo.py
 - `sun <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/sun.py>`_, sun1, sun2
 - `tmux <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/tmux.py>`_
 - `tmux-256color <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/tmux_256color.py>`_
+- `vscode <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/vscode.py>`_
 - `vt100 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/vt100.py>`_, vt100-am
 - `vt102 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/vt102.py>`_
 - `vt220 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/vt220.py>`_, vt200
 - `vt320 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/vt320.py>`_, vt300
 - `warp <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/warp.py>`_
 - `wezterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/wezterm.py>`_
+- `winconsole <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/winconsole.py>`_
 - `wy50 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/wy50.py>`_, wyse50
 - `xterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/xterm.py>`_
 - `xterm-16color <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/xterm_16color.py>`_
