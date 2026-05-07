@@ -76,3 +76,9 @@ xon
 pangoterm
 mlterm
 domterm
+conhost
+exe
+wt
+winconsole
+vscode
+mintty

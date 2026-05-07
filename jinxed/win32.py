@@ -387,7 +387,11 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
 
         - If TERM is defined in the environment, the value is returned
         - Else, if ANSICON is defined in the environment, ``'ansicon'`` is returned
-        - Else, if virtual terminal mode is natively supported,
+        - Else, if ``WT_SESSION`` is set (Windows Terminal, a modern host
+          application distinct from the legacy console host),
+          ``'ms-terminal'`` is returned
+        - Else, if virtual terminal mode is natively supported
+          (legacy Windows Console Host, conhost.exe),
           it is enabled and ``'vtwin10'`` is returned
         - Else, if ``fallback`` is ``True``, Ansicon is loaded, and ``'ansicon'`` is returned
         - If no other conditions are satisfied, ``'unknown'`` is returned
@@ -404,11 +408,16 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
         if os.environ.get('ANSICON', None):
             term = 'ansicon'
 
-        # See if Windows Terminal is being used
+        # See if Windows Terminal is being used Windows Terminal (wt.exe, now Terminal.exe) is a
+        # modern host application distinct from the legacy Windows Console Host (conhost.exe).
+        # On github as https://github.com/microsoft/terminal
         elif os.environ.get('WT_SESSION', None):
-            term = 'vtwin10'
+            term = 'ms-terminal'
 
         # See if the version of Windows supports VTMODE
+        # The legacy Windows Console Host (conhost.exe) supports a subset of
+        # VT sequences; its terminfo is hand-maintained as "vtwin10":
+        #   https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
         elif VTMODE_SUPPORTED:
             try:
                 filehandle = msvcrt.get_osfhandle(fd)
