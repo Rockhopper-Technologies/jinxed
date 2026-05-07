@@ -319,11 +319,16 @@ class TestAllTerminals(TestCase):
         """
         setupterm() succeeds for each listed and hand-maintained terminal
         """
+        failures = []
         for term in self._get_terminal_names():
-            with self.subTest(term=term):
+            try:
                 jinxed.setupterm(term)
                 self.assertIsNotNone(jinxed._terminal.TERM)
                 self.assertTrue(hasattr(jinxed._terminal.TERM, 'terminfo'))
+            except self.failureException:
+                failures.append(term)
+        if failures:
+            self.fail('Failed terminals: {}'.format(', '.join(failures)))
 
 
 class TestTigetstr(TestCase):
