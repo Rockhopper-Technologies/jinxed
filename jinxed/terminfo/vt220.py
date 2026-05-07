@@ -1,8 +1,8 @@
 """
 vt220 terminal info
 
-Revision: 1.1198
-Source: https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
+Revision: 1.1247
+Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
 distributed under the MIT/X11 license.  See LICENSE.ncurses.
@@ -64,7 +64,7 @@ STR_CAPS = {
     'il': b'\x1b[%p1%dL',
     'il1': b'\x1b[L',
     'ind': b'\x1bD',
-    'is2': b'\x1b[?7h\x1b[>\x1b[?1l\x1b F\x1b[?4l',
+    'is2': b'\x1b[?7h\x1b>\x1b[?1l\x1b F\x1b[?4l',
     'kbs': b'\b',
     'kcub1': b'\x1b[D',
     'kcud1': b'\x1b[B',

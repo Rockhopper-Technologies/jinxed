@@ -6,11 +6,11 @@ This script runs on modern Python (3.14 at time of writing) but the modules it g
 2.7-safe -- they use only list, dict, bytes, and string literals, and do not use f-strings, type
 annotations, or typing imports.
 """
-import gzip
 import os
 import re
 import subprocess
 import sys
+import tarfile
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -41,7 +41,7 @@ DELAY_TOKEN = re.compile(b'\\$<[^>]+>')
 # Set to empty bytes rather than dropped -- signals "unsupported" to callers.
 EMPTY_CAPS = frozenset({'smacs', 'rmacs', 'enacs', 's0ds', 's1ds'})
 
-URL = 'https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz'
+URL = 'https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz'
 HERE_DIR = Path(__file__).resolve().parent
 OUT_DIR = HERE_DIR / 'jinxed' / 'terminfo'
 
@@ -51,7 +51,7 @@ _MODULE_RE = re.compile(r'[.-]')
 
 def _module_name(term: str) -> str:
     """Convert a terminal name to a valid Python module name."""
-    return _MODULE_RE.sub('_', term)
+    return _MODULE_RE.sub('_', term).lower()
 
 # We track 'hand maintained' ones so that we can more clearly attribute their origin in the
 # documentation we generate
@@ -288,13 +288,20 @@ def fetch() -> tuple[Path, str]:
     Returns (db_path, version).
     """
     cache = Path(tempfile.mkdtemp(prefix='jinxed-terminfo-'))
-    gz = cache / 'terminfo.src.gz'
+    tarball = cache / 'ncurses.tar.gz'
     src = cache / 'terminfo.src'
     db = cache / 'terminfo.db'
 
-    urlretrieve(URL, gz)
+    urlretrieve(URL, tarball)
 
-    src.write_bytes(gzip.decompress(gz.read_bytes()))
+    # Extract misc/terminfo.src from the ncurses tarball
+    with tarfile.open(tarball) as tarf:
+        for member in tarf.getmembers():
+            if member.name.endswith('/misc/terminfo.src'):
+                fobj = tarf.extractfile(member)
+                if fobj:
+                    src.write_bytes(fobj.read())
+                break
 
     version = 'unknown'
     header = src.read_text(errors='replace')[:4000]
@@ -303,7 +310,7 @@ def fetch() -> tuple[Path, str]:
 
     db.mkdir(exist_ok=True)
     # Let tic write directly to the terminal so errors are visible
-    subprocess.run(['tic', '-o', str(db), str(src)], check=True)
+    subprocess.run(['tic', '-x', '-o', str(db), str(src)], check=True)
 
     return db, version
 

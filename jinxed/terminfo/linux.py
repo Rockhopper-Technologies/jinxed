@@ -1,8 +1,8 @@
 """
 linux terminal info
 
-Revision: 1.1198
-Source: https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
+Revision: 1.1247
+Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
 distributed under the MIT/X11 license.  See LICENSE.ncurses.

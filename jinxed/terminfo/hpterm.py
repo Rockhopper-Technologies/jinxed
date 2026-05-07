@@ -1,8 +1,8 @@
 """
 hpterm terminal info
 
-Revision: 1.1198
-Source: https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
+Revision: 1.1247
+Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
 distributed under the MIT/X11 license.  See LICENSE.ncurses.
@@ -83,6 +83,8 @@ STR_CAPS = {
     'kri': b'\x1bT',
     'krmir': b'\x1bR',
     'ktbc': b'\x1b3',
+    'meml': b'\x1bl',
+    'memu': b'\x1bm',
     'pfkey': b'\x1b&f%p1%dk%p2%l%dL%p2%s',
     'pfloc': b'\x1b&f1a%p1%dk%p2%l%dL%p2%s',
     'pfx': b'\x1b&f2a%p1%dk%p2%l%dL%p2%s',

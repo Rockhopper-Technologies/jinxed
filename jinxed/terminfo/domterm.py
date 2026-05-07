@@ -1,5 +1,5 @@
 """
-contour terminal info
+domterm terminal info
 
 Revision: 1.1247
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
@@ -12,16 +12,14 @@ distributed under the MIT/X11 license.  See LICENSE.ncurses.
 # pylint: disable=line-too-long
 
 BOOL_CAPS = [
-    'am',       # (auto_right_margin) terminal has automatic margins
-    'bce',      # (back_color_erase) screen erased with background color
-    'ccc',      # (can_change) terminal can re-define existing colors
-    'eslok',    # (status_line_esc_ok) escape can be used on the status line
-    'hs',       # (has_status_line) has extra status line
-    'mc5i',     # (prtr_silent) printer will not echo on screen
-    'msgr',     # (move_standout_mode) safe to move while in standout mode
-    'npc',      # (no_pad_char) pad character does not exist
-    'xenl',     # (eat_newline_glitch) newline ignored after 80 cols (concept)
-    'xvpa',     # (row_addr_glitch) only positive motion for vpa/mvpa caps
+    'am',      # (auto_right_margin) terminal has automatic margins
+    'bce',     # (back_color_erase) screen erased with background color
+    'km',      # (has_meta_key) Has a meta key (i.e., sets 8th-bit)
+    'mc5i',    # (prtr_silent) printer will not echo on screen
+    'mir',     # (move_insert_mode) safe to move while in insert mode
+    'msgr',    # (move_standout_mode) safe to move while in standout mode
+    'npc',     # (no_pad_char) pad character does not exist
+    'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
 ]
 
 NUM_CAPS = {
@@ -29,13 +27,11 @@ NUM_CAPS = {
     'cols': 80,        # (columns) number of columns in a line
     'it': 8,           # (init_tabs) tabs initially every # spaces
     'lines': 24,       # (lines) number of lines on screen or page
-    'pairs': 32767,    # (max_pairs) maximum number of color-pairs on the screen
+    'pairs': 65536,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
 STR_CAPS = {
     'acsc': b'``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~',
-    'bel': b'\a',
-    'blink': b'\x1b[5m',
     'bold': b'\x1b[1m',
     'cbt': b'\x1b[Z',
     'civis': b'\x1b[?25l',
@@ -52,31 +48,27 @@ STR_CAPS = {
     'cup': b'\x1b[%i%p1%d;%p2%dH',
     'cuu': b'\x1b[%p1%dA',
     'cuu1': b'\x1b[A',
+    'cvvis': b'\x1b[?12;25h',
     'dch': b'\x1b[%p1%dP',
     'dch1': b'\x1b[P',
-    'dim': b'\x1b[2m',
     'dl': b'\x1b[%p1%dM',
     'dl1': b'\x1b[M',
-    'dsl': b'\x1b[0$~',
     'ech': b'\x1b[%p1%dX',
     'ed': b'\x1b[J',
     'el': b'\x1b[K',
     'el1': b'\x1b[1K',
     'enacs': b'',
     'flash': b'\x1b[?5h\x1b[?5l',
-    'fsl': b'\x1b[0$}',
     'home': b'\x1b[H',
     'hpa': b'\x1b[%i%p1%dG',
     'ht': b'\t',
     'hts': b'\x1bH',
     'ich': b'\x1b[%p1%d@',
-    'ich1': b'\x1b[@',
     'il': b'\x1b[%p1%dL',
     'il1': b'\x1b[L',
     'ind': b'\n',
     'indn': b'\x1b[%p1%dS',
-    'initc': b'\x1b]4;%p1%d;rgb:%p2%{255}%*%{1000}%/%2.2X/%p3%{255}%*%{1000}%/%2.2X/%p4%{255}%*%{1000}%/%2.2X\x1b\x5c',
-    'invis': b'\x1b[8m',
+    'is2': b'\x1b[!p\x1b[?3;4l\x1b[4l\x1b>',
     'kDC': b'\x1b[3;2~',
     'kEND': b'\x1b[1;2F',
     'kHOM': b'\x1b[1;2H',
@@ -97,10 +89,10 @@ STR_CAPS = {
     'kf10': b'\x1b[21~',
     'kf11': b'\x1b[23~',
     'kf12': b'\x1b[24~',
-    'kf13': b'\x1b[O2P',
-    'kf14': b'\x1b[O2Q',
-    'kf15': b'\x1b[O2R',
-    'kf16': b'\x1b[O2S',
+    'kf13': b'\x1b[1;2P',
+    'kf14': b'\x1b[1;2Q',
+    'kf15': b'\x1b[1;2R',
+    'kf16': b'\x1b[1;2S',
     'kf17': b'\x1b[15;2~',
     'kf18': b'\x1b[17;2~',
     'kf19': b'\x1b[18;2~',
@@ -110,10 +102,10 @@ STR_CAPS = {
     'kf22': b'\x1b[21;2~',
     'kf23': b'\x1b[23;2~',
     'kf24': b'\x1b[24;2~',
-    'kf25': b'\x1b[O5P',
-    'kf26': b'\x1b[O5Q',
-    'kf27': b'\x1b[O5R',
-    'kf28': b'\x1b[O5S',
+    'kf25': b'\x1b[1;5P',
+    'kf26': b'\x1b[1;5Q',
+    'kf27': b'\x1b[1;5R',
+    'kf28': b'\x1b[1;5S',
     'kf29': b'\x1b[15;5~',
     'kf3': b'\x1bOR',
     'kf30': b'\x1b[17;5~',
@@ -123,11 +115,11 @@ STR_CAPS = {
     'kf34': b'\x1b[21;5~',
     'kf35': b'\x1b[23;5~',
     'kf36': b'\x1b[24;5~',
-    'kf37': b'\x1b[O6P',
-    'kf38': b'\x1b[O6Q',
-    'kf39': b'\x1b[O6R',
+    'kf37': b'\x1b[1;6P',
+    'kf38': b'\x1b[1;6Q',
+    'kf39': b'\x1b[1;6R',
     'kf4': b'\x1bOS',
-    'kf40': b'\x1b[O6S',
+    'kf40': b'\x1b[1;6S',
     'kf41': b'\x1b[15;6~',
     'kf42': b'\x1b[17;6~',
     'kf43': b'\x1b[18;6~',
@@ -136,11 +128,11 @@ STR_CAPS = {
     'kf46': b'\x1b[21;6~',
     'kf47': b'\x1b[23;6~',
     'kf48': b'\x1b[24;6~',
-    'kf49': b'\x1b[O3P',
+    'kf49': b'\x1b[1;3P',
     'kf5': b'\x1b[15~',
-    'kf50': b'\x1b[O3Q',
-    'kf51': b'\x1b[O3R',
-    'kf52': b'\x1b[O3S',
+    'kf50': b'\x1b[1;3Q',
+    'kf51': b'\x1b[1;3R',
+    'kf52': b'\x1b[1;3S',
     'kf53': b'\x1b[15;3~',
     'kf54': b'\x1b[17;3~',
     'kf55': b'\x1b[18;3~',
@@ -150,20 +142,24 @@ STR_CAPS = {
     'kf59': b'\x1b[23;3~',
     'kf6': b'\x1b[17~',
     'kf60': b'\x1b[24;3~',
-    'kf61': b'\x1b[O4P',
-    'kf62': b'\x1b[O4Q',
-    'kf63': b'\x1b[O4R',
+    'kf61': b'\x1b[1;4P',
+    'kf62': b'\x1b[1;4Q',
+    'kf63': b'\x1b[1;4R',
     'kf7': b'\x1b[18~',
     'kf8': b'\x1b[19~',
     'kf9': b'\x1b[20~',
     'khome': b'\x1bOH',
     'kich1': b'\x1b[2~',
     'kind': b'\x1b[1;2B',
-    'kmous': b'\x1b[M',
+    'kmous': b'\x1b[<',
     'knp': b'\x1b[6~',
     'kpp': b'\x1b[5~',
     'kri': b'\x1b[1;2A',
-    'oc': b'\x1b]104\x1b\x5c',
+    'mc0': b'\x1b[i',
+    'mc4': b'\x1b[4i',
+    'mc5': b'\x1b[5i',
+    'meml': b'\x1bl',
+    'memu': b'\x1bm',
     'op': b'\x1b[39;49m',
     'rc': b'\x1b8',
     'rev': b'\x1b[7m',
@@ -171,28 +167,30 @@ STR_CAPS = {
     'rin': b'\x1b[%p1%dT',
     'rmacs': b'',
     'rmam': b'\x1b[?7l',
-    'rmcup': b'\x1b[?1049l',
+    'rmcup': b'\x1b[?1049l\x1b[23;0;0t',
     'rmir': b'\x1b[4l',
     'rmkx': b'\x1b[?1l',
+    'rmm': b'\x1b[?1034l',
     'rmso': b'\x1b[27m',
     'rmul': b'\x1b[24m',
-    'rs1': b'\x1b]\x1b\x5c\x1bc',
+    'rs1': b'\x1bc',
+    'rs2': b'\x1b[!p\x1b[?3;4l\x1b[4l\x1b>',
     's0ds': b'',
     's1ds': b'',
     'sc': b'\x1b7',
     'setab': b'\x1b[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m',
     'setaf': b'\x1b[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m',
-    'sgr': b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p5%t;2%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m',
+    'sgr': b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m',
     'sgr0': b'\x1b[m',
     'smacs': b'',
     'smam': b'\x1b[?7h',
-    'smcup': b'\x1b[?1049h',
+    'smcup': b'\x1b[?1049h\x1b[22;0;0t',
     'smir': b'\x1b[4h',
     'smkx': b'\x1b[?1h',
+    'smm': b'\x1b[?1034h',
     'smso': b'\x1b[7m',
     'smul': b'\x1b[4m',
     'tbc': b'\x1b[3g',
-    'tsl': b'\x1b[2$~\x1b[1$}\x1b[%i%p1%d`',
     'u6': b'\x1b[%i%d;%dR',
     'u7': b'\x1b[6n',
     'u8': b'\x1b[?%[;0123456789]c',

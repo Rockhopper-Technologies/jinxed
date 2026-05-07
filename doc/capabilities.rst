@@ -72,15 +72,18 @@ script found in Jinxed source repository, `codegen_terminfo.py
 - `alacritty <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/alacritty.py>`_
 - `cons25 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/cons25.py>`_, ansi80x25, ansis
 - `contour <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/contour.py>`_, contour-latest
+- `domterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/domterm.py>`_
 - `dtterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/dtterm.py>`_
 - `foot <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/foot.py>`_
 - `ghostty <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/ghostty.py>`_, xterm-ghostty
 - `hpterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/hpterm.py>`_, X-hpterm
-- `iTerm2-app <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/iTerm2_app.py>`_, iterm2
 - `iris-ansi <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/iris_ansi.py>`_, iris-ansi-net
+- `iterm2-app <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/iterm2_app.py>`_, iterm2
 - `kitty <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/kitty.py>`_, xterm-kitty
 - `linux <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/linux.py>`_
 - `linux-16color <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/linux_16color.py>`_
+- `mlterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/mlterm.py>`_
+- `pangoterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/pangoterm.py>`_
 - `putty <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/putty.py>`_
 - `putty-256color <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/putty_256color.py>`_
 - `rio <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/rio.py>`_
@@ -99,6 +102,7 @@ script found in Jinxed source repository, `codegen_terminfo.py
 - `vt102 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/vt102.py>`_
 - `vt220 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/vt220.py>`_, vt200
 - `vt320 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/vt320.py>`_, vt300
+- `warp <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/warp.py>`_
 - `wezterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/wezterm.py>`_
 - `wy50 <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/wy50.py>`_, wyse50
 - `xterm <https://github.com/Rockhopper-Technologies/jinxed/blob/main/jinxed/terminfo/xterm.py>`_

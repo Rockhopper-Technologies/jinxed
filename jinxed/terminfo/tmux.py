@@ -1,8 +1,8 @@
 """
-tmux terminal info (derived from screen)
+tmux terminal info
 
-Revision: 1.1198
-Source: https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
+Revision: 1.1247
+Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
 distributed under the MIT/X11 license.  See LICENSE.ncurses.
@@ -11,83 +11,186 @@ distributed under the MIT/X11 license.  See LICENSE.ncurses.
 # flake8: noqa: E501
 # pylint: disable=line-too-long
 
-from .screen import BOOL_CAPS, NUM_CAPS, STR_CAPS
+BOOL_CAPS = [
+    'am',      # (auto_right_margin) terminal has automatic margins
+    'hs',      # (has_status_line) has extra status line
+    'km',      # (has_meta_key) Has a meta key (i.e., sets 8th-bit)
+    'mir',     # (move_insert_mode) safe to move while in insert mode
+    'msgr',    # (move_standout_mode) safe to move while in standout mode
+    'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
+]
 
-BOOL_CAPS = BOOL_CAPS[:]
-NUM_CAPS = NUM_CAPS.copy()
-STR_CAPS = STR_CAPS.copy()
-BOOL_CAPS.append('hs')
+NUM_CAPS = {
+    'colors': 8,    # (max_colors) maximum number of colors on screen
+    'cols': 80,     # (columns) number of columns in a line
+    'it': 8,        # (init_tabs) tabs initially every # spaces
+    'lines': 24,    # (lines) number of lines on screen or page
+    'pairs': 64,    # (max_pairs) maximum number of color-pairs on the screen
+}
 
-# Added strings
-STR_CAPS['dsl'] = b'\x1b]0;\a'
-STR_CAPS['fsl'] = b'\a'
-STR_CAPS['invis'] = b'\x1b[8m'
-STR_CAPS['kDC'] = b'\x1b[3;2~'
-STR_CAPS['kEND'] = b'\x1b[1;2F'
-STR_CAPS['kHOM'] = b'\x1b[1;2H'
-STR_CAPS['kIC'] = b'\x1b[2;2~'
-STR_CAPS['kLFT'] = b'\x1b[1;2D'
-STR_CAPS['kNXT'] = b'\x1b[6;2~'
-STR_CAPS['kPRV'] = b'\x1b[5;2~'
-STR_CAPS['kRIT'] = b'\x1b[1;2C'
-STR_CAPS['kf13'] = b'\x1b[1;2P'
-STR_CAPS['kf14'] = b'\x1b[1;2Q'
-STR_CAPS['kf15'] = b'\x1b[1;2R'
-STR_CAPS['kf16'] = b'\x1b[1;2S'
-STR_CAPS['kf17'] = b'\x1b[15;2~'
-STR_CAPS['kf18'] = b'\x1b[17;2~'
-STR_CAPS['kf19'] = b'\x1b[18;2~'
-STR_CAPS['kf20'] = b'\x1b[19;2~'
-STR_CAPS['kf21'] = b'\x1b[20;2~'
-STR_CAPS['kf22'] = b'\x1b[21;2~'
-STR_CAPS['kf23'] = b'\x1b[23;2~'
-STR_CAPS['kf24'] = b'\x1b[24;2~'
-STR_CAPS['kf25'] = b'\x1b[1;5P'
-STR_CAPS['kf26'] = b'\x1b[1;5Q'
-STR_CAPS['kf27'] = b'\x1b[1;5R'
-STR_CAPS['kf28'] = b'\x1b[1;5S'
-STR_CAPS['kf29'] = b'\x1b[15;5~'
-STR_CAPS['kf30'] = b'\x1b[17;5~'
-STR_CAPS['kf31'] = b'\x1b[18;5~'
-STR_CAPS['kf32'] = b'\x1b[19;5~'
-STR_CAPS['kf33'] = b'\x1b[20;5~'
-STR_CAPS['kf34'] = b'\x1b[21;5~'
-STR_CAPS['kf35'] = b'\x1b[23;5~'
-STR_CAPS['kf36'] = b'\x1b[24;5~'
-STR_CAPS['kf37'] = b'\x1b[1;6P'
-STR_CAPS['kf38'] = b'\x1b[1;6Q'
-STR_CAPS['kf39'] = b'\x1b[1;6R'
-STR_CAPS['kf40'] = b'\x1b[1;6S'
-STR_CAPS['kf41'] = b'\x1b[15;6~'
-STR_CAPS['kf42'] = b'\x1b[17;6~'
-STR_CAPS['kf43'] = b'\x1b[18;6~'
-STR_CAPS['kf44'] = b'\x1b[19;6~'
-STR_CAPS['kf45'] = b'\x1b[20;6~'
-STR_CAPS['kf46'] = b'\x1b[21;6~'
-STR_CAPS['kf47'] = b'\x1b[23;6~'
-STR_CAPS['kf48'] = b'\x1b[24;6~'
-STR_CAPS['kf49'] = b'\x1b[1;3P'
-STR_CAPS['kf50'] = b'\x1b[1;3Q'
-STR_CAPS['kf51'] = b'\x1b[1;3R'
-STR_CAPS['kf52'] = b'\x1b[1;3S'
-STR_CAPS['kf53'] = b'\x1b[15;3~'
-STR_CAPS['kf54'] = b'\x1b[17;3~'
-STR_CAPS['kf55'] = b'\x1b[18;3~'
-STR_CAPS['kf56'] = b'\x1b[19;3~'
-STR_CAPS['kf57'] = b'\x1b[20;3~'
-STR_CAPS['kf58'] = b'\x1b[21;3~'
-STR_CAPS['kf59'] = b'\x1b[23;3~'
-STR_CAPS['kf60'] = b'\x1b[24;3~'
-STR_CAPS['kf61'] = b'\x1b[1;4P'
-STR_CAPS['kf62'] = b'\x1b[1;4Q'
-STR_CAPS['kf63'] = b'\x1b[1;4R'
-STR_CAPS['kind'] = b'\x1b[1;2B'
-STR_CAPS['kri'] = b'\x1b[1;2A'
-STR_CAPS['ritm'] = b'\x1b[23m'
-STR_CAPS['sitm'] = b'\x1b[3m'
-STR_CAPS['tsl'] = b'\x1b]0;'
-
-# Modified strings
-STR_CAPS['rmso'] = b'\x1b[27m'
-STR_CAPS['sgr'] = b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;8%;m'
-STR_CAPS['smso'] = b'\x1b[7m'
+STR_CAPS = {
+    'acsc': b'++,,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~',
+    'bel': b'\a',
+    'blink': b'\x1b[5m',
+    'bold': b'\x1b[1m',
+    'cbt': b'\x1b[Z',
+    'civis': b'\x1b[?25l',
+    'clear': b'\x1b[H\x1b[J',
+    'cnorm': b'\x1b[34h\x1b[?25h',
+    'cr': b'\r',
+    'csr': b'\x1b[%i%p1%d;%p2%dr',
+    'cub': b'\x1b[%p1%dD',
+    'cub1': b'\b',
+    'cud': b'\x1b[%p1%dB',
+    'cud1': b'\n',
+    'cuf': b'\x1b[%p1%dC',
+    'cuf1': b'\x1b[C',
+    'cup': b'\x1b[%i%p1%d;%p2%dH',
+    'cuu': b'\x1b[%p1%dA',
+    'cuu1': b'\x1b[A',
+    'cvvis': b'\x1b[34l',
+    'dch': b'\x1b[%p1%dP',
+    'dch1': b'\x1b[P',
+    'dim': b'\x1b[2m',
+    'dl': b'\x1b[%p1%dM',
+    'dl1': b'\x1b[M',
+    'dsl': b'\x1b]0;\a',
+    'ech': b'\x1b[%p1%dX',
+    'ed': b'\x1b[J',
+    'el': b'\x1b[K',
+    'el1': b'\x1b[1K',
+    'enacs': b'',
+    'flash': b'\x1bg',
+    'fsl': b'\a',
+    'home': b'\x1b[H',
+    'hpa': b'\x1b[%i%p1%dG',
+    'ht': b'\t',
+    'hts': b'\x1bH',
+    'ich': b'\x1b[%p1%d@',
+    'il': b'\x1b[%p1%dL',
+    'il1': b'\x1b[L',
+    'ind': b'\n',
+    'indn': b'\x1b[%p1%dS',
+    'invis': b'\x1b[8m',
+    'kDC': b'\x1b[3;2~',
+    'kEND': b'\x1b[1;2F',
+    'kHOM': b'\x1b[1;2H',
+    'kIC': b'\x1b[2;2~',
+    'kLFT': b'\x1b[1;2D',
+    'kNXT': b'\x1b[6;2~',
+    'kPRV': b'\x1b[5;2~',
+    'kRIT': b'\x1b[1;2C',
+    'kbs': b'\x7f',
+    'kcbt': b'\x1b[Z',
+    'kcub1': b'\x1bOD',
+    'kcud1': b'\x1bOB',
+    'kcuf1': b'\x1bOC',
+    'kcuu1': b'\x1bOA',
+    'kdch1': b'\x1b[3~',
+    'kend': b'\x1b[4~',
+    'kf1': b'\x1bOP',
+    'kf10': b'\x1b[21~',
+    'kf11': b'\x1b[23~',
+    'kf12': b'\x1b[24~',
+    'kf13': b'\x1b[1;2P',
+    'kf14': b'\x1b[1;2Q',
+    'kf15': b'\x1b[1;2R',
+    'kf16': b'\x1b[1;2S',
+    'kf17': b'\x1b[15;2~',
+    'kf18': b'\x1b[17;2~',
+    'kf19': b'\x1b[18;2~',
+    'kf2': b'\x1bOQ',
+    'kf20': b'\x1b[19;2~',
+    'kf21': b'\x1b[20;2~',
+    'kf22': b'\x1b[21;2~',
+    'kf23': b'\x1b[23;2~',
+    'kf24': b'\x1b[24;2~',
+    'kf25': b'\x1b[1;5P',
+    'kf26': b'\x1b[1;5Q',
+    'kf27': b'\x1b[1;5R',
+    'kf28': b'\x1b[1;5S',
+    'kf29': b'\x1b[15;5~',
+    'kf3': b'\x1bOR',
+    'kf30': b'\x1b[17;5~',
+    'kf31': b'\x1b[18;5~',
+    'kf32': b'\x1b[19;5~',
+    'kf33': b'\x1b[20;5~',
+    'kf34': b'\x1b[21;5~',
+    'kf35': b'\x1b[23;5~',
+    'kf36': b'\x1b[24;5~',
+    'kf37': b'\x1b[1;6P',
+    'kf38': b'\x1b[1;6Q',
+    'kf39': b'\x1b[1;6R',
+    'kf4': b'\x1bOS',
+    'kf40': b'\x1b[1;6S',
+    'kf41': b'\x1b[15;6~',
+    'kf42': b'\x1b[17;6~',
+    'kf43': b'\x1b[18;6~',
+    'kf44': b'\x1b[19;6~',
+    'kf45': b'\x1b[20;6~',
+    'kf46': b'\x1b[21;6~',
+    'kf47': b'\x1b[23;6~',
+    'kf48': b'\x1b[24;6~',
+    'kf49': b'\x1b[1;3P',
+    'kf5': b'\x1b[15~',
+    'kf50': b'\x1b[1;3Q',
+    'kf51': b'\x1b[1;3R',
+    'kf52': b'\x1b[1;3S',
+    'kf53': b'\x1b[15;3~',
+    'kf54': b'\x1b[17;3~',
+    'kf55': b'\x1b[18;3~',
+    'kf56': b'\x1b[19;3~',
+    'kf57': b'\x1b[20;3~',
+    'kf58': b'\x1b[21;3~',
+    'kf59': b'\x1b[23;3~',
+    'kf6': b'\x1b[17~',
+    'kf60': b'\x1b[24;3~',
+    'kf61': b'\x1b[1;4P',
+    'kf62': b'\x1b[1;4Q',
+    'kf63': b'\x1b[1;4R',
+    'kf7': b'\x1b[18~',
+    'kf8': b'\x1b[19~',
+    'kf9': b'\x1b[20~',
+    'khome': b'\x1b[1~',
+    'kich1': b'\x1b[2~',
+    'kind': b'\x1b[1;2B',
+    'kmous': b'\x1b[M',
+    'knp': b'\x1b[6~',
+    'kpp': b'\x1b[5~',
+    'kri': b'\x1b[1;2A',
+    'nel': b'\x1bE',
+    'op': b'\x1b[39;49m',
+    'rc': b'\x1b8',
+    'rev': b'\x1b[7m',
+    'ri': b'\x1bM',
+    'rin': b'\x1b[%p1%dT',
+    'ritm': b'\x1b[23m',
+    'rmacs': b'',
+    'rmcup': b'\x1b[?1049l',
+    'rmir': b'\x1b[4l',
+    'rmkx': b'\x1b[?1l\x1b>',
+    'rmso': b'\x1b[27m',
+    'rmul': b'\x1b[24m',
+    'rs2': b'\x1bc\x1b[?1000l\x1b[?25h',
+    's0ds': b'',
+    's1ds': b'',
+    'sc': b'\x1b7',
+    'setab': b'\x1b[4%p1%dm',
+    'setaf': b'\x1b[3%p1%dm',
+    'sgr': b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;8%;m',
+    'sgr0': b'\x1b[m',
+    'sitm': b'\x1b[3m',
+    'smacs': b'',
+    'smcup': b'\x1b[?1049h',
+    'smir': b'\x1b[4h',
+    'smkx': b'\x1b[?1h\x1b=',
+    'smso': b'\x1b[7m',
+    'smul': b'\x1b[4m',
+    'tbc': b'\x1b[3g',
+    'tsl': b'\x1b]0;',
+    'u6': b'\x1b[%i%d;%dR',
+    'u7': b'\x1b[6n',
+    'u8': b'\x1b[?1;2c',
+    'u9': b'\x1b[c',
+    'vpa': b'\x1b[%i%p1%dd',
+}

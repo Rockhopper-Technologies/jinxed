@@ -40,3 +40,7 @@ vt102
 vt320
 wy50
 iTerm2.app
+mlterm
+warp
+domterm
+pangoterm

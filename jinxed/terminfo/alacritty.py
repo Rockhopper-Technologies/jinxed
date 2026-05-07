@@ -1,8 +1,8 @@
 """
 alacritty terminal info
 
-Revision: 1.1198
-Source: https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
+Revision: 1.1247
+Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
 distributed under the MIT/X11 license.  See LICENSE.ncurses.
@@ -168,6 +168,8 @@ STR_CAPS = {
     'mc0': b'\x1b[i',
     'mc4': b'\x1b[4i',
     'mc5': b'\x1b[5i',
+    'meml': b'\x1bl',
+    'memu': b'\x1bm',
     'oc': b'\x1b]104\a',
     'op': b'\x1b[39;49m',
     'rc': b'\x1b8',

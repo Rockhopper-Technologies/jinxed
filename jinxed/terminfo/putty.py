@@ -1,8 +1,8 @@
 """
 putty terminal info
 
-Revision: 1.1198
-Source: https://invisible-mirror.net/archives/ncurses/current/terminfo.src.gz
+Revision: 1.1247
+Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
 distributed under the MIT/X11 license.  See LICENSE.ncurses.
@@ -26,7 +26,6 @@ BOOL_CAPS = [
 NUM_CAPS = {
     'colors': 8,    # (max_colors) maximum number of colors on screen
     'it': 8,        # (init_tabs) tabs initially every # spaces
-    'ncv': 22,      # (no_color_video) video attributes that cannot be used with colors
     'pairs': 64,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
@@ -52,6 +51,7 @@ STR_CAPS = {
     'cuu1': b'\x1bM',
     'dch': b'\x1b[%p1%dP',
     'dch1': b'\x1b[P',
+    'dim': b'\x1b[2m',
     'dispc': b'%?%p1%{8}%=%t\x1b%%G\xe2\x97\x98\x1b%%@%e%p1%{10}%=%t\x1b%%G\xe2\x97\x99\x1b%%@%e%p1%{12}%=%t\x1b%%G\xe2\x99\x00\x1b%%@%e%p1%{13}%=%t\x1b%%G\xe2\x99\xaa\x1b%%@%e%p1%{14}%=%t\x1b%%G\xe2\x99\xab\x1b%%@%e%p1%{15}%=%t\x1b%%G\xe2\x98\xbc\x1b%%@%e%p1%{27}%=%t\x1b%%G\xe2\x86\x90\x1b%%@%e%p1%{155}%=%t\x1b%%G\xe0\x82\xa2\x1b%%@%e%p1%c%;',
     'dl': b'\x1b[%p1%dM',
     'dl1': b'\x1b[M',
@@ -73,12 +73,12 @@ STR_CAPS = {
     'indn': b'\x1b[%p1%dS',
     'initc': b'\x1b]P%p1%x%p2%{255}%*%{1000}%/%02x%p3%{255}%*%{1000}%/%02x%p4%{255}%*%{1000}%/%02x',
     'is2': b'\x1b7\x1b[r\x1b[m\x1b[?7h\x1b[?1;4;6l\x1b[4l\x1b8\x1b>\x1b]R',
-    'ka1': b'\x1bOq',
-    'ka3': b'\x1bOs',
-    'kb2': b'\x1bOr',
+    'ka1': b'\x1bOw',
+    'ka3': b'\x1bOy',
+    'kb2': b'\x1bOu',
     'kbs': b'\x7f',
-    'kc1': b'\x1bOp',
-    'kc3': b'\x1bOn',
+    'kc1': b'\x1bOq',
+    'kc3': b'\x1bOs',
     'kcbt': b'\x1b[Z',
     'kcub1': b'\x1bOD',
     'kcud1': b'\x1bOB',
@@ -87,7 +87,6 @@ STR_CAPS = {
     'kdch1': b'\x1b[3~',
     'kend': b'\x1b[4~',
     'kent': b'\x1bOM',
-    'kf0': b'\x1bOy',
     'kf1': b'\x1b[11~',
     'kf10': b'\x1b[21~',
     'kf11': b'\x1b[23~',
@@ -139,7 +138,7 @@ STR_CAPS = {
     'sc': b'\x1b7',
     'setab': b'\x1b[4%p1%dm',
     'setaf': b'\x1b[3%p1%dm',
-    'sgr': b'\x1b[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m',
+    'sgr': b'\x1b[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;m',
     'sgr0': b'\x1b[m',
     'smacs': b'',
     'smam': b'\x1b[?7h',

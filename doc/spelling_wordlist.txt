@@ -1,3 +1,5 @@
+iterm
+iterm2
 Ansicon
 acsc
 alacritty
