@@ -75,7 +75,7 @@ Although Jinxed was created primarily to be a dependency to supply Windows suppo
 since been extended to contain a subset of the ncurses 6.6 `terminfo(5)`_ database and to allow
 dynamic injection capabilities for `XTGETTCAP`_ support, demonstrated in blessed_ 1.40.
 
-Further documentation can be found on `Read the Docs <https://jinxed.readthedocs.io/en/stable/>`_.
+Further documentation can be found on `Read the Docs <https://jinxed.readthedocs.io/en/latest/>`_.
 
 Installation
 ------------
@@ -97,11 +97,11 @@ Please report issues `on GitHub <https://github.com/Rockhopper-Technologies/jinx
 .. _curses: https://docs.python.org/library/curses.html
 .. _blessed: https://pypi.org/project/blessed
 .. _XTGETTCAP: https://invisible-island.net/xterm/xterm.faq.html#xtgettcap
-.. _`jinxed.setupterm()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.setupterm
-.. _`jinxed.tigetflag()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.tigetflag
-.. _`jinxed.tigetnum()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.tigetnum
-.. _`jinxed.tigetstr()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.tigetstr
-.. _`jinxed.tparm()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.tparm
+.. _`jinxed.setupterm()`: https://jinxed.readthedocs.io/en/latest/api.html#jinxed.setupterm
+.. _`jinxed.tigetflag()`: https://jinxed.readthedocs.io/en/latest/api.html#jinxed.tigetflag
+.. _`jinxed.tigetnum()`: https://jinxed.readthedocs.io/en/latest/api.html#jinxed.tigetnum
+.. _`jinxed.tigetstr()`: https://jinxed.readthedocs.io/en/latest/api.html#jinxed.tigetstr
+.. _`jinxed.tparm()`: https://jinxed.readthedocs.io/en/latest/api.html#jinxed.tparm
 .. _`setupterm()`: https://docs.python.org/library/curses.html#curses.setupterm
 .. _`terminfo(5)`: https://man7.org/linux/man-pages/man5/terminfo.5.html
 .. _`terminfo.src`: https://invisible-island.net/ncurses/terminfo.src.html

@@ -158,7 +158,7 @@ Three kinds of Control Codes **are** removed from the virtual database:
   Jinxed provides no functions to manage historic character sets and so they are removed.
 
 .. _curses: https://docs.python.org/3/library/curses.html
-.. _jinxed.terminal: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.terminal
+.. _jinxed.terminal: https://jinxed.readthedocs.io/en/latest/api.html#jinxed.terminal
 .. _`terminfo(5)`: https://invisible-island.net/ncurses/man/terminfo.5.html
 .. _terminfo.src: https://invisible-island.net/ncurses/terminfo.src.html
 .. _`terminfo/`: https://github.com/Rockhopper-Technologies/jinxed/tree/main/jinxed/terminfo
