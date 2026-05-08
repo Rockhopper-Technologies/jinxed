@@ -16,6 +16,7 @@ import platform
 import sys
 
 from jinxed.terminfo import BOOL_CAPS, NUM_CAPS
+from jinxed.terminfo._aliases import ALIASES
 from jinxed._util import BASESTRING, error, raise_from_none
 
 if platform.system() == 'Windows':  # pragma: no branch
@@ -53,15 +54,52 @@ class Terminal(object):
         if term is None:
             term = get_term(self.stream_fd)
 
+        # Overlay capability caches (populated externally)
+        self._overlay_str_caps = {}   # type: Dict[str, bytes]
+        self._overlay_num_caps = {}   # type: Dict[str, int]
+        self._overlay_bool_caps = set()  # type: Set[str]
+
+        modname = ALIASES.get(term, term).replace('-', '_').replace('.', '_').lower()
         try:
-            self.terminfo = importlib.import_module('jinxed.terminfo.%s' % term.replace('-', '_'))
+            self.terminfo = importlib.import_module(
+                'jinxed.terminfo.%s' % modname)
         except ImportError:
             raise_from_none(error('Could not find terminal %s' % term))
+
+    def overlay_capabilities(self, str_caps=None, num_caps=None, bool_caps=None):
+        # type: (Optional[Dict[str, Union[str, bytes]]], Optional[Dict[str, int]],
+        #         Optional[Set[str]]) -> None
+        """
+        Overlay terminfo capabilities onto this terminal instance.
+
+        Methods :meth:`tigetstr`, :meth:`tigetnum`, and :meth:`tigetflag` consult these given caches
+        before falling back to the virtual terminfo database. This can be used to "patch" the
+        capabilities database or with dynamic capability responses.
+
+        :arg dict str_caps: Mapping of capability name to string value.  String values are encoded
+            as ``latin-1``; ``bytes`` values are stored directly.  For non-ASCII text, prefer
+            ``bytes`` to avoid ambiguities with ``latin-1`` encoding.
+        :arg dict num_caps: Mapping of capability name to integer value.
+        :arg set bool_caps: Set of boolean capability names that are present.
+        """
+        if str_caps:
+            for key, val in str_caps.items():
+                self._overlay_str_caps[key] = (
+                        val if isinstance(val, bytes) else val.encode('latin-1')
+                )
+        if num_caps:
+            self._overlay_num_caps.update(num_caps)
+        if bool_caps:
+            self._overlay_bool_caps.update(bool_caps)
 
     def tigetstr(self, capname):
         """
         Reimplementation of curses.tigetstr()
         """
+        # Overlay cache takes priority (values are pre-encoded in overlay_capabilities)
+        val = self._overlay_str_caps.get(capname)
+        if val is not None:
+            return val
 
         return self.terminfo.STR_CAPS.get(capname, None)
 
@@ -70,12 +108,20 @@ class Terminal(object):
         Reimplementation of curses.tigetnum()
         """
 
+        # Overlay cache takes priority
+        if capname in self._overlay_num_caps:
+            return self._overlay_num_caps[capname]
+
         return self.terminfo.NUM_CAPS.get(capname, -1 if capname in NUM_CAPS else -2)
 
     def tigetflag(self, capname):
         """
         Reimplementation of curses.tigetflag()
         """
+
+        # Overlay cache takes priority
+        if capname in self._overlay_bool_caps:
+            return 1
 
         if capname in self.terminfo.BOOL_CAPS:
             return 1

@@ -22,3 +22,7 @@ build
 
 # Misc
 notes
+
+# vim,pyenv
+*.swp
+.python-version

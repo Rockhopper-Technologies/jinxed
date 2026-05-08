@@ -52,10 +52,9 @@ jobs:
       TOXENV: ${{ matrix.toxenv || format('py{0}', matrix.python-version) }}
 
     steps:
-      # This is only needed for Python 3.6 and earlier because Tox 4 requires 3.7+
+      # Tox env names strip dots (py3.10 -> py310, py2.7 -> py27, etc.)
       - name: Fix TOXENV
         run: echo "TOXENV=$(echo $TOXENV | sed 's/\.//g')" >> $GITHUB_ENV
-        if: ${{ contains(fromJson('["2.7", "3.5", "3.6"]'), matrix.python-version) }}
 
       - name: Install OS Dependencies
         run: apt update && apt -y install ${{ join(matrix.os-deps, ' ') }}

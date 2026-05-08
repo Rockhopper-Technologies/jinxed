@@ -94,6 +94,11 @@ def check_rst2html(path):
     """
 
     from docutils.core import publish_file  # pylint: disable=import-error,import-outside-toplevel
+    from docutils.parsers.rst import roles  # pylint: disable=import-error,import-outside-toplevel
+
+    # Register Sphinx domain roles so docutils does not error on them
+    for role_name in ('py:func', 'py:mod', 'py:class', 'py:meth', 'py:attr', 'py:data'):
+        roles.register_canonical_role(role_name, roles.generic_custom_role)
 
     stderr = io.StringIO()
 

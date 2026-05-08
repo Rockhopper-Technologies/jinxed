@@ -18,7 +18,7 @@ that need to access terminfo functions such as tigetstr() and tparm().
 
 from jinxed._keys import *
 from jinxed._tparm import tparm
-from jinxed._terminal import setupterm, tigetflag, tigetnum, tigetstr
+from jinxed._terminal import Terminal, setupterm, tigetflag, tigetnum, tigetstr
 from jinxed._util import error, IS_WINDOWS
 
 if IS_WINDOWS:  # pragma: no branch
@@ -27,7 +27,7 @@ else:
     from jinxed._util import get_term
 
 
-__version__ = '1.4.0'
+__version__ = '1.5.0'
 
 COLOR_BLACK = 0
 COLOR_RED = 1

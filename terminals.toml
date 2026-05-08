@@ -1,0 +1,73 @@
+# Curated list of terminals extracted from ncurses terminfo.src to jinxed/terminfo/.
+#
+# Use only ncurses primary names (first word left of '|').  aliases are auto-generated.
+#
+# Sections are terminal names. Optional `patch` arrays correct defects in ncurses terminfo.src
+# entries, discovered by comparing XTGETTCAP results from https://github.com/jquast/ucs-detect/ vs.
+# ncurses entries.
+[alacritty]
+[cons25]
+[contour]
+patch = [
+    # ncurses vt220+cvis: cnorm=\E[?25h                 (no mode 12)
+    # contour Capabilities.cpp:104: "\033[?12l\033[?25h"
+    { cap = "cnorm", from = "\\E[?25h", to = "\\E[?12l\\E[?25h" },
+]
+[domterm]
+[dtterm]
+[foot]
+[ghostty]
+extra_aliases = ["xterm-ghostty"]
+[hpterm]
+[iris-ansi]
+["iTerm2.app"]
+[kitty]
+extra_aliases = ["xterm-kitty"]
+patch = [
+    # ncurses att610+cvis0: cnorm=\E[?12l               (blink off)
+    # kitty kitty/terminfo.py:128: 'cnorm': r'\E[?12h'  (blink on)
+    { cap = "cnorm", from = "\\E[?12l\\E[?25h", to = "\\E[?12h\\E[?25h" },
+]
+[linux]
+[linux-16color]
+[mintty]
+[mlterm]
+[ms-terminal]
+[pangoterm]
+[putty]
+[putty-256color]
+[rio]
+[rxvt]
+[rxvt-256color]
+[rxvt-unicode-256color]
+[rxvt-unicode]
+[screen]
+[screen-256color]
+[st]
+[st-256color]
+[sun]
+[tmux]
+[tmux-256color]
+[vscode]
+[vt100]
+[vt102]
+[vt220]
+[vt320]
+[warp]
+[wezterm]
+patch = [
+    # ncurses ansi+erase:  clear=\E[H\E[J               (no ED param)
+    # wezterm wezterm.terminfo:40:    cnorm=\E[?12l\E[?25h, clear=\E[H\E[2J
+    { cap = "cnorm", from = "\\E[?25h", to = "\\E[?12l\\E[?25h" },
+    { cap = "clear", from = "\\E[H\\E[J", to = "\\E[H\\E[2J" },
+    # ncurses xterm+256color2 uses colon separators (48:5: / 38:5:)
+    # wezterm uses semicolons (48;5; / 38;5;)
+    { cap = "setab", from = "\\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48:5:%p1%d%;m", to = "\\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m" },
+    { cap = "setaf", from = "\\E[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38:5:%p1%d%;m", to = "\\E[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m" },
+]
+[winconsole]
+[wy50]
+[xterm]
+[xterm-16color]
+[xterm-256color]
+[xterm-new]

@@ -12,6 +12,12 @@ from .xterm_256color import BOOL_CAPS, NUM_CAPS, STR_CAPS
 BOOL_CAPS = BOOL_CAPS[:]
 NUM_CAPS = NUM_CAPS.copy()
 STR_CAPS = STR_CAPS.copy()
+STR_CAPS['enacs'] = b''  # empty (G0/SO/SI stripped)
+STR_CAPS['rmacs'] = b''  # empty (G0/SO/SI stripped)
+STR_CAPS['s0ds'] = b''  # empty (G0/SO/SI stripped)
+STR_CAPS['s1ds'] = b''  # empty (G0/SO/SI stripped)
+STR_CAPS['smacs'] = b''  # empty (G0/SO/SI stripped)
+
 
 # Added
 STR_CAPS['cht'] = b'\x1b[%p1%dI'
@@ -24,21 +30,9 @@ STR_CAPS['setb'] = b'\x1b[48;5;%p1%dm'
 STR_CAPS['setf'] = b'\x1b[38;5;%p1%dm'
 
 # Removed - These do not appear to be supported
-del STR_CAPS['blink']
-del STR_CAPS['dim']
-del STR_CAPS['flash']
-del STR_CAPS['invis']
-del STR_CAPS['kmous']
-del STR_CAPS['meml']
-del STR_CAPS['memu']
-del STR_CAPS['ritm']
-del STR_CAPS['rmam']
-del STR_CAPS['rmir']
-del STR_CAPS['rmm']
-del STR_CAPS['sitm']
-del STR_CAPS['smam']
-del STR_CAPS['smir']
-del STR_CAPS['smm']
+for _drop in ('blink', 'dim', 'flash', 'invis', 'kmous', 'meml', 'memu',
+              'ritm', 'rmam', 'rmir', 'rmm', 'sitm', 'smam', 'smir', 'smm'):
+    STR_CAPS.pop(_drop, None)
 
 # Modified
 NUM_CAPS['colors'] = 256
@@ -62,7 +56,3 @@ STR_CAPS['sgr'] = b'\x1b[%p1%d%?%p2%t;%p2%d%;%?%p3%t;%p3%d%;%?%p4%t;%p4%d%;%?%p5
                   b'%?%p6%t;%p6%d%;%?%p7%t;%p7%d%;%?%p8%t;%p8%d%;%?%p9%t;%p9%d%;m'
 STR_CAPS['smcup'] = b'\x1b[?1049h'
 STR_CAPS['u9'] = b'\x1b[0c'
-
-# Need info - Left in, but unsure
-# acsc (covers some, but maybe not all)
-# mc0/mc4/mc5 (print screen/off/on)
