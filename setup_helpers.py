@@ -1,4 +1,4 @@
-# Copyright 2017 - 2024 Avram Lubkin, All Rights Reserved
+# Copyright 2017 - 2026 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -165,7 +165,8 @@ def check_copyrights():
 
     # Look for copyright lines
     process = subprocess.run(
-        ('git', 'grep', '-i', 'copyright'), stdout=subprocess.PIPE, check=True, text=True
+        ('git', 'grep', '-i', 'copyright', '--', ':!doc/conf.py', ':!LICENSE*'),
+        stdout=subprocess.PIPE, check=True, text=True,
     )
 
     rtn = 0

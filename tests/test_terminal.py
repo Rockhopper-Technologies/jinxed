@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 - 2021 Avram Lubkin, All Rights Reserved
+# Copyright 2019 - 2026 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -310,6 +310,7 @@ class TestAllTerminals(TestCase):
         # parse toml file with regex to avoid dependency on older python
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', DeprecationWarning)
+            # pylint: disable-next=deprecated-method
             with codecs.open(terminals_file, 'r', encoding='utf-8') as fh:
                 for line in fh:
                     match = re.match(r'^\["?([a-zA-Z0-9_.-]+)"?\]\s*$', line)

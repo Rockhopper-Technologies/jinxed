@@ -1,5 +1,5 @@
 ..
-  Copyright 2019 Avram Lubkin, All Rights Reserved
+  Copyright 2019 - 2026 Avram Lubkin, All Rights Reserved
 
   This Source Code Form is subject to the terms of the Mozilla Public
   License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -27,7 +27,7 @@ and whether it is in the `terminfo(5)`_ database, or provide an equivalent refer
 `create an issue <https://github.com/Rockhopper-Technologies/jinxed/issues>`_
 or `pull request <https://github.com/Rockhopper-Technologies/jinxed/pulls>`_.
 
-We can also provide stubs for terminal capabilities, like what was done with the (now legacy) win32 
+We can also provide stubs for terminal capabilities, like what was done with the (now legacy) win32
 console. Not all terminals can be supported, there a few requirements:
 
 1. The terminal must be detectable programmatically
