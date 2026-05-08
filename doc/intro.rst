@@ -96,7 +96,7 @@ Please report issues `on GitHub <https://github.com/Rockhopper-Technologies/jinx
 
 .. _curses: https://docs.python.org/library/curses.html
 .. _blessed: https://pypi.org/project/blessed
-.. _XTGETTCAP: https://invisible-island.net/xterm/xterm.faq.html#xtgettcap
+.. _XTGETTCAP: https://codeberg.org/dnkl/foot#xtgettcap
 .. _`jinxed.setupterm()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.setupterm
 .. _`jinxed.tigetflag()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.tigetflag
 .. _`jinxed.tigetnum()`: https://jinxed.readthedocs.io/en/stable/api.html#jinxed.tigetnum
