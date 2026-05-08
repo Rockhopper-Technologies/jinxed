@@ -59,7 +59,7 @@ Introduction
 
 Jinxed is a pure-Python implementation of a subset of the Python curses_ library.
 
-It provides `jinxed.tigetstr()`, `jinxed.tparm()`, and related terminfo
+It provides `jinxed.tigetstr()`_, `jinxed.tparm()`_, and related terminfo
 functions on all platforms with a virtual `terminfo(5)`_ database.
 
 Jinxed provides pure-python implementations of curses_ functions:
