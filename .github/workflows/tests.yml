@@ -20,24 +20,24 @@ jobs:
       fail-fast: false
 
       matrix:
-        python-version:  ['2.7', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version:  ['2.7', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
         include:
 
-          - python-version: '3.13'
+          - python-version: '3.14'
             toxenv: lint
             os-deps:
               - enchant-2
 
-          - python-version: '3.13'
+          - python-version: '3.14'
             toxenv: docs
             os-deps:
               - enchant-2
 
-          - python-version: '3.13'
+          - python-version: '3.14'
             toxenv: coverage
 
-          - python-version: '3.14'
-            container: 'python:3.14-rc'
+          - python-version: '3.15'
+            container: 'python:3.15-rc'
             optional: true
 
           - python-version: pypy-2.7
@@ -48,19 +48,24 @@ jobs:
             toxenv: pypy3
             container: pypy:3
 
-    env:
-      TOXENV: ${{ matrix.toxenv || format('py{0}', matrix.python-version) }}
-
     steps:
-      # Tox env names strip dots (py3.10 -> py310, py2.7 -> py27, etc.)
-      - name: Fix TOXENV
-        run: echo "TOXENV=$(echo $TOXENV | sed 's/\.//g')" >> $GITHUB_ENV
+      - name: Set TOXENV
+        # Use toxenv if defined or use the python version with the dot removed
+        run: |
+          if [ -n "${{ matrix.toxenv }}" ]; then
+            echo "TOXENV=${{ matrix.toxenv }}" >> $GITHUB_ENV
+          else
+            echo "TOXENV=py$(echo ${{ matrix.python-version }} | tr -d .)" >> $GITHUB_ENV
+          fi
 
       - name: Install OS Dependencies
         run: apt update && apt -y install ${{ join(matrix.os-deps, ' ') }}
         if: ${{ matrix.os-deps }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          # This is needed so copyright check gets the real commit dates
+          fetch-depth: ${{ env.TOXENV == 'lint' && '0' || '1' }}
 
       # https://github.com/actions/checkout/issues/1048
       - name: Workaround for git ownership issue
@@ -73,7 +78,7 @@ jobs:
         run: tox -- --verbose
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v6
         with:
           verbose: true
           fail_ci_if_error: true
