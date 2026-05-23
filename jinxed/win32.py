@@ -373,6 +373,21 @@ def flush_and_set_console(fd, mode=None):  # pylint:  disable=invalid-name
             pass
 
 
+def _ensure_vt_processing(fd):
+    """Enable ENABLE_VIRTUAL_TERMINAL_PROCESSING on *fd*, registering atexit restore.
+
+    No-op if the flag is already set.  Raises :class:`OSError` if *fd* cannot be
+    interrogated (e.g. it is not a console handle).
+    """
+    filehandle = msvcrt.get_osfhandle(fd)
+    mode = get_console_mode(filehandle)
+    if mode & ENABLE_VIRTUAL_TERMINAL_PROCESSING:
+        atexit.register(flush_and_set_console, fd, None)
+    else:
+        atexit.register(flush_and_set_console, fd, mode)
+        set_console_mode(filehandle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)
+
+
 def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
     """
     Args:
@@ -407,6 +422,11 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
         # See if ansicon is enabled
         if os.environ.get('ANSICON', None):
             term = 'ansicon'
+            if VTMODE_SUPPORTED:
+                try:
+                    _ensure_vt_processing(fd)
+                except OSError:
+                    pass
 
         # See if Windows Terminal is being used Windows Terminal (wt.exe, now Terminal.exe) is a
         # modern host application distinct from the legacy Windows Console Host (conhost.exe).
@@ -420,21 +440,10 @@ def get_term(fd, fallback=True):  # pylint:  disable=invalid-name
         #   https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
         elif VTMODE_SUPPORTED:
             try:
-                filehandle = msvcrt.get_osfhandle(fd)
-                mode = get_console_mode(filehandle)
+                _ensure_vt_processing(fd)
             except OSError:
                 term = 'unknown'
             else:
-                # Proceed if VT mode is already enabled
-                if mode & ENABLE_VIRTUAL_TERMINAL_PROCESSING:
-                    atexit.register(flush_and_set_console, fd, None)
-
-                # Otherwise, enable VT mode
-                else:
-                    atexit.register(flush_and_set_console, fd, mode)
-                    # pylint: disable=unsupported-binary-operation
-                    set_console_mode(filehandle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)
-
                 term = 'vtwin10'
 
         # Currently falling back to Ansicon for older versions of Windows
