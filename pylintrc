@@ -30,7 +30,7 @@ spelling-private-dict-file=doc/spelling_wordlist.txt
 
 # List of comma separated words that should not be checked.
 spelling-ignore-words=
-    acsc, ansicon, API, args, Avram,
+    acsc, ansicon, API, args, atexit, Avram,
     bool,
     cbreak,
     fd, filehandle,

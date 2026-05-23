@@ -374,7 +374,7 @@ def flush_and_set_console(fd, mode=None):  # pylint:  disable=invalid-name
 
 
 def _ensure_vt_processing(fd):
-    """Enable ENABLE_VIRTUAL_TERMINAL_PROCESSING on *fd*, registering atexit restore.
+    """Enable ENABLE_VIRTUAL_TERMINAL_PROCESSING on *fd*, registering atexit(3) restore.
 
     No-op if the flag is already set.  Raises :class:`OSError` if *fd* cannot be
     interrogated (e.g. it is not a console handle).
