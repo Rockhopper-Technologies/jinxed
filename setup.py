@@ -34,6 +34,7 @@ setup(
     maintainer_email='avylove@rockhopper.net',
     url='https://github.com/Rockhopper-Technologies/jinxed',
     license='MPLv2.0',
+    license_files=['LICENSE*'],
     zip_safe=False,
     install_requires=INSTALL_REQUIRES,
     tests_require=TESTS_REQUIRE,
