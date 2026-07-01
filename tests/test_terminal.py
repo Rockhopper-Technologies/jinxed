@@ -363,3 +363,10 @@ class TestTigetstr(TestCase):
         """
         jinxed.setupterm('xterm')
         self.assertEqual(jinxed.tigetstr('howmuchwoodawoodchuckwillchuck'), None)
+
+    def test_extended_cap_e3(self):
+        """
+        verify "extended capabilities" are present using tigetstr('E3') (erase saved lines)
+        """
+        jinxed.setupterm('xterm-new')
+        self.assertEqual(jinxed.tigetstr('E3'), b'\x1b[3J')
