@@ -1,7 +1,7 @@
 """
 vt320 terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -18,6 +18,7 @@ BOOL_CAPS = [
     'mir',      # (move_insert_mode) safe to move while in insert mode
     'msgr',     # (move_standout_mode) safe to move while in standout mode
     'xenl',     # (eat_newline_glitch) newline ignored after 80 cols (concept)
+    'xon',      # (xon_xoff) terminal uses xon/xoff handshaking
 ]
 
 NUM_CAPS = {

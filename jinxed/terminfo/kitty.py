@@ -1,7 +1,7 @@
 """
 kitty terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -33,6 +33,7 @@ NUM_CAPS = {
 STR_CAPS = {
     'acsc': b'++,,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~',
     'bel': b'\a',
+    'blink': b'\x1b[5m',
     'bold': b'\x1b[1m',
     'cbt': b'\x1b[Z',
     'civis': b'\x1b[?25l',
@@ -55,7 +56,7 @@ STR_CAPS = {
     'dim': b'\x1b[2m',
     'dl': b'\x1b[%p1%dM',
     'dl1': b'\x1b[M',
-    'dsl': b'\x1b]2;\a',
+    'dsl': b'\x1b]2;\x1b\x5c',
     'ech': b'\x1b[%p1%dX',
     'ed': b'\x1b[J',
     'el': b'\x1b[K',
@@ -97,7 +98,7 @@ STR_CAPS = {
     'kf12': b'\x1b[24~',
     'kf13': b'\x1b[1;2P',
     'kf14': b'\x1b[1;2Q',
-    'kf15': b'\x1b[1;2R',
+    'kf15': b'\x1b[13;2~',
     'kf16': b'\x1b[1;2S',
     'kf17': b'\x1b[15;2~',
     'kf18': b'\x1b[17;2~',
@@ -110,7 +111,7 @@ STR_CAPS = {
     'kf24': b'\x1b[24;2~',
     'kf25': b'\x1b[1;5P',
     'kf26': b'\x1b[1;5Q',
-    'kf27': b'\x1b[1;5R',
+    'kf27': b'\x1b[13;5~',
     'kf28': b'\x1b[1;5S',
     'kf29': b'\x1b[15;5~',
     'kf3': b'\x1bOR',
@@ -123,7 +124,7 @@ STR_CAPS = {
     'kf36': b'\x1b[24;5~',
     'kf37': b'\x1b[1;6P',
     'kf38': b'\x1b[1;6Q',
-    'kf39': b'\x1b[1;6R',
+    'kf39': b'\x1b[13;6~',
     'kf4': b'\x1bOS',
     'kf40': b'\x1b[1;6S',
     'kf41': b'\x1b[15;6~',
@@ -137,7 +138,7 @@ STR_CAPS = {
     'kf49': b'\x1b[1;3P',
     'kf5': b'\x1b[15~',
     'kf50': b'\x1b[1;3Q',
-    'kf51': b'\x1b[1;3R',
+    'kf51': b'\x1b[13;3~',
     'kf52': b'\x1b[1;3S',
     'kf53': b'\x1b[15;3~',
     'kf54': b'\x1b[17;3~',
@@ -150,7 +151,7 @@ STR_CAPS = {
     'kf60': b'\x1b[24;3~',
     'kf61': b'\x1b[1;4P',
     'kf62': b'\x1b[1;4Q',
-    'kf63': b'\x1b[1;4R',
+    'kf63': b'\x1b[13;4~',
     'kf7': b'\x1b[18~',
     'kf8': b'\x1b[19~',
     'kf9': b'\x1b[20~',
@@ -182,7 +183,7 @@ STR_CAPS = {
     'sc': b'\x1b7',
     'setab': b'\x1b[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m',
     'setaf': b'\x1b[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m',
-    'sgr': b'\x1b[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m',
+    'sgr': b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;%?%p5%t;2%;m',
     'sgr0': b'\x1b[m',
     'sitm': b'\x1b[3m',
     'smacs': b'',
