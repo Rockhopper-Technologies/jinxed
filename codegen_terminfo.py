@@ -403,13 +403,12 @@ def parse_use_chain(src: Path, wanted: set[str]) -> dict[str, str | None]:
 def extract(kind: str, db: Path) -> TermData | None:
     """Extract compiled terminfo entry via infocmp."""
     env = {**os.environ, 'TERMINFO': str(db), 'TERMINFO_DIRS': str(db)}
-    for args in (['infocmp', '-1x', kind], ['infocmp', '-1', kind]):
-        try:
-            output = subprocess.check_output(args, text=True, timeout=10, env=env)
-            return parse(output)
-        except (subprocess.SubprocessError, OSError):
-            pass
-    return None
+    try:
+        output = subprocess.check_output(['infocmp', '-1x', kind],
+                                         text=True, timeout=10, env=env)
+        return parse(output)
+    except (subprocess.SubprocessError, OSError):
+        return None
 
 
 def expand(db: Path) -> list[str]:
