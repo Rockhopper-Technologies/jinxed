@@ -138,7 +138,7 @@ If you find any entry missing, please open an issue `on GitHub
 Missing Legacy Codes
 --------------------
 
-Three kinds of Control Codes **are** removed from the virtual database:
+Three kinds of Control Codes **are removed** from the virtual database:
 
 - ``$<N>`` delay markers (e.g. ``$<50>`` meaning "pad 50ms") are removed, these are required for
   real hardware terminals with poor flow control that may need a bit of rest after some sequences.

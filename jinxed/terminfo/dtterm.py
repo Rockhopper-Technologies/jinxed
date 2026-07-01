@@ -17,6 +17,7 @@ BOOL_CAPS = [
     'msgr',    # (move_standout_mode) safe to move while in standout mode
     'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
     'xon',     # (xon_xoff) terminal uses xon/xoff handshaking
+    'AX',      # (ansi_x3.64_1979) terminal uses ECMA-48/ANSI X3.64 color sequences
 ]
 
 NUM_CAPS = {

@@ -11,6 +11,7 @@ Boolean and numeric capabilities are listed here to support tigetnum() and tiget
 # pylint: disable=wrong-spelling-in-comment
 
 BOOL_CAPS = [
+    'AX',  # (ansi_x3.64_1979) terminal uses ECMA-48/ANSI X3.64 color sequences
     'am',  # (auto_right_margin) terminal has automatic margins
     'bce',  # (back_color_erase) screen erased with background color
     'bw',  # (auto_left_margin) cub1 wraps from column 0 to last column
@@ -79,6 +80,7 @@ NUM_CAPS = [
     'pb',  # (padding_baud_rate) lowest baud rate where padding needed
     'spinh',  # (dot_horz_spacing) spacing of dots horizontally in dots per inch
     'spinv',  # (dot_vert_spacing) spacing of pins vertically in pins per inch
+    'U8',  # (utf8_terminal) ncurses uses Unicode values for line-drawing in UTF-8 locale
     'vt',  # (virtual_terminal) virtual terminal number (CB/unix)
     'widcs',  # (wide_char_size) character step size when in double wide mode
     'wnum',  # (maximum_windows) maximum number of definable windows

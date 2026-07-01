@@ -251,7 +251,7 @@ def decode(value: str) -> bytes:
 
 
 def parse(output: str) -> TermData:
-    """Parse infocmp -1 output into a TermData instance."""
+    """Parse infocmp -1x output into a TermData instance."""
     bools: list[str] = []
     nums: dict[str, int] = {}
     strs: dict[str, bytes] = {}
@@ -404,7 +404,7 @@ def extract(kind: str, db: Path) -> TermData | None:
     """Extract compiled terminfo entry via infocmp."""
     env = {**os.environ, 'TERMINFO': str(db), 'TERMINFO_DIRS': str(db)}
     try:
-        output = subprocess.check_output(['infocmp', '-1', kind],
+        output = subprocess.check_output(['infocmp', '-1x', kind],
                                          text=True, timeout=10, env=env)
         return parse(output)
     except (subprocess.SubprocessError, OSError):
