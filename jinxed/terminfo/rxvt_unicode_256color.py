@@ -1,7 +1,7 @@
 """
 rxvt-unicode-256color terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -84,14 +84,34 @@ STR_CAPS = {
     'is1': b'\x1b[!p',
     'is2': b'\x1b[r\x1b[m\x1b[2J\x1b[?7;25h\x1b[?1;3;4;5;6;9;66;1000;1001;1049l\x1b[4l',
     'kDC': b'\x1b[3$',
+    'kDC5': b'\x1b[3^',
+    'kDC6': b'\x1b[3@',
+    'kDN': b'\x1b[b',
+    'kDN5': b'\x1bOb',
     'kEND': b'\x1b[8$',
+    'kEND5': b'\x1b[8^',
+    'kEND6': b'\x1b[8@',
     'kFND': b'\x1b[1$',
+    'kFND5': b'\x1b[1^',
+    'kFND6': b'\x1b[1@',
     'kHOM': b'\x1b[7$',
+    'kHOM5': b'\x1b[7^',
+    'kHOM6': b'\x1b[7@',
     'kIC': b'\x1b[2$',
+    'kIC5': b'\x1b[2^',
+    'kIC6': b'\x1b[2@',
     'kLFT': b'\x1b[d',
+    'kLFT5': b'\x1bOd',
     'kNXT': b'\x1b[6$',
+    'kNXT5': b'\x1b[6^',
+    'kNXT6': b'\x1b[6@',
     'kPRV': b'\x1b[5$',
+    'kPRV5': b'\x1b[5^',
+    'kPRV6': b'\x1b[5@',
     'kRIT': b'\x1b[c',
+    'kRIT5': b'\x1bOc',
+    'kUP': b'\x1b[a',
+    'kUP5': b'\x1bOa',
     'ka1': b'\x1bOw',
     'ka3': b'\x1bOy',
     'kb2': b'\x1bOu',

@@ -1,7 +1,7 @@
 """
 putty terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -24,12 +24,21 @@ BOOL_CAPS = [
 ]
 
 NUM_CAPS = {
+    'U8': 1,        # (utf8_terminal) ncurses uses Unicode values for line-drawing in UTF-8 locale
     'colors': 8,    # (max_colors) maximum number of colors on screen
     'it': 8,        # (init_tabs) tabs initially every # spaces
     'pairs': 64,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
 STR_CAPS = {
+    'BD': b'\x1b[?2004l',
+    'BE': b'\x1b[?2004h',
+    'E3': b'\x1b[3J',
+    'PE': b'\x1b[201~',
+    'PS': b'\x1b[200~',
+    'RV': b'\x1b[>c',
+    'TS': b'\x1b]0;',
+    'XM': b'\x1b[?1006;1000%?%p1%{1}%=%th%el%;',
     'acsc': b'``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~',
     'bel': b'\a',
     'blink': b'\x1b[5m',
@@ -67,17 +76,30 @@ STR_CAPS = {
     'hpa': b'\x1b[%i%p1%dG',
     'ht': b'\t',
     'hts': b'\x1bH',
+    'ich': b'\x1b[%p1%d@',
+    'ich1': b'\x1b[@',
     'il': b'\x1b[%p1%dL',
     'il1': b'\x1b[L',
     'ind': b'\n',
     'indn': b'\x1b[%p1%dS',
     'initc': b'\x1b]P%p1%x%p2%{255}%*%{1000}%/%02x%p3%{255}%*%{1000}%/%02x%p4%{255}%*%{1000}%/%02x',
     'is2': b'\x1b7\x1b[r\x1b[m\x1b[?7h\x1b[?1;4;6l\x1b[4l\x1b8\x1b>\x1b]R',
+    'kDN5': b'\x1b[B',
+    'kLFT5': b'\x1b[D',
+    'kPause': b'\xef\x9c\x92',
+    'kPrint': b'\xef\x9c\x90',
+    'kRIT5': b'\x1b[C',
+    'kScroll': b'\xef\x9c\x91',
+    'kUP5': b'\x1b[A',
     'ka1': b'\x1bOw',
+    'ka2': b'\x1bOx',
     'ka3': b'\x1bOy',
+    'kb1': b'\x1bOt',
     'kb2': b'\x1bOu',
+    'kb3': b'\x1bOv',
     'kbs': b'\x7f',
     'kc1': b'\x1bOq',
+    'kc2': b'\x1bOr',
     'kc3': b'\x1bOs',
     'kcbt': b'\x1b[Z',
     'kcub1': b'\x1bOD',
@@ -112,6 +134,22 @@ STR_CAPS = {
     'kind': b'\x1b[B',
     'kmous': b'\x1b[<',
     'knp': b'\x1b[6~',
+    'kp1': b'\x1bOq',
+    'kp2': b'\x1bOr',
+    'kp3': b'\x1bOs',
+    'kp4': b'\x1bOt',
+    'kp5': b'\x1bOu',
+    'kp6': b'\x1bOv',
+    'kp7': b'\x1bOw',
+    'kp8': b'\x1bOx',
+    'kp9': b'\x1bOy',
+    'kpADD': b'\x1bOl',
+    'kpDIV': b'\x1bOQ',
+    'kpDOT': b'\x1bOn',
+    'kpMUL': b'\x1bOR',
+    'kpNUM': b'\x1bOP',
+    'kpSUB': b'\x1bOS',
+    'kpZRO': b'\x1bOp',
     'kpp': b'\x1b[5~',
     'kri': b'\x1b[A',
     'kspd': b'\x1a',
@@ -131,7 +169,9 @@ STR_CAPS = {
     'rmpch': b'\x1b[10m',
     'rmso': b'\x1b[27m',
     'rmul': b'\x1b[24m',
+    'rmxx': b'\x1b[29m',
     'rs2': b'\x1b<\x1b["p\x1b[50;6"p\x1bc\x1b[?3l\x1b]R\x1b[?1000l',
+    'rv': b'\x1b\x5c[>0;136;0c',
     's0ds': b'',
     's1ds': b'',
     's2ds': b'\x1b[12m',
@@ -148,6 +188,7 @@ STR_CAPS = {
     'smpch': b'\x1b[11m',
     'smso': b'\x1b[7m',
     'smul': b'\x1b[4m',
+    'smxx': b'\x1b[9m',
     'tbc': b'\x1b[3g',
     'tsl': b'\x1b]0;',
     'u6': b'\x1b[%i%d;%dR',
@@ -155,4 +196,5 @@ STR_CAPS = {
     'u8': b'\x1b[?6c',
     'u9': b'\x1b[c',
     'vpa': b'\x1b[%i%p1%dd',
+    'xm': b'\x1b[<%i%p3%d;%p1%d;%p2%d;%?%p4%tM%em%;',
 }

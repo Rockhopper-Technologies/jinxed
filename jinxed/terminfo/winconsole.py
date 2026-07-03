@@ -1,7 +1,7 @@
 """
 winconsole terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -17,9 +17,11 @@ BOOL_CAPS = [
     'mir',     # (move_insert_mode) safe to move while in insert mode
     'msgr',    # (move_standout_mode) safe to move while in standout mode
     'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
+    'AX',      # (ansi_x3.64_1979) terminal uses ECMA-48/ANSI X3.64 color sequences
 ]
 
 NUM_CAPS = {
+    'U8': 1,        # (utf8_terminal) ncurses uses Unicode values for line-drawing in UTF-8 locale
     'colors': 8,    # (max_colors) maximum number of colors on screen
     'it': 8,        # (init_tabs) tabs initially every # spaces
     'pairs': 64,    # (max_pairs) maximum number of color-pairs on the screen

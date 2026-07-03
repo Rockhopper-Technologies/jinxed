@@ -1,7 +1,7 @@
 """
 hpterm terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is

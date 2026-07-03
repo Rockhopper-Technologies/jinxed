@@ -1,7 +1,7 @@
 """
 wy50 terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -60,6 +60,22 @@ STR_CAPS = {
     'ind': b'\n',
     'is1': b'\x1b`:\x1b`9',
     'is2': b'\x14\x1b\x27\x1b(',
+    'kF1': b'\x01`\r',
+    'kF10': b'\x01i\r',
+    'kF11': b'\x01j\r',
+    'kF12': b'\x01k\r',
+    'kF13': b'\x01l\r',
+    'kF14': b'\x01m\r',
+    'kF15': b'\x01n\r',
+    'kF16': b'\x01o\r',
+    'kF2': b'\x01a\r',
+    'kF3': b'\x01b\r',
+    'kF4': b'\x01c\r',
+    'kF5': b'\x01d\r',
+    'kF6': b'\x01e\r',
+    'kF7': b'\x01f\r',
+    'kF8': b'\x01g\r',
+    'kF9': b'\x01h\r',
     'kHOM': b'\x1b{',
     'kbs': b'\b',
     'kcbt': b'\x1bI',

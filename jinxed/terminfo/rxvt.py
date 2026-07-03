@@ -1,7 +1,7 @@
 """
 rxvt terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -19,6 +19,7 @@ BOOL_CAPS = [
     'msgr',    # (move_standout_mode) safe to move while in standout mode
     'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
     'xon',     # (xon_xoff) terminal uses xon/xoff handshaking
+    'AX',      # (ansi_x3.64_1979) terminal uses ECMA-48/ANSI X3.64 color sequences
 ]
 
 NUM_CAPS = {
@@ -60,24 +61,47 @@ STR_CAPS = {
     'ht': b'\t',
     'hts': b'\x1bH',
     'ich': b'\x1b[%p1%d@',
+    'ich1': b'\x1b[@',
     'il': b'\x1b[%p1%dL',
     'il1': b'\x1b[L',
     'ind': b'\n',
     'is1': b'\x1b[?47l\x1b=\x1b[?1l',
     'is2': b'\x1b[r\x1b[m\x1b[2J\x1b[H\x1b[?7h\x1b[?1;3;4;6l\x1b[4l',
     'kDC': b'\x1b[3$',
+    'kDC5': b'\x1b[3^',
+    'kDC6': b'\x1b[3@',
+    'kDN': b'\x1b[b',
+    'kDN5': b'\x1bOb',
     'kEND': b'\x1b[8$',
+    'kEND5': b'\x1b[8^',
+    'kEND6': b'\x1b[8@',
     'kHOM': b'\x1b[7$',
+    'kHOM5': b'\x1b[7^',
+    'kHOM6': b'\x1b[7@',
     'kIC': b'\x1b[2$',
+    'kIC5': b'\x1b[2^',
+    'kIC6': b'\x1b[2@',
     'kLFT': b'\x1b[d',
+    'kLFT5': b'\x1bOd',
     'kNXT': b'\x1b[6$',
+    'kNXT5': b'\x1b[6^',
+    'kNXT6': b'\x1b[6@',
     'kPRV': b'\x1b[5$',
+    'kPRV5': b'\x1b[5^',
+    'kPRV6': b'\x1b[5@',
     'kRIT': b'\x1b[c',
+    'kRIT5': b'\x1bOc',
+    'kUP': b'\x1b[a',
+    'kUP5': b'\x1bOa',
     'ka1': b'\x1bOw',
+    'ka2': b'\x1bOx',
     'ka3': b'\x1bOy',
+    'kb1': b'\x1bOt',
     'kb2': b'\x1bOu',
+    'kb3': b'\x1bOv',
     'kbs': b'\b',
     'kc1': b'\x1bOq',
+    'kc2': b'\x1bOr',
     'kc3': b'\x1bOs',
     'kcbt': b'\x1b[Z',
     'kcub1': b'\x1b[D',

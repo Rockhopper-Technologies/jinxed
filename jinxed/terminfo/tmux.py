@@ -1,7 +1,7 @@
 """
 tmux terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -18,9 +18,11 @@ BOOL_CAPS = [
     'mir',     # (move_insert_mode) safe to move while in insert mode
     'msgr',    # (move_standout_mode) safe to move while in standout mode
     'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
+    'AX',      # (ansi_x3.64_1979) terminal uses ECMA-48/ANSI X3.64 color sequences
 ]
 
 NUM_CAPS = {
+    'U8': 1,        # (utf8_terminal) ncurses uses Unicode values for line-drawing in UTF-8 locale
     'colors': 8,    # (max_colors) maximum number of colors on screen
     'cols': 80,     # (columns) number of columns in a line
     'it': 8,        # (init_tabs) tabs initially every # spaces
@@ -29,6 +31,21 @@ NUM_CAPS = {
 }
 
 STR_CAPS = {
+    'BD': b'\x1b[?2004l',
+    'BE': b'\x1b[?2004h',
+    'Cr': b'\x1b]112\a',
+    'Cs': b'\x1b]12;%p1%s\a',
+    'E3': b'\x1b[3J',
+    'Ms': b'\x1b]52;%p1%s;%p2%s\a',
+    'PE': b'\x1b[201~',
+    'PS': b'\x1b[200~',
+    'RV': b'\x1b[>c',
+    'S0': b'\x1b(%p1%c',
+    'Se': b'\x1b[2 q',
+    'Smulx': b'\x1b[4:%p1%dm',
+    'Ss': b'\x1b[%p1%d q',
+    'TS': b'\x1b]0;',
+    'XR': b'\x1b[>0q',
     'acsc': b'++,,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~',
     'bel': b'\a',
     'blink': b'\x1b[5m',
@@ -60,6 +77,8 @@ STR_CAPS = {
     'el': b'\x1b[K',
     'el1': b'\x1b[1K',
     'enacs': b'',
+    'fd': b'\x1b[?1004l',
+    'fe': b'\x1b[?1004h',
     'flash': b'\x1bg',
     'fsl': b'\a',
     'home': b'\x1b[H',
@@ -73,13 +92,65 @@ STR_CAPS = {
     'indn': b'\x1b[%p1%dS',
     'invis': b'\x1b[8m',
     'kDC': b'\x1b[3;2~',
+    'kDC3': b'\x1b[3;3~',
+    'kDC4': b'\x1b[3;4~',
+    'kDC5': b'\x1b[3;5~',
+    'kDC6': b'\x1b[3;6~',
+    'kDC7': b'\x1b[3;7~',
+    'kDN': b'\x1b[1;2B',
+    'kDN3': b'\x1b[1;3B',
+    'kDN4': b'\x1b[1;4B',
+    'kDN5': b'\x1b[1;5B',
+    'kDN6': b'\x1b[1;6B',
+    'kDN7': b'\x1b[1;7B',
     'kEND': b'\x1b[1;2F',
+    'kEND3': b'\x1b[1;3F',
+    'kEND4': b'\x1b[1;4F',
+    'kEND5': b'\x1b[1;5F',
+    'kEND6': b'\x1b[1;6F',
+    'kEND7': b'\x1b[1;7F',
     'kHOM': b'\x1b[1;2H',
+    'kHOM3': b'\x1b[1;3H',
+    'kHOM4': b'\x1b[1;4H',
+    'kHOM5': b'\x1b[1;5H',
+    'kHOM6': b'\x1b[1;6H',
+    'kHOM7': b'\x1b[1;7H',
     'kIC': b'\x1b[2;2~',
+    'kIC3': b'\x1b[2;3~',
+    'kIC4': b'\x1b[2;4~',
+    'kIC5': b'\x1b[2;5~',
+    'kIC6': b'\x1b[2;6~',
+    'kIC7': b'\x1b[2;7~',
     'kLFT': b'\x1b[1;2D',
+    'kLFT3': b'\x1b[1;3D',
+    'kLFT4': b'\x1b[1;4D',
+    'kLFT5': b'\x1b[1;5D',
+    'kLFT6': b'\x1b[1;6D',
+    'kLFT7': b'\x1b[1;7D',
     'kNXT': b'\x1b[6;2~',
+    'kNXT3': b'\x1b[6;3~',
+    'kNXT4': b'\x1b[6;4~',
+    'kNXT5': b'\x1b[6;5~',
+    'kNXT6': b'\x1b[6;6~',
+    'kNXT7': b'\x1b[6;7~',
     'kPRV': b'\x1b[5;2~',
+    'kPRV3': b'\x1b[5;3~',
+    'kPRV4': b'\x1b[5;4~',
+    'kPRV5': b'\x1b[5;5~',
+    'kPRV6': b'\x1b[5;6~',
+    'kPRV7': b'\x1b[5;7~',
     'kRIT': b'\x1b[1;2C',
+    'kRIT3': b'\x1b[1;3C',
+    'kRIT4': b'\x1b[1;4C',
+    'kRIT5': b'\x1b[1;5C',
+    'kRIT6': b'\x1b[1;6C',
+    'kRIT7': b'\x1b[1;7C',
+    'kUP': b'\x1b[1;2A',
+    'kUP3': b'\x1b[1;3A',
+    'kUP4': b'\x1b[1;4A',
+    'kUP5': b'\x1b[1;5A',
+    'kUP6': b'\x1b[1;6A',
+    'kUP7': b'\x1b[1;7A',
     'kbs': b'\x7f',
     'kcbt': b'\x1b[Z',
     'kcub1': b'\x1bOD',
@@ -158,6 +229,8 @@ STR_CAPS = {
     'knp': b'\x1b[6~',
     'kpp': b'\x1b[5~',
     'kri': b'\x1b[1;2A',
+    'kxIN': b'\x1b[I',
+    'kxOUT': b'\x1b[O',
     'nel': b'\x1bE',
     'op': b'\x1b[39;49m',
     'rc': b'\x1b8',
@@ -171,7 +244,9 @@ STR_CAPS = {
     'rmkx': b'\x1b[?1l\x1b>',
     'rmso': b'\x1b[27m',
     'rmul': b'\x1b[24m',
+    'rmxx': b'\x1b[29m',
     'rs2': b'\x1bc\x1b[?1000l\x1b[?25h',
+    'rv': b'\x1b\x5c[>[0-9]+;[0-9]+;[0-9]+c',
     's0ds': b'',
     's1ds': b'',
     'sc': b'\x1b7',
@@ -186,6 +261,7 @@ STR_CAPS = {
     'smkx': b'\x1b[?1h\x1b=',
     'smso': b'\x1b[7m',
     'smul': b'\x1b[4m',
+    'smxx': b'\x1b[9m',
     'tbc': b'\x1b[3g',
     'tsl': b'\x1b]0;',
     'u6': b'\x1b[%i%d;%dR',
@@ -193,4 +269,5 @@ STR_CAPS = {
     'u8': b'\x1b[?1;2c',
     'u9': b'\x1b[c',
     'vpa': b'\x1b[%i%p1%dd',
+    'xr': b'\x1bP>\x5c|[ -~]+\x1b\x5c\x5c',
 }

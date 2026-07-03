@@ -1,7 +1,7 @@
 """
 st terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -30,6 +30,15 @@ NUM_CAPS = {
 }
 
 STR_CAPS = {
+    'BD': b'\x1b[?2004l',
+    'BE': b'\x1b[?2004h',
+    'Cs': b'\x1b]12;%p1%s\a',
+    'Ms': b'\x1b]52;%p1%s;%p2%s\a',
+    'PE': b'\x1b[201~',
+    'PS': b'\x1b[200~',
+    'Se': b'\x1b[2 q',
+    'Ss': b'\x1b[%p1%d q',
+    'TS': b'\x1b]0;',
     'acsc': b'+C,D-A.B0E``aaffgghFiGjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~',
     'bel': b'\a',
     'blink': b'\x1b[5m',
@@ -74,13 +83,25 @@ STR_CAPS = {
     'invis': b'\x1b[8m',
     'is2': b'\x1b[4l\x1b>\x1b[?1034l',
     'kDC': b'\x1b[3;2~',
+    'kDN3': b'\x1b[1;3B',
+    'kDN5': b'\x1b[1;5B',
     'kEND': b'\x1b[1;2F',
     'kHOM': b'\x1b[1;2H',
     'kIC': b'\x1b[2;2~',
     'kLFT': b'\x1b[1;2D',
+    'kLFT3': b'\x1b[1;3D',
+    'kLFT5': b'\x1b[1;5D',
     'kNXT': b'\x1b[6;2~',
+    'kNXT3': b'\x1b[6;3~',
+    'kNXT5': b'\x1b[6;5~',
     'kPRV': b'\x1b[5;2~',
+    'kPRV3': b'\x1b[5;3~',
+    'kPRV5': b'\x1b[5;5~',
     'kRIT': b'\x1b[1;2C',
+    'kRIT3': b'\x1b[1;3C',
+    'kRIT5': b'\x1b[1;5C',
+    'kUP3': b'\x1b[1;3A',
+    'kUP5': b'\x1b[1;5A',
     'ka1': b'\x1b[1~',
     'ka3': b'\x1b[5~',
     'kb2': b'\x1bOu',
@@ -186,6 +207,7 @@ STR_CAPS = {
     'rmkx': b'\x1b[?1l\x1b>',
     'rmso': b'\x1b[27m',
     'rmul': b'\x1b[24m',
+    'rmxx': b'\x1b[29m',
     'rs1': b'\x1bc',
     'rs2': b'\x1b[4l\x1b>\x1b[?1034l',
     's0ds': b'',
@@ -204,6 +226,7 @@ STR_CAPS = {
     'smkx': b'\x1b[?1h\x1b=',
     'smso': b'\x1b[7m',
     'smul': b'\x1b[4m',
+    'smxx': b'\x1b[9m',
     'tbc': b'\x1b[3g',
     'tsl': b'\x1b]0;',
     'u6': b'\x1b[%i%d;%dR',

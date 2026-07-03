@@ -1,7 +1,7 @@
 """
 vscode terminal info
 
-Revision: 1.1247
+Revision: 1.1256
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -20,6 +20,7 @@ BOOL_CAPS = [
     'msgr',    # (move_standout_mode) safe to move while in standout mode
     'npc',     # (no_pad_char) pad character does not exist
     'xenl',    # (eat_newline_glitch) newline ignored after 80 cols (concept)
+    'AX',      # (ansi_x3.64_1979) terminal uses ECMA-48/ANSI X3.64 color sequences
 ]
 
 NUM_CAPS = {
@@ -31,6 +32,13 @@ NUM_CAPS = {
 }
 
 STR_CAPS = {
+    'BD': b'\x1b[?2004l',
+    'BE': b'\x1b[?2004h',
+    'E3': b'\x1b[3J',
+    'PE': b'\x1b[201~',
+    'PS': b'\x1b[200~',
+    'RV': b'\x1b[>c',
+    'XM': b'\x1b[?1006;1000%?%p1%{1}%=%th%el%;',
     'acsc': b'``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~',
     'bel': b'\a',
     'blink': b'\x1b[5m',
@@ -61,6 +69,8 @@ STR_CAPS = {
     'el': b'\x1b[K',
     'el1': b'\x1b[1K',
     'enacs': b'',
+    'fd': b'\x1b[?1004l',
+    'fe': b'\x1b[?1004h',
     'flash': b'\x1b[?5h\x1b[?5l',
     'home': b'\x1b[H',
     'hpa': b'\x1b[%i%p1%dG',
@@ -74,13 +84,65 @@ STR_CAPS = {
     'invis': b'\x1b[8m',
     'is2': b'\x1b[!p\x1b[?3;4l\x1b[4l\x1b>',
     'kDC': b'\x1b[3;2~',
+    'kDC3': b'\x1b[3;3~',
+    'kDC4': b'\x1b[3;4~',
+    'kDC5': b'\x1b[3;5~',
+    'kDC6': b'\x1b[3;6~',
+    'kDC7': b'\x1b[3;7~',
+    'kDN': b'\x1b[1;2B',
+    'kDN3': b'\x1b[1;3B',
+    'kDN4': b'\x1b[1;4B',
+    'kDN5': b'\x1b[1;5B',
+    'kDN6': b'\x1b[1;6B',
+    'kDN7': b'\x1b[1;7B',
     'kEND': b'\x1b[1;2F',
+    'kEND3': b'\x1b[1;3F',
+    'kEND4': b'\x1b[1;4F',
+    'kEND5': b'\x1b[1;5F',
+    'kEND6': b'\x1b[1;6F',
+    'kEND7': b'\x1b[1;7F',
     'kHOM': b'\x1b[1;2H',
+    'kHOM3': b'\x1b[1;3H',
+    'kHOM4': b'\x1b[1;4H',
+    'kHOM5': b'\x1b[1;5H',
+    'kHOM6': b'\x1b[1;6H',
+    'kHOM7': b'\x1b[1;7H',
     'kIC': b'\x1b[2;2~',
+    'kIC3': b'\x1b[2;3~',
+    'kIC4': b'\x1b[2;4~',
+    'kIC5': b'\x1b[2;5~',
+    'kIC6': b'\x1b[2;6~',
+    'kIC7': b'\x1b[2;7~',
     'kLFT': b'\x1b[1;2D',
+    'kLFT3': b'\x1b[1;3D',
+    'kLFT4': b'\x1b[1;4D',
+    'kLFT5': b'\x1b[1;5D',
+    'kLFT6': b'\x1b[1;6D',
+    'kLFT7': b'\x1b[1;7D',
     'kNXT': b'\x1b[6;2~',
+    'kNXT3': b'\x1b[6;3~',
+    'kNXT4': b'\x1b[6;4~',
+    'kNXT5': b'\x1b[6;5~',
+    'kNXT6': b'\x1b[6;6~',
+    'kNXT7': b'\x1b[6;7~',
     'kPRV': b'\x1b[5;2~',
+    'kPRV3': b'\x1b[5;3~',
+    'kPRV4': b'\x1b[5;4~',
+    'kPRV5': b'\x1b[5;5~',
+    'kPRV6': b'\x1b[5;6~',
+    'kPRV7': b'\x1b[5;7~',
     'kRIT': b'\x1b[1;2C',
+    'kRIT3': b'\x1b[1;3C',
+    'kRIT4': b'\x1b[1;4C',
+    'kRIT5': b'\x1b[1;5C',
+    'kRIT6': b'\x1b[1;6C',
+    'kRIT7': b'\x1b[1;7C',
+    'kUP': b'\x1b[1;2A',
+    'kUP3': b'\x1b[1;3A',
+    'kUP4': b'\x1b[1;4A',
+    'kUP5': b'\x1b[1;5A',
+    'kUP6': b'\x1b[1;6A',
+    'kUP7': b'\x1b[1;7A',
     'kbs': b'\x7f',
     'kcbt': b'\x1b[Z',
     'kcub1': b'\x1bOD',
@@ -159,6 +221,8 @@ STR_CAPS = {
     'knp': b'\x1b[6~',
     'kpp': b'\x1b[5~',
     'kri': b'\x1b[1;2A',
+    'kxIN': b'\x1b[I',
+    'kxOUT': b'\x1b[O',
     'mc0': b'\x1b[i',
     'mc4': b'\x1b[4i',
     'mc5': b'\x1b[5i',
@@ -180,6 +244,7 @@ STR_CAPS = {
     'rmul': b'\x1b[24m',
     'rs1': b'\x1bc',
     'rs2': b'\x1b[!p\x1b[?3;4l\x1b[4l\x1b>',
+    'rv': b'\x1b\x5c[>0;276;0c',
     's0ds': b'',
     's1ds': b'',
     'sc': b'\x1b7',
@@ -202,4 +267,5 @@ STR_CAPS = {
     'u8': b'\x1b[?%[;0123456789]c',
     'u9': b'\x1b[c',
     'vpa': b'\x1b[%i%p1%dd',
+    'xm': b'\x1b[<%i%p3%d;%p1%d;%p2%d;%?%p4%tM%em%;',
 }
