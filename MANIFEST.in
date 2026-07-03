@@ -2,3 +2,7 @@ include LICENSE* setup_helpers.py README.*
 graft doc
 graft tests
 include terminals.toml
+
+global-exclude __pycache__
+global-exclude *.pyc
+global-exclude *.pyo
