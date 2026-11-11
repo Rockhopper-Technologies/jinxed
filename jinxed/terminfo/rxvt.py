@@ -1,7 +1,7 @@
 """
 rxvt terminal info
 
-Revision: 1.1256
+Revision: 1.1283
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -49,6 +49,8 @@ STR_CAPS = {
     'cup': b'\x1b[%i%p1%d;%p2%dH',
     'cuu': b'\x1b[%p1%dA',
     'cuu1': b'\x1b[A',
+    'dch': b'\x1b[%p1%dP',
+    'dch1': b'\x1b[P',
     'dl': b'\x1b[%p1%dM',
     'dl1': b'\x1b[M',
     'ed': b'\x1b[J',

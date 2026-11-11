@@ -21,6 +21,11 @@ extra_aliases = ["xterm-ghostty"]
 [hpterm]
 [iris-ansi]
 ["iTerm2.app"]
+patch = [
+    # ncurses iterm: cnorm=\E[?25h
+    # iTerm2 3.7.7 XTGETTCAP: cnorm=\E[?12l\E[?25h
+    { cap = "cnorm", from = "\\E[?25h", to = "\\E[?12l\\E[?25h" },
+]
 [kitty]
 extra_aliases = ["xterm-kitty"]
 patch = [
@@ -46,6 +51,8 @@ patch = [
 [st]
 [st-256color]
 [sun]
+[teraterm]
+[teraterm-256color]
 [tmux]
 [tmux-256color]
 [vscode]
@@ -56,10 +63,9 @@ patch = [
 [warp]
 [wezterm]
 patch = [
-    # ncurses ansi+erase:  clear=\E[H\E[J               (no ED param)
-    # wezterm wezterm.terminfo:40:    cnorm=\E[?12l\E[?25h, clear=\E[H\E[2J
+    # ncurses ansi+erase:  cnorm=\E[?25h
+    # wezterm wezterm.terminfo:40:    cnorm=\E[?12l\E[?25h
     { cap = "cnorm", from = "\\E[?25h", to = "\\E[?12l\\E[?25h" },
-    { cap = "clear", from = "\\E[H\\E[J", to = "\\E[H\\E[2J" },
     # ncurses xterm+256color2 uses colon separators (48:5: / 38:5:)
     # wezterm uses semicolons (48;5; / 38;5;)
     { cap = "setab", from = "\\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48:5:%p1%d%;m", to = "\\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m" },
@@ -71,3 +77,5 @@ patch = [
 [xterm-16color]
 [xterm-256color]
 [xterm-new]
+[zutty]
+[zutty-256color]
