@@ -1,7 +1,7 @@
 """
 ghostty terminal info
 
-Revision: 1.1256
+Revision: 1.1283
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -30,7 +30,7 @@ NUM_CAPS = {
     'cols': 80,        # (columns) number of columns in a line
     'it': 8,           # (init_tabs) tabs initially every # spaces
     'lines': 24,       # (lines) number of lines on screen or page
-    'pairs': 32767,    # (max_pairs) maximum number of color-pairs on the screen
+    'pairs': 65536,    # (max_pairs) maximum number of color-pairs on the screen
 }
 
 STR_CAPS = {
@@ -41,7 +41,9 @@ STR_CAPS = {
     'PE': b'\x1b[201~',
     'PS': b'\x1b[200~',
     'RV': b'\x1b[>c',
+    'Rmol': b'\x1b[55m',
     'Se': b'\x1b[2 q',
+    'Smol': b'\x1b[53m',
     'Smulx': b'\x1b[4:%p1%dm',
     'Ss': b'\x1b[%p1%d q',
     'TS': b'\x1b]2;',
@@ -153,6 +155,7 @@ STR_CAPS = {
     'kUP5': b'\x1b[1;5A',
     'kUP6': b'\x1b[1;6A',
     'kUP7': b'\x1b[1;7A',
+    'kbeg': b'\x1bOE',
     'kbs': b'\x7f',
     'kcbt': b'\x1b[Z',
     'kcub1': b'\x1bOD',
@@ -256,8 +259,8 @@ STR_CAPS = {
     's0ds': b'',
     's1ds': b'',
     'sc': b'\x1b7',
-    'setab': b'\x1b[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m',
-    'setaf': b'\x1b[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m',
+    'setab': b'\x1b[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48:5:%p1%d%;m',
+    'setaf': b'\x1b[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38:5:%p1%d%;m',
     'setal': b'\x1b[58:2::%p1%{65536}%/%d:%p1%{256}%/%{255}%&%d:%p1%{255}%&%dm',
     'sgr': b'\x1b[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p5%t;2%;%?%p7%t;8%;m',
     'sgr0': b'\x1b[m',

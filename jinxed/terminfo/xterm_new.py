@@ -1,7 +1,7 @@
 """
 xterm-new terminal info
 
-Revision: 1.1256
+Revision: 1.1283
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -34,14 +34,14 @@ NUM_CAPS = {
 STR_CAPS = {
     'BD': b'\x1b[?2004l',
     'BE': b'\x1b[?2004h',
-    'Cr': b'\x1b]112\a',
-    'Cs': b'\x1b]12;%p1%s\a',
+    'Cr': b'\x1b]112\x1b\x5c',
+    'Cs': b'\x1b]12;%p1%s\x1b\x5c',
     'E3': b'\x1b[3J',
-    'Ms': b'\x1b]52;%p1%s;%p2%s\a',
+    'Ms': b'\x1b]52;%p1%s;%p2%s\x1b\x5c',
     'PE': b'\x1b[201~',
     'PS': b'\x1b[200~',
     'RV': b'\x1b[>c',
-    'Se': b'\x1b[2 q',
+    'Se': b'\x1b[ q',
     'Ss': b'\x1b[%p1%d q',
     'XM': b'\x1b[?1006;1000%?%p1%{1}%=%th%el%;',
     'XR': b'\x1b[>0q',
@@ -83,6 +83,7 @@ STR_CAPS = {
     'ht': b'\t',
     'hts': b'\x1bH',
     'ich': b'\x1b[%p1%d@',
+    'ich1': b'\x1b[@',
     'il': b'\x1b[%p1%dL',
     'il1': b'\x1b[L',
     'ind': b'\n',

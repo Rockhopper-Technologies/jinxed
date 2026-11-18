@@ -83,3 +83,7 @@ winconsole
 vscode
 mintty
 toml
+teraterm
+zutty
+setab
+setaf

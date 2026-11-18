@@ -1,7 +1,7 @@
 """
 iris-ansi terminal info
 
-Revision: 1.1256
+Revision: 1.1283
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -27,6 +27,7 @@ STR_CAPS = {
     'clear': b'\x1b[H\x1b[2J',
     'cnorm': b'\x1b[9/y\x1b[12/y\x1b[=6l',
     'cr': b'\r',
+    'csr': b'\x1b[%i%p1%d;%p2%dr',
     'cub': b'\x1b[%p1%dD',
     'cub1': b'\x1b[D',
     'cud': b'\x1b[%p1%dB',

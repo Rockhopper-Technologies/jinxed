@@ -1,7 +1,7 @@
 """
 foot terminal info
 
-Revision: 1.1256
+Revision: 1.1283
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is

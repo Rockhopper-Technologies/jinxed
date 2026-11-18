@@ -1,7 +1,7 @@
 """
 iTerm2.app terminal info
 
-Revision: 1.1256
+Revision: 1.1283 with patches applied to: cnorm
 Source: https://invisible-mirror.net/archives/ncurses/current/ncurses.tar.gz
 
 This file is derived from the ncurses terminfo database, which is
@@ -50,7 +50,7 @@ STR_CAPS = {
     'cbt': b'\x1b[Z',
     'civis': b'\x1b[?25l',
     'clear': b'\x1b[H\x1b[J',
-    'cnorm': b'\x1b[?25h',
+    'cnorm': b'\x1b[?12l\x1b[?25h',
     'cr': b'\r',
     'csr': b'\x1b[%i%p1%d;%p2%dr',
     'cub': b'\x1b[%p1%dD',

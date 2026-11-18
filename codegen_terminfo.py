@@ -97,12 +97,15 @@ def load_extra_aliases(path: Path) -> dict[str, str]:
     return extra
 
 
-def apply_fixups(data_map: dict[str, 'TermData']) -> None:
+def apply_fixups(data_map: dict[str, 'TermData']) -> dict[str, list[str]]:
     """Patch known ncurses terminfo errors in-place from a config file.
 
     Fixups were discovered by comparing XTGETTCAP results from the ucs-detect
     project https://github.com/jquast/ucs-detect/
+
+    Returns a mapping of terminal names to the capability names that were patched.
     """
+    applied: dict[str, list[str]] = {}
     for entry in load_fixups(TERMINALS_TOML):
         name = entry['terminal']
         if name not in data_map:
@@ -115,6 +118,10 @@ def apply_fixups(data_map: dict[str, 'TermData']) -> None:
             to_val = decode(patch['to'])
             if data.strs.get(cap) == from_val:
                 data.strs[cap] = to_val
+                caps = applied.setdefault(name, [])
+                if cap not in caps:
+                    caps.append(cap)
+    return applied
 
 
 # Lazy-initialised after parse_cap_comments() is called.
@@ -445,17 +452,21 @@ def bytes_repr(value: bytes) -> str:
 
 
 def generate(kind: str, data: TermData, version: str, base: str | None = None,
-             base_data: TermData | None = None) -> str:
+             base_data: TermData | None = None,
+             patched_caps: list[str] | None = None) -> str:
     """Generate a jinxed terminfo module for *kind*.
 
     When *base* and *base_data* are given, generates a derived (inheriting)
     module that only records differences from the base terminal.
     """
+    revision = f'Revision: {version}'
+    if patched_caps:
+        revision += f' with patches applied to: {", ".join(patched_caps)}'
     lines = [
         '"""',
         f'{kind} terminal info' + (f' (derived from {base})' if base else ''),
         '',
-        f'Revision: {version}',
+        revision,
         f'Source: {URL}',
         '',
         'This file is derived from the ncurses terminfo database, which is',
@@ -590,7 +601,7 @@ def main() -> None:
         else:
             print(f'SKIP: {kind}', file=sys.stderr)
 
-    apply_fixups(data_map)
+    applied_fixups = apply_fixups(data_map)
 
     # Parse use= directives from the ncurses source to find explicit
     # derivation chains (e.g. rio -> alacritty).
@@ -613,7 +624,8 @@ def main() -> None:
             base = mapping_use_base[kind]
             base_data = data_map[base]
         fpath = OUT_DIR / f'{_module_name(kind)}.py'
-        fpath.write_text(generate(kind, data, version, base, base_data))
+        fpath.write_text(generate(kind, data, version, base, base_data,
+                                  applied_fixups.get(kind)))
 
     print(f'{len(data_map)} modules -> {OUT_DIR}', file=sys.stderr)
     print(f'Source: ncurses terminfo.src {version}', file=sys.stderr)
